@@ -84,7 +84,12 @@ const LogCard: React.FunctionComponent<{
                     date: new Date(logItem.creationDate).toLocaleDateString()
                 })}
             </Text>
-            <View style={[centerHorizontally, justifyAlignRightHorizontal, fullWidth]}>
+            <View
+                style={[
+                    centerHorizontally,
+                    justifyAlignRightHorizontal,
+                    fullWidth
+                ]}>
                 <MatButton>
                     <View
                         style={[

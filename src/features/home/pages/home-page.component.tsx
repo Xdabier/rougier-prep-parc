@@ -57,7 +57,7 @@ const STYLES = StyleSheet.create({
         color: '#fff'
     },
     textView: {
-        width: 210
+        width: 240
     }
 });
 

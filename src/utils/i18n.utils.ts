@@ -5,7 +5,8 @@ import memoize from 'lodash.memoize';
 const translationGetters: {
     [local: string]: object;
 } = {
-    en: require('../assets/json/i18n/en.json')
+    en: require('../assets/json/i18n/en.json'),
+    fr: require('../assets/json/i18n/fr.json')
 };
 
 const translate = memoize(
@@ -16,7 +17,7 @@ const translate = memoize(
 );
 
 const setI18nConfig = () => {
-    const fallback = {languageTag: 'en'};
+    const fallback = {languageTag: 'fr'};
     const {languageTag} =
         findBestAvailableLanguage(Object.keys(translationGetters)) || fallback;
 

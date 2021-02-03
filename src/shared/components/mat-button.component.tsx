@@ -1,15 +1,19 @@
 import React, {ReactNode} from 'react';
 import {StyleSheet, TouchableNativeFeedback, View} from 'react-native';
-import {
+import CommonStyles, {
     BORDER_RADIUS,
     FAB_BORDER_RADIUS,
     FAB_BUTTON_SIZE,
     MAIN_LIGHT_GREY
 } from '../../styles';
 
+const {rougierShadow} = CommonStyles;
 const STYLES = StyleSheet.create({
     buttonParent: {
         overflow: 'hidden'
+    },
+    elevationPadding: {
+        padding: 2
     },
     buttonRadius: {
         borderRadius: BORDER_RADIUS
@@ -23,12 +27,22 @@ const STYLES = StyleSheet.create({
 
 const MatButton: React.FunctionComponent<{
     children: ReactNode;
-    fab?: boolean;
-}> = ({children, fab}: {children: ReactNode; fab?: boolean}) => (
+    isFab?: boolean;
+    isElevated?: boolean;
+}> = ({
+    children,
+    isFab,
+    isElevated
+}: {
+    children: ReactNode;
+    isFab?: boolean;
+    isElevated?: boolean;
+}) => (
     <View
         style={[
             STYLES.buttonParent,
-            fab ? STYLES.fabButton : STYLES.buttonRadius
+            isFab ? STYLES.fabButton : STYLES.buttonRadius,
+            isElevated ? rougierShadow : {}
         ]}>
         <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple(MAIN_LIGHT_GREY, true)}>
@@ -38,7 +52,8 @@ const MatButton: React.FunctionComponent<{
 );
 
 MatButton.defaultProps = {
-    fab: false
+    isFab: false,
+    isElevated: false
 };
 
 export default MatButton;

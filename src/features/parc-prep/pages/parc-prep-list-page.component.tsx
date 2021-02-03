@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {FlatList, SafeAreaView, View} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {ParcPrepScreenProps} from '../../../core/types/parc-prep-screen-props.type';
-import CommonStyles from '../../../styles';
+import CommonStyles, {FAB_BOTTOM_DISTANCE} from '../../../styles';
 import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
 import ParcPrepCard from '../../../shared/components/parc-prep-card/parc-prep-card.component';
 import MatButton from '../../../shared/components/mat-button.component';
@@ -17,8 +17,15 @@ const {
     fabButtonView,
     fabButton,
     rougierShadow,
-    backgroundMain
+    backgroundMain,
+    pT2
 } = CommonStyles;
+
+const STYLES = StyleSheet.create({
+    fabButtonView: {
+        bottom: FAB_BOTTOM_DISTANCE
+    }
+});
 
 const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
     const [files, setFiles] = useState<ParcPrepInterface[]>([]);
@@ -43,15 +50,16 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
                 contentContainerStyle={[
                     centerVertically,
                     justifyAlignCenter,
-                    scrollView
+                    scrollView,
+                    pT2
                 ]}
                 data={files}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => `${index}`}
             />
 
-            <View style={[fabButtonView, rougierShadow]}>
-                <MatButton fab>
+            <View style={[fabButtonView, STYLES.fabButtonView]}>
+                <MatButton isFab isElevated>
                     <View
                         style={[
                             centerVertically,

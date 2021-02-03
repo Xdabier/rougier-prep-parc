@@ -8,6 +8,8 @@ export const MAIN_DARK_GREY = `#727272`;
 
 export const BORDER_RADIUS = 8;
 export const PADDING_HORIZONTAL = 20;
+export const PAGE_TITLE_LINE_HEIGHT = 39;
+export const FAB_BOTTOM_DISTANCE = 10;
 export const FAB_BUTTON_SIZE = 69;
 export const FAB_BORDER_RADIUS = FAB_BUTTON_SIZE / 2;
 
@@ -46,6 +48,12 @@ export interface AppStyleSheet {
         [key: string]: any;
     };
     vSpacer12: {
+        [key: string]: any;
+    };
+    pT2: {
+        [key: string]: any;
+    };
+    vSpacer25: {
         [key: string]: any;
     };
     vSpacer100: {
@@ -127,7 +135,8 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingHorizontal: PADDING_HORIZONTAL,
-        paddingTop: 20
+        paddingTop: 20,
+        backgroundColor: '#fff'
     },
     title: {
         fontSize: 19
@@ -197,14 +206,14 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         fontFamily: poppinsRegular
     },
     rougierShadow: {
-        shadowColor: '#000',
+        shadowColor: '#9B9B9B',
         shadowOffset: {
             width: 0,
             height: 1
         },
         shadowOpacity: 0.16,
         shadowRadius: 5,
-        elevation: 3
+        elevation: 2
     },
     textAlignCenter: {
         textAlign: 'center'
@@ -214,6 +223,12 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     },
     vSpacer12: {
         height: 12
+    },
+    pT2: {
+        paddingTop: 2
+    },
+    vSpacer25: {
+        height: 25
     },
     vSpacer60: {
         height: 60
@@ -226,7 +241,6 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     },
     fabButtonView: {
         position: 'absolute',
-        bottom: 10,
         right: 10,
         borderRadius: FAB_BORDER_RADIUS
     },

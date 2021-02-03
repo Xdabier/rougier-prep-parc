@@ -1,0 +1,33 @@
+{
+  "common": {
+    "home": "Acceuil",
+    "parcPrep": "Prép. parc",
+    "log": "Bille",
+    "settings": "Paramètres",
+    "id": "ID",
+    "logId": "ID bille",
+    "prepFileId": "ID fiche prép. parc {{fileId}}",
+    "parcId": "ID Parc",
+    "creationDate": "Créé le {{date}}",
+    "lastLogDate": "Dernière bille le {{date}}",
+    "logs": "Billes",
+    "logsNumber": "{{numLogs}} Billes",
+    "addParcPrepFile": "Ajouter fiche prép. parc",
+    "editParcPrepFile": "Modifier fiche",
+    "editLog": "Modifier bille",
+    "addLog": "Ajouter bille",
+    "sync": "Synchroniser",
+    "scanBarCode": "Scan code a barre",
+    "syncAll": "Synchroniser touts",
+    "synced": "Synchronisé"
+  },
+  "homePage": {
+    "title": "Fiche préparation parc actuel"
+  },
+  "logsListPage": {
+    "title": "Bille de parc"
+  },
+  "settings": {
+    "title": "Utilisateur"
+  }
+}

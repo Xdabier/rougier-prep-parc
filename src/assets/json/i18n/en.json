@@ -6,6 +6,7 @@
     "settings": "Settings",
     "id": "ID",
     "logId": "Log ID",
+    "parcId": "Parc ID",
     "prepFileId": "Prep file ID {{fileId}}",
     "creationDate": "Created {{date}}",
     "lastLogDate": "Last log {{date}}",
