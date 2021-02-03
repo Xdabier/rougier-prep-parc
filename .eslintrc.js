@@ -11,5 +11,8 @@ module.exports = {
     parserOptions: {
         project: ['tsconfig.json'],
         createDefaultProgram: true
+    },
+    rules: {
+        "global-require": "off"
     }
 };

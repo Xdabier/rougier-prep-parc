@@ -1,5 +1,32 @@
 {
   "common": {
-    "home": "Home Screen aasba la3sob"
+    "home": "Home",
+    "parcPrep": "Parc prep",
+    "log": "Logs",
+    "settings": "Settings",
+    "id": "ID",
+    "logId": "Log ID",
+    "prepFileId": "Prep file ID {{fileId}}",
+    "creationDate": "Created {{date}}",
+    "lastLogDate": "Last log {{date}}",
+    "logs": "Logs",
+    "logsNumber": "{{numLogs}} logs",
+    "addParcPrepFile": "Add parc prep file",
+    "editParcPrepFile": "Edit file",
+    "editLog": "Edit log",
+    "addLog": "Add log",
+    "sync": "Synchronize",
+    "scanBarCode": "Scan bare-code",
+    "syncAll": "Synchronize all",
+    "synced": "Synchronized"
+  },
+  "homePage": {
+    "title": "Current parc preparation file"
+  },
+  "logsListPage": {
+    "title": "Parc logs"
+  },
+  "settings": {
+    "title": "User"
   }
 }

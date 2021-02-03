@@ -5,7 +5,6 @@ import memoize from 'lodash.memoize';
 const translationGetters: {
     [local: string]: object;
 } = {
-    // eslint-disable-next-line global-require
     en: require('../assets/json/i18n/en.json')
 };
 
