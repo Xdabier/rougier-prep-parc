@@ -86,7 +86,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     <View />
                 )}
                 <View style={[vSpacer60]} />
-                <MatButton>
+                <MatButton onPress={() => true}>
                     <View
                         style={[
                             fullWidth,
@@ -114,7 +114,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton>
+                <MatButton onPress={() => true}>
                     <View
                         style={[
                             fullWidth,
@@ -138,7 +138,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton>
+                <MatButton onPress={() => true}>
                     <View
                         style={[
                             fullWidth,
@@ -162,7 +162,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton>
+                <MatButton onPress={() => true}>
                     <View
                         style={[
                             fullWidth,

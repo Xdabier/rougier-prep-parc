@@ -25,7 +25,8 @@
     "title": "Fiche préparation parc actuel"
   },
   "logsListPage": {
-    "title": "Bille de parc"
+    "title": "Bille de parc",
+    "filterInputPh": "Commencez à taper l'id..."
   },
   "settings": {
     "title": "Utilisateur"

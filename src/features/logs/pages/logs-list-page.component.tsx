@@ -1,11 +1,21 @@
 import * as React from 'react';
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+    FlatList,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useEffect, useState} from 'react';
+import ActionSheetComponent from 'react-native-actions-sheet';
+import {createRef, RefObject, useEffect, useState} from 'react';
 import {LogsListScreenProps} from '../../../core/types/logs-list-screen-props.type';
 import CommonStyles, {
     BORDER_RADIUS,
     FAB_BOTTOM_DISTANCE,
+    MAIN_LIGHT_GREY,
     PAGE_TITLE_LINE_HEIGHT,
     poppinsMedium,
     poppinsRegular
@@ -24,13 +34,14 @@ const {
     spaceBetween,
     alignCenter,
     justifyAlignCenter,
+    justifyAlignTLeftHorizontal,
     scrollView,
     vSpacer12,
+    vSpacer100,
     pT2,
     vSpacer25,
     fabButton,
     fabButtonView,
-    rougierShadow,
     backgroundSecond,
     mainColor
 } = CommonStyles;
@@ -73,8 +84,30 @@ const STYLES = StyleSheet.create({
     },
     listBottomSpacing: {
         paddingBottom: MISSING_SPACE
+    },
+    input: {
+        minHeight: 50,
+        borderRadius: BORDER_RADIUS,
+        borderWidth: 1,
+        borderColor: MAIN_LIGHT_GREY,
+        marginBottom: 15,
+        paddingHorizontal: 10
+    },
+    searchResult: {
+        height: FILTER_ROW_HEIGHT,
+        borderBottomWidth: 1,
+        borderBottomColor: MAIN_LIGHT_GREY
+    },
+    searchResultText: {
+        marginLeft: 18,
+        fontFamily: poppinsRegular,
+        fontSize: 16,
+        lineHeight: TEXT_LINE_HEIGHT
     }
 });
+
+const actionSheetRef: RefObject<any> = createRef();
+const scrollViewRef: RefObject<any> = createRef();
 
 const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
     const [logs, setLogs] = useState<LogInterface[]>([]);
@@ -93,6 +126,10 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
         </>
     );
 
+    const onOpen = () => {};
+
+    const onClose = () => {};
+
     return (
         <SafeAreaView style={[appPage]}>
             <PageTitle title={translate('logsListPage.title')} />
@@ -107,7 +144,11 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                 <Text style={[STYLES.filterLabel, mainColor]}>
                     {translate('common.parcId')}
                 </Text>
-                <MatButton isElevated>
+                <MatButton
+                    isElevated
+                    onPress={() => {
+                        actionSheetRef.current?.setModalVisible();
+                    }}>
                     <View
                         style={[
                             centerHorizontally,
@@ -139,7 +180,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                 keyExtractor={(item, index) => `${index}`}
             />
             <View style={[fabButtonView, STYLES.fabButtonView]}>
-                <MatButton isFab isElevated>
+                <MatButton isFab isElevated onPress={() => true}>
                     <View
                         style={[
                             centerVertically,
@@ -151,6 +192,64 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                     </View>
                 </MatButton>
             </View>
+
+            <ActionSheetComponent
+                initialOffsetFromBottom={0.6}
+                ref={actionSheetRef}
+                onOpen={onOpen}
+                statusBarTranslucent
+                bounceOnOpen
+                bounciness={4}
+                gestureEnabled
+                onClose={onClose}
+                defaultOverlayOpacity={0.3}>
+                <View>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        nestedScrollEnabled
+                        onScrollEndDrag={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onScrollAnimationEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        onMomentumScrollEnd={() =>
+                            actionSheetRef.current?.handleChildScrollEnd()
+                        }
+                        contentContainerStyle={[
+                            centerVertically,
+                            justifyAlignCenter,
+                            fullWidth
+                        ]}>
+                        <TextInput
+                            style={[STYLES.input, scrollView]}
+                            placeholder={translate(
+                                'logsListPage.filterInputPh'
+                            )}
+                        />
+                        <MatButton onPress={() => true}>
+                            <View
+                                style={[
+                                    scrollView,
+                                    centerHorizontally,
+                                    justifyAlignTLeftHorizontal,
+                                    alignCenter,
+                                    STYLES.searchResult
+                                ]}>
+                                <Icon
+                                    name="carpenter"
+                                    size={TEXT_LINE_HEIGHT}
+                                    color={MAIN_LIGHT_GREY}
+                                />
+                                <Text style={[STYLES.searchResultText]}>
+                                    2352332
+                                </Text>
+                            </View>
+                        </MatButton>
+                        <View style={[vSpacer100]} />
+                    </ScrollView>
+                </View>
+            </ActionSheetComponent>
         </SafeAreaView>
     );
 };

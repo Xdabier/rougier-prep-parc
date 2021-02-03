@@ -127,7 +127,7 @@ const ParcPrepCard: React.FunctionComponent<{
                 justifyAlignRightVertical,
                 justifyCenter
             ]}>
-            <MatButton>
+            <MatButton onPress={() => true}>
                 <View
                     style={[
                         STYLES.button,
@@ -151,7 +151,7 @@ const ParcPrepCard: React.FunctionComponent<{
                     </Text>
                 </View>
             </MatButton>
-            <MatButton>
+            <MatButton onPress={() => true}>
                 <View
                     style={[
                         STYLES.button,
@@ -165,7 +165,7 @@ const ParcPrepCard: React.FunctionComponent<{
                     </Text>
                 </View>
             </MatButton>
-            <MatButton>
+            <MatButton onPress={() => true}>
                 <View
                     style={[
                         STYLES.button,

@@ -25,7 +25,8 @@
     "title": "Current parc preparation file"
   },
   "logsListPage": {
-    "title": "Parc logs"
+    "title": "Parc logs",
+    "filterInputPh": "Start typing parc id..."
   },
   "settings": {
     "title": "User"

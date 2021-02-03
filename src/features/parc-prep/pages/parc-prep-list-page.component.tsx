@@ -59,7 +59,7 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
             />
 
             <View style={[fabButtonView, STYLES.fabButtonView]}>
-                <MatButton isFab isElevated>
+                <MatButton isFab isElevated onPress={() => true}>
                     <View
                         style={[
                             centerVertically,

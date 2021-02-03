@@ -29,14 +29,17 @@ const MatButton: React.FunctionComponent<{
     children: ReactNode;
     isFab?: boolean;
     isElevated?: boolean;
+    onPress: () => void;
 }> = ({
     children,
     isFab,
-    isElevated
+    isElevated,
+    onPress
 }: {
     children: ReactNode;
     isFab?: boolean;
     isElevated?: boolean;
+    onPress: () => void;
 }) => (
     <View
         style={[
@@ -45,6 +48,7 @@ const MatButton: React.FunctionComponent<{
             isElevated ? rougierShadow : {}
         ]}>
         <TouchableNativeFeedback
+            onPress={onPress}
             background={TouchableNativeFeedback.Ripple(MAIN_LIGHT_GREY, true)}>
             {children}
         </TouchableNativeFeedback>

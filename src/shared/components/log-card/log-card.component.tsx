@@ -90,7 +90,7 @@ const LogCard: React.FunctionComponent<{
                     justifyAlignRightHorizontal,
                     fullWidth
                 ]}>
-                <MatButton>
+                <MatButton onPress={() => true}>
                     <View
                         style={[
                             STYLES.button,
