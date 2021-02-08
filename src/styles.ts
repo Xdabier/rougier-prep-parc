@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, StatusBar, StyleSheet, PixelRatio} from 'react-native';
 
 export const MAIN_GREEN = `#45600e`;
 export const MAIN_RED = `#A40D20`;
@@ -6,9 +6,15 @@ export const MAIN_GREY = `#888888`;
 export const MAIN_LIGHT_GREY = `#acacac`;
 export const MAIN_DARK_GREY = `#727272`;
 
+export const MAIN_ELEVATION = 3;
 export const BORDER_RADIUS = 8;
 export const PADDING_HORIZONTAL = 20;
 export const PAGE_TITLE_LINE_HEIGHT = 39;
+export const STACK_HEADER_HEIGHT = 57;
+export const ICON_BUTTON_SIZE = 26;
+export const TAB_BAR_HEIGHT = 57;
+export const TAB_BAR_VERT_PADDING = 8;
+export const TAB_BAR_BUTTON_HEIGHT = 45;
 export const FAB_BOTTOM_DISTANCE = 10;
 export const FAB_BUTTON_SIZE = 69;
 export const FAB_BORDER_RADIUS = FAB_BUTTON_SIZE / 2;
@@ -22,11 +28,37 @@ export const poppinsMedium = `Poppins-Medium`;
 export const poppinsRegular = `Poppins-Regular`;
 export const poppinsSemi = `Poppins-Semi`;
 
+export const widthPercentageToDP = (widthPercent: number): number => {
+    const screenWidth = Dimensions.get('window').width;
+    // Convert string input to decimal number
+    const elemWidth = parseFloat(`${widthPercent}`);
+    return PixelRatio.roundToNearestPixel((screenWidth * elemWidth) / 100);
+};
+
+export const heightPercentageToDP = (heightPercent: number): number => {
+    const screenHeight = Dimensions.get('window').height;
+    // Convert string input to decimal number
+    const elemHeight = parseFloat(`${heightPercent}`);
+    return PixelRatio.roundToNearestPixel((screenHeight * elemHeight) / 100);
+};
+
 export interface AppStyleSheet {
+    fullViewWidthInside: {
+        [key: string]: any;
+    };
+    iconButton: {
+        [key: string]: any;
+    };
     title: {
         [key: string]: any;
     };
     subTitle: {
+        [key: string]: any;
+    };
+    fullViewWidth: {
+        [key: string]: any;
+    };
+    fullViewHeight: {
         [key: string]: any;
     };
     fabButtonView: {
@@ -45,6 +77,9 @@ export interface AppStyleSheet {
         [key: string]: any;
     };
     appPage: {
+        [key: string]: any;
+    };
+    hSpacer17: {
         [key: string]: any;
     };
     vSpacer12: {
@@ -136,7 +171,8 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         alignItems: 'center',
         paddingHorizontal: PADDING_HORIZONTAL,
         paddingTop: 20,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        minHeight: '100%'
     },
     title: {
         fontSize: 19
@@ -206,20 +242,16 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         fontFamily: poppinsRegular
     },
     rougierShadow: {
-        shadowColor: '#9B9B9B',
-        shadowOffset: {
-            width: 0,
-            height: 1
-        },
-        shadowOpacity: 0.16,
-        shadowRadius: 5,
-        elevation: 2
+        elevation: MAIN_ELEVATION
     },
     textAlignCenter: {
         textAlign: 'center'
     },
     textAlignLeft: {
         textAlign: 'left'
+    },
+    hSpacer17: {
+        width: 17
     },
     vSpacer12: {
         height: 12
@@ -254,6 +286,23 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     },
     backgroundSecond: {
         backgroundColor: MAIN_GREEN
+    },
+    fullViewHeight: {
+        height:
+            Dimensions.get('screen').height -
+            ((StatusBar.currentHeight ? StatusBar.currentHeight : 0) +
+                STACK_HEADER_HEIGHT)
+    },
+    fullViewWidth: {
+        width: Dimensions.get('screen').width
+    },
+    fullViewWidthInside: {
+        width: Dimensions.get('screen').width - PADDING_HORIZONTAL * 2
+    },
+    iconButton: {
+        width: ICON_BUTTON_SIZE,
+        height: ICON_BUTTON_SIZE,
+        borderRadius: ICON_BUTTON_SIZE / 2
     }
 });
 

@@ -25,6 +25,7 @@ import {LogInterface} from '../../../core/interfaces/log.interface';
 import LogCard from '../../../shared/components/log-card/log-card.component';
 import PageTitle from '../../../shared/components/page-title/page-title.component';
 import {translate} from '../../../utils/i18n.utils';
+import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
 
 const {
     appPage,
@@ -54,8 +55,7 @@ const MISSING_SPACE =
     FILTER_ROW_HEIGHT +
     FAB_BOTTOM_DISTANCE -
     FAB_BOTTOM_MARGIN +
-    25 +
-    6;
+    25;
 
 const STYLES = StyleSheet.create({
     filterRow: {
@@ -111,6 +111,7 @@ const scrollViewRef: RefObject<any> = createRef();
 
 const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
     const [logs, setLogs] = useState<LogInterface[]>([]);
+    const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
     useEffect(() => {
         const fetchLogs = () => {
             const logsData = require('../../../assets/json/fakeLogs.json');
@@ -180,7 +181,10 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                 keyExtractor={(item, index) => `${index}`}
             />
             <View style={[fabButtonView, STYLES.fabButtonView]}>
-                <MatButton isFab isElevated onPress={() => true}>
+                <MatButton
+                    isFab
+                    isElevated
+                    onPress={() => setAddLogModalShow(true)}>
                     <View
                         style={[
                             centerVertically,
@@ -192,6 +196,11 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                     </View>
                 </MatButton>
             </View>
+
+            <AddLogDetails
+                modalVisible={addLogModalShow}
+                onClose={() => setAddLogModalShow(false)}
+            />
 
             <ActionSheetComponent
                 initialOffsetFromBottom={0.6}

@@ -67,7 +67,14 @@ const STYLES = StyleSheet.create({
 
 const ParcPrepCard: React.FunctionComponent<{
     parcPrepFile: ParcPrepInterface;
-}> = ({parcPrepFile}: {parcPrepFile: ParcPrepInterface}) => (
+    onAddLog: () => void;
+}> = ({
+    parcPrepFile,
+    onAddLog
+}: {
+    parcPrepFile: ParcPrepInterface;
+    onAddLog: () => void;
+}) => (
     <View
         style={[
             STYLES.mainView,
@@ -165,7 +172,7 @@ const ParcPrepCard: React.FunctionComponent<{
                     </Text>
                 </View>
             </MatButton>
-            <MatButton onPress={() => true}>
+            <MatButton onPress={onAddLog}>
                 <View
                     style={[
                         STYLES.button,

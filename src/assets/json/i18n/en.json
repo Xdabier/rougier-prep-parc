@@ -29,6 +29,114 @@
     "filterInputPh": "Start typing parc id..."
   },
   "settings": {
-    "title": "User"
+    "title": "User",
+    "setUser": "Set current user",
+    "addGasoline": "Add gasoline",
+    "addCuber": "Add cuber",
+    "addSite": "Add site"
+  },
+  "modals": {
+    "aux": {
+      "fields": {
+        "name": {
+          "label": "Name",
+          "ph": "Enter {{val}} name"
+        }
+      }
+    },
+    "cuber": {
+      "name": "cuber",
+      "confirm": "Confirm cuber addition"
+    },
+    "site": {
+      "name": "site",
+      "confirm": "Confirm site addition"
+    },
+    "gasoline": {
+      "name": "gasoline",
+      "confirm": "Confirm gasoline addition"
+    },
+    "logs": {
+      "confirm": "Confirm log addition",
+      "fields": {
+        "barCode": {
+          "label": "Bar code",
+          "ph": "Enter bar code"
+        },
+        "logging": {
+          "label": "Logging number",
+          "ph": "Enter logging number"
+        },
+        "index": {
+          "label": "Indexing number",
+          "ph": "Enter indexing number"
+        },
+        "id": {
+          "label": "Log number",
+          "ph": "logging number / indexing number"
+        },
+        "gasoline": {
+          "label": "Gasoline",
+          "ph": "Select gasoline"
+        },
+        "dgb": {
+          "label": "DGB",
+          "ph": "Enter DGB number"
+        },
+        "dpb": {
+          "label": "DPB",
+          "ph": "Enter DPB number"
+        },
+        "length": {
+          "label": "Length",
+          "ph": "Enter length value"
+        },
+        "diameterAvg": {
+          "label": "Average diameter",
+          "ph": "( DGB + DPB ) / 2"
+        },
+        "volume": {
+          "label": "Volume",
+          "ph": "Volume formula"
+        },
+        "quality": {
+          "label": "Quality",
+          "ph": "Enter quality"
+        },
+        "status": {
+          "label": "Status",
+          "ph": "Enter status"
+        },
+        "patternStatus": {
+          "label": "Motif status",
+          "ph": "Enter pattern status"
+        }
+      }
+    },
+    "parcPrep": {
+      "confirm": "Confirm prep. file addition",
+      "fields": {
+        "aac": {
+          "label": "AAC",
+          "ph": "ex: 23-26-95",
+          "err": "It should be following this pattern (one or two numbers)-(one or two numbers)-(one or two numbers)"
+        },
+        "cuber": {
+          "label": "Cuber",
+          "ph": "Select cuber"
+        },
+        "site": {
+          "label": "Site",
+          "ph": "Select site"
+        },
+        "date": {
+          "label": "Date",
+          "ph": "Please select date"
+        },
+        "parcAsDefault": {
+          "label": "Set this parc as default"
+        }
+      }
+    }
   }
 }

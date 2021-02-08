@@ -6,6 +6,7 @@ export interface LogInterface {
     parcPrepFileId: string;
     creationDate: string;
     barCode: number;
+    logging: number;
     index: number;
     id: LogNumber;
     gasoline: GasolineInterface;

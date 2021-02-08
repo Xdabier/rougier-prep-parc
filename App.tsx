@@ -10,7 +10,12 @@ import {MainTabsNavigationProps} from './src/core/types/main-tabs-params.type';
 import {setI18nConfig, translate} from './src/utils/i18n.utils';
 import BarIconNameEnum from './src/core/enum/bar-icon-name.enum';
 import BarLabelNameEnum from './src/core/enum/bar-label-name.enum';
-import {MAIN_GREY, MAIN_RED, poppinsRegular} from './src/styles';
+import {
+    MAIN_GREY,
+    MAIN_RED,
+    poppinsRegular, TAB_BAR_BUTTON_HEIGHT,
+    TAB_BAR_HEIGHT, TAB_BAR_VERT_PADDING
+} from './src/styles';
 
 const TAB = createBottomTabNavigator<MainTabsNavigationProps>();
 
@@ -22,10 +27,18 @@ const App = () => {
             <TAB.Navigator
                 initialRouteName="homeStack"
                 tabBarOptions={{
+                    style: {
+                        height: TAB_BAR_HEIGHT,
+                        paddingVertical: TAB_BAR_VERT_PADDING
+                    },
                     activeTintColor: MAIN_RED,
                     inactiveTintColor: MAIN_GREY,
                     labelStyle: {
-                        fontFamily: poppinsRegular
+                        fontFamily: poppinsRegular,
+                        fontSize: 12
+                    },
+                    tabStyle: {
+                        height: TAB_BAR_BUTTON_HEIGHT
                     }
                 }}
                 screenOptions={({route}) => ({

@@ -22,6 +22,8 @@ import PageTitle from '../../../shared/components/page-title/page-title.componen
 import ParcPrepCard from '../../../shared/components/parc-prep-card/parc-prep-card.component';
 import MatButton from '../../../shared/components/mat-button.component';
 import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
+import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
+import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/add-parc-file-modal.component';
 
 const {
     appPage,
@@ -40,7 +42,7 @@ const ICON_SIZE = 30;
 const STYLES = StyleSheet.create({
     button: {
         width: Dimensions.get('screen').width - PADDING_HORIZONTAL * 2,
-        paddingVertical: 18,
+        paddingVertical: 16,
         paddingHorizontal: 40,
         borderRadius: BORDER_RADIUS
     },
@@ -53,7 +55,7 @@ const STYLES = StyleSheet.create({
     buttonText: {
         lineHeight: 30,
         fontFamily: poppinsMedium,
-        fontSize: 20,
+        fontSize: 18,
         color: '#fff'
     },
     textView: {
@@ -63,6 +65,11 @@ const STYLES = StyleSheet.create({
 
 const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
     const [files, setFiles] = useState<ParcPrepInterface[]>([]);
+    const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
+    const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
+        false
+    );
+
     useEffect(() => {
         const fetchFiles = () => {
             const filesData = require('../../../assets/json/fakeParcFiles.json');
@@ -81,7 +88,10 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                 ]}>
                 <PageTitle title={translate('homePage.title')} />
                 {files && files.length ? (
-                    <ParcPrepCard parcPrepFile={files[0]} />
+                    <ParcPrepCard
+                        parcPrepFile={files[0]}
+                        onAddLog={() => setAddLogModalShow(true)}
+                    />
                 ) : (
                     <View />
                 )}
@@ -114,7 +124,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton onPress={() => true}>
+                <MatButton onPress={() => setAddParcFileModalShow(true)}>
                     <View
                         style={[
                             fullWidth,
@@ -138,7 +148,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton onPress={() => true}>
+                <MatButton onPress={() => setAddLogModalShow(true)}>
                     <View
                         style={[
                             fullWidth,
@@ -186,6 +196,16 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
             </ScrollView>
+
+            <AddLogDetails
+                modalVisible={addLogModalShow}
+                onClose={() => setAddLogModalShow(false)}
+            />
+
+            <AddParcFileDetails
+                modalVisible={addParcFileModalShow}
+                onClose={() => setAddParcFileModalShow(false)}
+            />
         </SafeAreaView>
     );
 };

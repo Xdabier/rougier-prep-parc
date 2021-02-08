@@ -3,10 +3,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {ParcPrepScreenProps} from '../../../core/types/parc-prep-screen-props.type';
-import CommonStyles, {FAB_BOTTOM_DISTANCE} from '../../../styles';
+import CommonStyles, {
+    FAB_BOTTOM_DISTANCE,
+    STACK_HEADER_HEIGHT
+} from '../../../styles';
 import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
 import ParcPrepCard from '../../../shared/components/parc-prep-card/parc-prep-card.component';
 import MatButton from '../../../shared/components/mat-button.component';
+import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
 
 const {
     appPage,
@@ -16,19 +20,19 @@ const {
     vSpacer12,
     fabButtonView,
     fabButton,
-    rougierShadow,
     backgroundMain,
     pT2
 } = CommonStyles;
 
 const STYLES = StyleSheet.create({
     fabButtonView: {
-        bottom: FAB_BOTTOM_DISTANCE
+        bottom: FAB_BOTTOM_DISTANCE + STACK_HEADER_HEIGHT
     }
 });
 
 const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
     const [files, setFiles] = useState<ParcPrepInterface[]>([]);
+    const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
     useEffect(() => {
         const fetchFiles = () => {
             const filesData = require('../../../assets/json/fakeParcFiles.json');
@@ -39,7 +43,10 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
 
     const renderItem = ({item}: {item: ParcPrepInterface}) => (
         <>
-            <ParcPrepCard parcPrepFile={item} />
+            <ParcPrepCard
+                parcPrepFile={item}
+                onAddLog={() => setAddLogModalShow(true)}
+            />
             <View style={[vSpacer12]} />
         </>
     );
@@ -71,6 +78,11 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
                     </View>
                 </MatButton>
             </View>
+
+            <AddLogDetails
+                modalVisible={addLogModalShow}
+                onClose={() => setAddLogModalShow(false)}
+            />
         </SafeAreaView>
     );
 };

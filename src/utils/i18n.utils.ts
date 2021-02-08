@@ -29,4 +29,4 @@ const setI18nConfig = () => {
     I18n.locale = languageTag;
 };
 
-export {setI18nConfig, translate};
+export {setI18nConfig, translate, I18n};

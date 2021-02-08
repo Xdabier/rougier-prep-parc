@@ -12,6 +12,9 @@ const STYLES = StyleSheet.create({
     buttonParent: {
         overflow: 'hidden'
     },
+    isDisabled: {
+        opacity: 0.5
+    },
     elevationPadding: {
         padding: 2
     },
@@ -28,27 +31,36 @@ const STYLES = StyleSheet.create({
 const MatButton: React.FunctionComponent<{
     children: ReactNode;
     isFab?: boolean;
+    isIcon?: boolean;
+    disabled?: boolean;
     isElevated?: boolean;
-    onPress: () => void;
+    onPress?: () => void;
 }> = ({
     children,
     isFab,
+    isIcon,
+    disabled,
     isElevated,
     onPress
 }: {
     children: ReactNode;
     isFab?: boolean;
+    isIcon?: boolean;
+    disabled?: boolean;
     isElevated?: boolean;
-    onPress: () => void;
+    onPress?: () => void;
 }) => (
     <View
         style={[
+            disabled ? STYLES.isDisabled : {},
             STYLES.buttonParent,
-            isFab ? STYLES.fabButton : STYLES.buttonRadius,
-            isElevated ? rougierShadow : {}
+            isIcon ? {} : STYLES.buttonRadius,
+            isFab ? STYLES.fabButton : {},
+            isElevated || isFab ? rougierShadow : {}
         ]}>
         <TouchableNativeFeedback
             onPress={onPress}
+            disabled={disabled}
             background={TouchableNativeFeedback.Ripple(MAIN_LIGHT_GREY, true)}>
             {children}
         </TouchableNativeFeedback>
@@ -57,7 +69,10 @@ const MatButton: React.FunctionComponent<{
 
 MatButton.defaultProps = {
     isFab: false,
-    isElevated: false
+    isElevated: false,
+    disabled: false,
+    isIcon: false,
+    onPress: () => {}
 };
 
 export default MatButton;

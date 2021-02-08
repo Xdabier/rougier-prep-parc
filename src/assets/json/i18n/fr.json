@@ -30,5 +30,109 @@
   },
   "settings": {
     "title": "Utilisateur"
+  },
+  "modals": {
+    "aux": {
+      "fields": {
+        "name": {
+          "label": "Nom",
+          "ph": "Entrez le nom de {{val}}"
+        }
+      }
+    },
+    "cuber": {
+      "name": "cubeur",
+      "confirm": "Confirmer l'ajout de cubeur"
+    },
+    "site": {
+      "name": "site",
+      "confirm": "Confirmer l'ajout de chantier"
+    },
+    "gasoline": {
+      "name": "gasoline",
+      "confirm": "Confirm gasoline addition"
+    },
+    "logs": {
+      "confirm": "Confirmer l'ajout de bille",
+      "fields": {
+        "barCode": {
+          "label": "Code a barre",
+          "ph": "Entrez le code a barre"
+        },
+        "logging": {
+          "label": "Numéro d'abattage",
+          "ph": "Entrez le numéro d'abattage"
+        },
+        "index": {
+          "label": "Numéro d'indice",
+          "ph": "Entrez le numéro d'indice"
+        },
+        "id": {
+          "label": "Numéro de bille",
+          "ph": "Numéro d'abattage / Numéro d'indice"
+        },
+        "gasoline": {
+          "label": "Essence",
+          "ph": "Sélectionnez l'essence"
+        },
+        "dgb": {
+          "label": "DGB",
+          "ph": "Entrez le numéro DGB"
+        },
+        "dpb": {
+          "label": "DPB",
+          "ph": "Entrez le numéro DPB"
+        },
+        "length": {
+          "label": "Longeur",
+          "ph": "Entrez le longeur"
+        },
+        "diameterAvg": {
+          "label": "Diamétre moyenne",
+          "ph": "( DGB + DPB ) / 2"
+        },
+        "volume": {
+          "label": "Volume",
+          "ph": "Formule de volume"
+        },
+        "quality": {
+          "label": "Qualité",
+          "ph": "Entrez la qualité"
+        },
+        "status": {
+          "label": "Status",
+          "ph": "Entrez la status"
+        },
+        "patternStatus": {
+          "label": "Motif status",
+          "ph": "Entrez la motif status"
+        }
+      }
+    },
+    "parcPrep": {
+      "confirm": "Confirmer l'ajout de fiche",
+      "fields": {
+        "aac": {
+          "label": "AAC",
+          "ph": "ex: 23-26-95",
+          "err": "Elle doit suivre ce schéma (un ou deux numéros) - (un ou deux numéros) - (un ou deux numéros)"
+        },
+        "cuber": {
+          "label": "Cubeur",
+          "ph": "Sélectionnez le cubeur"
+        },
+        "site": {
+          "label": "Chantier",
+          "ph": "Sélectionnez le chantier"
+        },
+        "date": {
+          "label": "Date",
+          "ph": "Please select date"
+        },
+        "parcAsDefault": {
+          "label": "Choisir comme fiche actuelle"
+        }
+      }
+    }
   }
 }
