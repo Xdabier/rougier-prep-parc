@@ -3,7 +3,7 @@ import {Dimensions, StatusBar, StyleSheet, PixelRatio} from 'react-native';
 export const MAIN_GREEN = `#45600e`;
 export const MAIN_RED = `#A40D20`;
 export const MAIN_GREY = `#888888`;
-export const MAIN_LIGHT_GREY = `#acacac`;
+export const MAIN_LIGHT_GREY = `#adadad`;
 export const MAIN_DARK_GREY = `#727272`;
 
 export const MAIN_ELEVATION = 3;
@@ -11,6 +11,7 @@ export const BORDER_RADIUS = 8;
 export const PADDING_HORIZONTAL = 20;
 export const PAGE_TITLE_LINE_HEIGHT = 39;
 export const STACK_HEADER_HEIGHT = 57;
+export const FILTER_ROW_HEIGHT = 41;
 export const ICON_BUTTON_SIZE = 26;
 export const TAB_BAR_HEIGHT = 57;
 export const TAB_BAR_VERT_PADDING = 8;
@@ -43,6 +44,9 @@ export const heightPercentageToDP = (heightPercent: number): number => {
 };
 
 export interface AppStyleSheet {
+    noContent: {
+        [key: string]: any;
+    };
     fullViewWidthInside: {
         [key: string]: any;
     };
@@ -303,6 +307,12 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         width: ICON_BUTTON_SIZE,
         height: ICON_BUTTON_SIZE,
         borderRadius: ICON_BUTTON_SIZE / 2
+    },
+    noContent: {
+        fontFamily: poppinsBold,
+        color: MAIN_LIGHT_GREY,
+        fontSize: 30,
+        textAlign: 'center'
     }
 });
 

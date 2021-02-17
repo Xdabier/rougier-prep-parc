@@ -1,28 +1,74 @@
-import React, {useState} from 'react';
-import {Modal, SafeAreaView, ScrollView, View} from 'react-native';
-import CommonStyles from '../../../styles';
+import React, {createRef, RefObject, useState} from 'react';
+import {
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
+} from 'react-native';
+import ActionSheetComponent from 'react-native-actions-sheet';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import CommonStyles, {
+    FILTER_ROW_HEIGHT,
+    MAIN_LIGHT_GREY,
+    poppinsRegular
+} from '../../../styles';
 import ModalHeader from '../modal-header/modal-header.component';
 import {translate} from '../../../utils/i18n.utils';
 import ModalFooter from '../modal-footer/modal-footer.component';
 import FormInput from '../form-input/form-input.component';
+import ActionSheetContent from '../action-sheet-content/action-sheet-content.component';
+import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
+import {AuxiliaryInterface} from '../../../core/interfaces/auxiliary.interface';
+import MatButton from '../mat-button.component';
+import SelectInput from '../select-input/select-input.component';
 
-const {fullWidth, appPage, vSpacer100} = CommonStyles;
+const {
+    fullWidth,
+    appPage,
+    vSpacer100,
+    scrollView,
+    centerHorizontally,
+    justifyAlignTLeftHorizontal,
+    alignCenter
+} = CommonStyles;
+
+const TEXT_LINE_HEIGHT = 27;
+const STYLES = StyleSheet.create({
+    searchResult: {
+        height: FILTER_ROW_HEIGHT,
+        borderBottomWidth: 1,
+        borderBottomColor: MAIN_LIGHT_GREY
+    },
+    searchResultText: {
+        marginLeft: 18,
+        fontFamily: poppinsRegular,
+        fontSize: 16,
+        lineHeight: TEXT_LINE_HEIGHT
+    }
+});
+
+const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
 
 const AddLogDetails: React.FunctionComponent<{
     modalVisible: boolean;
+    gasolineList: GasolineInterface[];
     onClose: () => void;
 }> = ({
     modalVisible,
-    onClose
+    onClose,
+    gasolineList
 }: {
     modalVisible: boolean;
     onClose: () => void;
+    gasolineList: GasolineInterface[];
 }) => {
     const [barCode, setBarCode] = useState<string>('');
     const [logging, setLogging] = useState<string>('');
     const [index, setIndex] = useState<string>('');
     const [id, setId] = useState<string>('');
-    const [gasoline, setGasoline] = useState<string>('');
+    const [gasoline, setGasoline] = useState<GasolineInterface>();
     const [dgb, setDgb] = useState<string>('');
     const [dpb, setDpb] = useState<string>('');
     const [lengthVal, setLengthVal] = useState<string>('');
@@ -104,7 +150,6 @@ const AddLogDetails: React.FunctionComponent<{
             index &&
             index.length >= 1 &&
             gasoline &&
-            gasoline.length >= 1 &&
             dgb &&
             dgb.length >= 1 &&
             dpb &&
@@ -120,6 +165,38 @@ const AddLogDetails: React.FunctionComponent<{
             patternStatus &&
             patternStatus.length >= 1
         );
+
+    const onSelectMenu = (visible = true): void => {
+        actionSheetRef.current?.setModalVisible(visible);
+    };
+
+    const renderFilterBtn = (
+        {item}: {item: AuxiliaryInterface},
+        _i: number
+    ) => (
+        <MatButton
+            onPress={() => {
+                setGasoline(item);
+                actionSheetRef.current?.setModalVisible(false);
+            }}
+            key={_i}>
+            <View
+                style={[
+                    scrollView,
+                    centerHorizontally,
+                    justifyAlignTLeftHorizontal,
+                    alignCenter,
+                    STYLES.searchResult
+                ]}>
+                <Icon
+                    name="ev-station"
+                    size={TEXT_LINE_HEIGHT}
+                    color={MAIN_LIGHT_GREY}
+                />
+                <Text style={[STYLES.searchResultText]}>{item.name}</Text>
+            </View>
+        </MatButton>
+    );
 
     return (
         <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
@@ -158,13 +235,13 @@ const AddLogDetails: React.FunctionComponent<{
                         value={id}
                         disabled
                     />
-                    <FormInput
+                    <SelectInput
                         title={translate('modals.logs.fields.gasoline.label')}
                         placeholder={translate(
                             'modals.logs.fields.gasoline.ph'
                         )}
-                        onChangeText={setGasoline}
-                        value={gasoline}
+                        showSelectMenu={onSelectMenu}
+                        value={gasoline?.name}
                     />
                     <FormInput
                         title={translate('modals.logs.fields.dgb.label')}
@@ -239,6 +316,21 @@ const AddLogDetails: React.FunctionComponent<{
                 onPress={() => true}
                 title={translate('modals.logs.confirm')}
             />
+
+            <ActionSheetComponent
+                initialOffsetFromBottom={0.6}
+                ref={actionSheetRef}
+                statusBarTranslucent
+                bounceOnOpen
+                bounciness={4}
+                gestureEnabled
+                defaultOverlayOpacity={0.3}>
+                <ActionSheetContent
+                    actionSheetRef={actionSheetRef}
+                    valuesList={gasolineList || []}
+                    renderElement={renderFilterBtn}
+                />
+            </ActionSheetComponent>
         </Modal>
     );
 };

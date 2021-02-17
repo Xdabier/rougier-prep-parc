@@ -1,12 +1,10 @@
-import {CuberInterface} from './cuber.interface';
-import {SiteInterface} from './site.interface';
-
 export interface ParcPrepInterface {
     aac: string;
-    cuber: CuberInterface;
-    site: SiteInterface;
+    cuber: string;
+    site: string;
     creationDate: string;
-    allSynced: boolean;
+    allSynced: 0 | 1;
+    defaultParcFile: 0 | 1;
     id?: string;
     lastLogDate?: string;
     logsNumber?: number;

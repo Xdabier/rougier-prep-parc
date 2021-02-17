@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-    FlatList,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
-} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionSheetComponent from 'react-native-actions-sheet';
 import {createRef, RefObject, useEffect, useState} from 'react';
@@ -15,6 +7,7 @@ import {LogsListScreenProps} from '../../../core/types/logs-list-screen-props.ty
 import CommonStyles, {
     BORDER_RADIUS,
     FAB_BOTTOM_DISTANCE,
+    FILTER_ROW_HEIGHT,
     MAIN_LIGHT_GREY,
     PAGE_TITLE_LINE_HEIGHT,
     poppinsMedium,
@@ -26,6 +19,10 @@ import LogCard from '../../../shared/components/log-card/log-card.component';
 import PageTitle from '../../../shared/components/page-title/page-title.component';
 import {translate} from '../../../utils/i18n.utils';
 import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
+import ActionSheetContent from '../../../shared/components/action-sheet-content/action-sheet-content.component';
+import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
+import SqlLiteService from '../../../core/services/sql-lite.service';
+import NameToTableEnum from '../../../core/enum/name-to-table.enum';
 
 const {
     appPage,
@@ -38,17 +35,16 @@ const {
     justifyAlignTLeftHorizontal,
     scrollView,
     vSpacer12,
-    vSpacer100,
     pT2,
     vSpacer25,
     fabButton,
     fabButtonView,
     backgroundSecond,
-    mainColor
+    mainColor,
+    noContent
 } = CommonStyles;
 
 const TEXT_LINE_HEIGHT = 27;
-const FILTER_ROW_HEIGHT = 41;
 const FAB_BOTTOM_MARGIN = 3;
 const MISSING_SPACE =
     PAGE_TITLE_LINE_HEIGHT +
@@ -106,19 +102,43 @@ const STYLES = StyleSheet.create({
     }
 });
 
-const actionSheetRef: RefObject<any> = createRef();
-const scrollViewRef: RefObject<any> = createRef();
+const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
+
+const parcIds = [554560, 623104, 763546, 38525, 105956, 878269];
 
 const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
     const [logs, setLogs] = useState<LogInterface[]>([]);
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
+    const [filteringId, setFilteringId] = useState<string>(`${parcIds[0]}`);
+
+    const [gasolineList, setGasolineList] = useState<GasolineInterface[]>([]);
+
     useEffect(() => {
+        const SQLiteService: SqlLiteService = new SqlLiteService();
         const fetchLogs = () => {
-            const logsData = require('../../../assets/json/fakeLogs.json');
-            setLogs(logsData);
+            SQLiteService.getLogs<LogInterface>()
+                .then((value: LogInterface[]) => {
+                    setLogs(value);
+                })
+                .catch((reason) => {
+                    console.error('LogsListPage line 122', reason);
+                });
         };
-        fetchLogs();
-    });
+        const getGasolineList = (close = false) => {
+            SQLiteService.getAux<GasolineInterface>(
+                NameToTableEnum.gasoline,
+                close
+            )
+                .then((value: GasolineInterface[]) => {
+                    setGasolineList(value);
+                    fetchLogs();
+                })
+                .catch((reason) => {
+                    console.error('gas line 96', reason);
+                });
+        };
+        getGasolineList();
+    }, []);
 
     const renderItem = ({item}: {item: LogInterface}) => (
         <>
@@ -127,59 +147,90 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
         </>
     );
 
-    const onOpen = () => {};
-
-    const onClose = () => {};
+    const renderFilterBtn = ({item}: {item: string}, _i: number) => (
+        <MatButton
+            onPress={() => {
+                setFilteringId(`${item}`);
+                actionSheetRef.current?.setModalVisible(false);
+            }}
+            key={_i}>
+            <View
+                style={[
+                    scrollView,
+                    centerHorizontally,
+                    justifyAlignTLeftHorizontal,
+                    alignCenter,
+                    STYLES.searchResult
+                ]}>
+                <Icon
+                    name="carpenter"
+                    size={TEXT_LINE_HEIGHT}
+                    color={MAIN_LIGHT_GREY}
+                />
+                <Text style={[STYLES.searchResultText]}>{item}</Text>
+            </View>
+        </MatButton>
+    );
 
     return (
         <SafeAreaView style={[appPage]}>
-            <PageTitle title={translate('logsListPage.title')} />
+            {logs.length ? (
+                <>
+                    <PageTitle title={translate('logsListPage.title')} />
 
-            <View
-                style={[
-                    fullWidth,
-                    centerHorizontally,
-                    spaceBetween,
-                    alignCenter
-                ]}>
-                <Text style={[STYLES.filterLabel, mainColor]}>
-                    {translate('common.parcId')}
-                </Text>
-                <MatButton
-                    isElevated
-                    onPress={() => {
-                        actionSheetRef.current?.setModalVisible();
-                    }}>
                     <View
                         style={[
+                            fullWidth,
                             centerHorizontally,
                             spaceBetween,
-                            alignCenter,
-                            STYLES.filterButton
+                            alignCenter
                         ]}>
-                        <Text>216542</Text>
-                        <Icon
-                            name="keyboard-arrow-down"
-                            size={TEXT_LINE_HEIGHT}
-                        />
+                        <Text style={[STYLES.filterLabel, mainColor]}>
+                            {translate('common.parcId')}
+                        </Text>
+                        <MatButton
+                            isElevated
+                            onPress={() => {
+                                actionSheetRef.current?.setModalVisible();
+                            }}>
+                            <View
+                                style={[
+                                    centerHorizontally,
+                                    spaceBetween,
+                                    alignCenter,
+                                    STYLES.filterButton
+                                ]}>
+                                <Text>{filteringId}</Text>
+                                <Icon
+                                    name="keyboard-arrow-down"
+                                    size={TEXT_LINE_HEIGHT}
+                                />
+                            </View>
+                        </MatButton>
                     </View>
-                </MatButton>
-            </View>
 
-            <View style={[vSpacer25]} />
+                    <View style={[vSpacer25]} />
 
-            <FlatList
-                contentContainerStyle={[
-                    centerVertically,
-                    justifyAlignCenter,
-                    scrollView,
-                    pT2,
-                    STYLES.listBottomSpacing
-                ]}
-                data={logs}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => `${index}`}
-            />
+                    <FlatList
+                        contentContainerStyle={[
+                            centerVertically,
+                            justifyAlignCenter,
+                            scrollView,
+                            pT2,
+                            STYLES.listBottomSpacing
+                        ]}
+                        data={logs}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => `${index}`}
+                    />
+                </>
+            ) : (
+                <View>
+                    <Text style={[noContent]}>
+                        {translate('logsListPage.noContent')}
+                    </Text>
+                </View>
+            )}
             <View style={[fabButtonView, STYLES.fabButtonView]}>
                 <MatButton
                     isFab
@@ -198,6 +249,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
             </View>
 
             <AddLogDetails
+                gasolineList={gasolineList}
                 modalVisible={addLogModalShow}
                 onClose={() => setAddLogModalShow(false)}
             />
@@ -205,59 +257,16 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
             <ActionSheetComponent
                 initialOffsetFromBottom={0.6}
                 ref={actionSheetRef}
-                onOpen={onOpen}
                 statusBarTranslucent
                 bounceOnOpen
                 bounciness={4}
                 gestureEnabled
-                onClose={onClose}
                 defaultOverlayOpacity={0.3}>
-                <View>
-                    <ScrollView
-                        ref={scrollViewRef}
-                        nestedScrollEnabled
-                        onScrollEndDrag={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }
-                        onScrollAnimationEnd={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }
-                        onMomentumScrollEnd={() =>
-                            actionSheetRef.current?.handleChildScrollEnd()
-                        }
-                        contentContainerStyle={[
-                            centerVertically,
-                            justifyAlignCenter,
-                            fullWidth
-                        ]}>
-                        <TextInput
-                            style={[STYLES.input, scrollView]}
-                            placeholder={translate(
-                                'logsListPage.filterInputPh'
-                            )}
-                        />
-                        <MatButton onPress={() => true}>
-                            <View
-                                style={[
-                                    scrollView,
-                                    centerHorizontally,
-                                    justifyAlignTLeftHorizontal,
-                                    alignCenter,
-                                    STYLES.searchResult
-                                ]}>
-                                <Icon
-                                    name="carpenter"
-                                    size={TEXT_LINE_HEIGHT}
-                                    color={MAIN_LIGHT_GREY}
-                                />
-                                <Text style={[STYLES.searchResultText]}>
-                                    2352332
-                                </Text>
-                            </View>
-                        </MatButton>
-                        <View style={[vSpacer100]} />
-                    </ScrollView>
-                </View>
+                <ActionSheetContent
+                    actionSheetRef={actionSheetRef}
+                    valuesList={parcIds}
+                    renderElement={renderFilterBtn}
+                />
             </ActionSheetComponent>
         </SafeAreaView>
     );

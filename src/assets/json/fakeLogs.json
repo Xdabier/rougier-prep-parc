@@ -15,7 +15,7 @@
     "volume": 592,
     "quality": 8,
     "status": "non",
-    "motifStatus": "ut ipsam"
+    "statusPattern": "ut ipsam"
   },
   {
     "parcPrepFileId": 554560,
@@ -33,7 +33,7 @@
     "volume": 262,
     "quality": 3,
     "status": "quasi",
-    "motifStatus": "facere cum"
+    "statusPattern": "facere cum"
   },
   {
     "parcPrepFileId": 623104,
@@ -51,7 +51,7 @@
     "volume": 64,
     "quality": 2,
     "status": "totam",
-    "motifStatus": "distinctio dolores"
+    "statusPattern": "distinctio dolores"
   },
   {
     "parcPrepFileId": 763546,
@@ -69,7 +69,7 @@
     "volume": 853,
     "quality": 4,
     "status": "dolorem",
-    "motifStatus": "omnis quos"
+    "statusPattern": "omnis quos"
   },
   {
     "parcPrepFileId": 38525,
@@ -87,7 +87,7 @@
     "volume": 305,
     "quality": 0,
     "status": "perspiciatis",
-    "motifStatus": "optio tempora"
+    "statusPattern": "optio tempora"
   },
   {
     "parcPrepFileId": 554560,
@@ -105,7 +105,7 @@
     "volume": 616,
     "quality": 3,
     "status": "quas",
-    "motifStatus": "aliquam fugit"
+    "statusPattern": "aliquam fugit"
   },
   {
     "parcPrepFileId": 105956,
@@ -123,7 +123,7 @@
     "volume": 310,
     "quality": 9,
     "status": "voluptatum",
-    "motifStatus": "corporis sit"
+    "statusPattern": "corporis sit"
   },
   {
     "parcPrepFileId": 623104,
@@ -141,7 +141,7 @@
     "volume": 734,
     "quality": 7,
     "status": "sapiente",
-    "motifStatus": "aut commodi"
+    "statusPattern": "aut commodi"
   },
   {
     "parcPrepFileId": 623104,
@@ -159,7 +159,7 @@
     "volume": 367,
     "quality": 3,
     "status": "vitae",
-    "motifStatus": "explicabo consequatur"
+    "statusPattern": "explicabo consequatur"
   },
   {
     "parcPrepFileId": 105956,
@@ -177,7 +177,7 @@
     "volume": 623,
     "quality": 8,
     "status": "quasi",
-    "motifStatus": "id dolorem"
+    "statusPattern": "id dolorem"
   },
   {
     "parcPrepFileId": 105956,
@@ -195,7 +195,7 @@
     "volume": 175,
     "quality": 9,
     "status": "consectetur",
-    "motifStatus": "optio facere"
+    "statusPattern": "optio facere"
   },
   {
     "parcPrepFileId": 554560,
@@ -213,7 +213,7 @@
     "volume": 434,
     "quality": 2,
     "status": "voluptatibus",
-    "motifStatus": "id voluptatibus"
+    "statusPattern": "id voluptatibus"
   },
   {
     "parcPrepFileId": 623104,
@@ -231,7 +231,7 @@
     "volume": 405,
     "quality": 1,
     "status": "reiciendis",
-    "motifStatus": "nulla quia"
+    "statusPattern": "nulla quia"
   },
   {
     "parcPrepFileId": 554560,
@@ -249,7 +249,7 @@
     "volume": 705,
     "quality": 1,
     "status": "et",
-    "motifStatus": "est doloremque"
+    "statusPattern": "est doloremque"
   },
   {
     "parcPrepFileId": 763546,
@@ -267,7 +267,7 @@
     "volume": 467,
     "quality": 9,
     "status": "beatae",
-    "motifStatus": "soluta dolores"
+    "statusPattern": "soluta dolores"
   },
   {
     "parcPrepFileId": 105956,
@@ -285,7 +285,7 @@
     "volume": 248,
     "quality": 3,
     "status": "velit",
-    "motifStatus": "praesentium et"
+    "statusPattern": "praesentium et"
   },
   {
     "parcPrepFileId": 878269,
@@ -303,7 +303,7 @@
     "volume": 799,
     "quality": 1,
     "status": "ut",
-    "motifStatus": "molestiae beatae"
+    "statusPattern": "molestiae beatae"
   },
   {
     "parcPrepFileId": 623104,
@@ -321,7 +321,7 @@
     "volume": 824,
     "quality": 8,
     "status": "illum",
-    "motifStatus": "quam iste"
+    "statusPattern": "quam iste"
   },
   {
     "parcPrepFileId": 623104,
@@ -339,7 +339,7 @@
     "volume": 91,
     "quality": 9,
     "status": "enim",
-    "motifStatus": "aut ex"
+    "statusPattern": "aut ex"
   },
   {
     "parcPrepFileId": 105956,
@@ -357,6 +357,6 @@
     "volume": 636,
     "quality": 3,
     "status": "nobis",
-    "motifStatus": "dolor quibusdam"
+    "statusPattern": "dolor quibusdam"
   }
 ]

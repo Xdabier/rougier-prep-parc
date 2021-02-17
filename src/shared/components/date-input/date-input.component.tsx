@@ -54,7 +54,7 @@ const STYLES = StyleSheet.create({
 
 const DateInput: React.FunctionComponent<{
     title: string;
-    value?: string;
+    value: Date;
     onDateChange: (newDate: Date) => void;
 }> = ({
     title,
@@ -62,19 +62,16 @@ const DateInput: React.FunctionComponent<{
     onDateChange
 }: {
     title: string;
-    value?: string;
+    value: Date;
     onDateChange: (newDate: Date) => void;
 }) => {
-    const [date, setDate] = useState<Date>(
-        value ? new Date(value) : new Date()
-    );
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
     const onDateSelection = (event: Event, selectedDate?: Date) => {
-        const currentDate = selectedDate || date;
         setShowDatePicker(false);
-        setDate(currentDate);
-        onDateChange(currentDate);
+        if (selectedDate) {
+            onDateChange(selectedDate);
+        }
     };
 
     return (
@@ -88,59 +85,52 @@ const DateInput: React.FunctionComponent<{
                     STYLES.fieldContainer
                 ]}>
                 <Text style={[STYLES.label, STYLES.textStyle]}>{title}</Text>
-                <View
-                    style={[
-                        STYLES.textInput,
-                        centerHorizontally,
-                        spaceBetween,
-                        alignCenter
-                    ]}>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            setShowDatePicker(true);
-                        }}>
+
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        setShowDatePicker(true);
+                    }}>
+                    <View
+                        style={[
+                            STYLES.textInput,
+                            centerHorizontally,
+                            spaceBetween,
+                            alignCenter
+                        ]}>
                         <View>
                             <Text style={[STYLES.textStyle]}>
-                                {date
-                                    ? new Date(date).toLocaleDateString()
+                                {value
+                                    ? new Date(value).toLocaleDateString()
                                     : ''}
                             </Text>
                         </View>
-                    </TouchableWithoutFeedback>
 
-                    <MatButton
-                        onPress={() => {
-                            setShowDatePicker(true);
-                        }}
-                        isIcon>
-                        <View
-                            style={[
-                                STYLES.iconButton,
-                                centerVertically,
-                                justifyAlignCenter
-                            ]}>
-                            <Icon
-                                name="today"
-                                size={LINE_HEIGHT - 4}
-                                color="#000"
-                            />
-                        </View>
-                    </MatButton>
-                </View>
+                        <MatButton isIcon>
+                            <View
+                                style={[
+                                    STYLES.iconButton,
+                                    centerVertically,
+                                    justifyAlignCenter
+                                ]}>
+                                <Icon
+                                    name="today"
+                                    size={LINE_HEIGHT - 4}
+                                    color="#000"
+                                />
+                            </View>
+                        </MatButton>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
             {showDatePicker && (
                 <RNDateTimePicker
                     testID="dateTimePicker"
-                    value={date}
+                    value={value}
                     onChange={onDateSelection}
                 />
             )}
         </>
     );
-};
-
-DateInput.defaultProps = {
-    value: ''
 };
 
 export default DateInput;

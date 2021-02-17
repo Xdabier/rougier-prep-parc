@@ -16,5 +16,5 @@ export interface LogInterface {
     volume: number;
     quality: number;
     status: string;
-    motifStatus: string;
+    statusPattern: string;
 }

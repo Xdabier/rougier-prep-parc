@@ -1,6 +1,8 @@
 import I18n, {TranslateOptions} from 'i18n-js';
 import {findBestAvailableLanguage} from 'react-native-localize';
 import memoize from 'lodash.memoize';
+import syncStorage from '../core/services/sync-storage.service';
+import CURRENT_LANGUAGE from '../core/constants/storage-keys.constant';
 
 const translationGetters: {
     [local: string]: object;
@@ -16,17 +18,21 @@ const translate = memoize(
         config ? key + JSON.stringify(config) : key
 );
 
-const setI18nConfig = () => {
+const setI18nConfig = (lang?: string) => {
     const fallback = {languageTag: 'fr'};
-    const {languageTag} =
-        findBestAvailableLanguage(Object.keys(translationGetters)) || fallback;
+    const bestLang = syncStorage.get(CURRENT_LANGUAGE)
+        ? {languageTag: syncStorage.get(CURRENT_LANGUAGE)}
+        : findBestAvailableLanguage(Object.keys(translationGetters));
+    const {languageTag} = bestLang || fallback;
 
     if (translate && translate.cache && translate.cache.clear) {
         translate.cache.clear();
     }
 
-    I18n.translations = {[languageTag]: translationGetters[languageTag]};
-    I18n.locale = languageTag;
+    I18n.translations = {
+        [lang || languageTag]: translationGetters[lang || languageTag]
+    };
+    I18n.locale = lang || languageTag;
 };
 
 export {setI18nConfig, translate, I18n};

@@ -7,6 +7,7 @@ import {
     View
 } from 'react-native';
 import CommonStyles, {
+    MAIN_LIGHT_GREY,
     MAIN_RED,
     poppinsRegular,
     widthPercentageToDP
@@ -140,7 +141,7 @@ const FormInput: React.FunctionComponent<{
                         STYLES.textStyle,
                         disabled ? STYLES.disabledInput : {}
                     ]}
-                    placeholderTextColor="#ADADAD"
+                    placeholderTextColor={MAIN_LIGHT_GREY}
                     placeholder={placeholder}
                 />
             </View>

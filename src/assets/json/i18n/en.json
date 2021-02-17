@@ -19,14 +19,28 @@
     "sync": "Synchronize",
     "scanBarCode": "Scan bare-code",
     "syncAll": "Synchronize all",
-    "synced": "Synchronized"
+    "synced": "Synchronized",
+    "dupErr": "Duplicate identifier!",
+    "fr": "French",
+    "en": "English",
+    "yes": "Yes",
+    "no": "No",
+    "validErr": "Please make sure all the fields are valid."
+  },
+  "changeLanguageAlert": {
+    "title": "Language change",
+    "message": "do you really want to change the language ?"
   },
   "homePage": {
     "title": "Current parc preparation file"
   },
   "logsListPage": {
     "title": "Parc logs",
-    "filterInputPh": "Start typing parc id..."
+    "filterInputPh": "Start typing parc id...",
+    "noContent": "No added logs yet."
+  },
+  "parcPrep": {
+    "noContent": "You need to add parc preparation files first."
   },
   "settings": {
     "title": "User",
@@ -37,24 +51,28 @@
   },
   "modals": {
     "aux": {
+      "title": "Add {{val}}",
+      "confirm": "Confirm {{val}} addition",
+      "succMsg": "{{val}} added successfully!",
       "fields": {
         "name": {
           "label": "Name",
           "ph": "Enter {{val}} name"
+        },
+        "code": {
+          "label": "Code",
+          "ph": "Enter {{val}} code"
         }
       }
     },
     "cuber": {
-      "name": "cuber",
-      "confirm": "Confirm cuber addition"
+      "name": "cuber"
     },
     "site": {
-      "name": "site",
-      "confirm": "Confirm site addition"
+      "name": "site"
     },
     "gasoline": {
-      "name": "gasoline",
-      "confirm": "Confirm gasoline addition"
+      "name": "gasoline"
     },
     "logs": {
       "confirm": "Confirm log addition",
@@ -115,6 +133,7 @@
     },
     "parcPrep": {
       "confirm": "Confirm prep. file addition",
+      "succMsg": "Parc preparation file added successfully!",
       "fields": {
         "aac": {
           "label": "AAC",

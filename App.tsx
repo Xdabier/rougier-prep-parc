@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Text, View} from 'react-native';
 import HomeStackScreens from './src/features/home';
 import LogsStackScreens from './src/features/logs';
 import ParcPrepStackScreens from './src/features/parc-prep';
@@ -13,16 +14,31 @@ import BarLabelNameEnum from './src/core/enum/bar-label-name.enum';
 import {
     MAIN_GREY,
     MAIN_RED,
-    poppinsRegular, TAB_BAR_BUTTON_HEIGHT,
-    TAB_BAR_HEIGHT, TAB_BAR_VERT_PADDING
+    poppinsRegular,
+    TAB_BAR_BUTTON_HEIGHT,
+    TAB_BAR_HEIGHT,
+    TAB_BAR_VERT_PADDING
 } from './src/styles';
+import syncStorage from './src/core/services/sync-storage.service';
 
 const TAB = createBottomTabNavigator<MainTabsNavigationProps>();
+// (global as CustomGlobalInterface).SQLiteDB = DB;
 
 const App = () => {
-    setI18nConfig();
+    const loadStorage = async () => syncStorage.init();
+    const [isReady, setIsReady] = useState<boolean>(false);
 
-    return (
+    loadStorage()
+        .then(() => {
+            setI18nConfig();
+            setIsReady(true);
+        })
+        .catch(() => {
+            setI18nConfig();
+            setIsReady(true);
+        });
+
+    return isReady ? (
         <NavigationContainer>
             <TAB.Navigator
                 initialRouteName="homeStack"
@@ -67,6 +83,10 @@ const App = () => {
                 />
             </TAB.Navigator>
         </NavigationContainer>
+    ) : (
+        <View>
+            <Text>Loading...</Text>
+        </View>
     );
 };
 

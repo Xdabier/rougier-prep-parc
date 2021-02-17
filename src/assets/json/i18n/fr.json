@@ -19,38 +19,59 @@
     "sync": "Synchroniser",
     "scanBarCode": "Scan code a barre",
     "syncAll": "Synchroniser touts",
-    "synced": "Synchronisé"
+    "synced": "Synchronisé",
+    "dupErr": "Identifiant dupliqué !",
+    "fr": "Français",
+    "en": "Anglais",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "changeLanguageAlert": {
+    "title": "Changement de langue",
+    "message": "voulez-vous vraiment changer de langue ?"
   },
   "homePage": {
     "title": "Fiche préparation parc actuel"
   },
   "logsListPage": {
     "title": "Bille de parc",
-    "filterInputPh": "Commencez à taper l'id..."
+    "filterInputPh": "Commencez à taper l'id...",
+    "noContent": "Aucun bille n'a encore été ajouté."
+  },
+  "parcPrep": {
+    "noContent": "Vous devez d'abord ajouter les fiches de préparation du parc."
   },
   "settings": {
-    "title": "Utilisateur"
+    "title": "Utilisateur",
+    "setUser": "Définir l'utilisateur actuel",
+    "addGasoline": "Ajouter l'essence",
+    "addCuber": "Ajouter cubeur",
+    "addSite": "Ajouter chantier"
   },
   "modals": {
     "aux": {
+      "title": "Ajouter {{val}}",
+      "succMsg": "{{val}} ajouter avec succée!",
+      "confirm": "Confirmer l'ajout de {{val}}",
       "fields": {
         "name": {
           "label": "Nom",
           "ph": "Entrez le nom de {{val}}"
+        },
+        "code": {
+          "label": "Code",
+          "ph": "Entrez le code de {{val}}"
         }
       }
     },
     "cuber": {
-      "name": "cubeur",
-      "confirm": "Confirmer l'ajout de cubeur"
+      "name": "cubeur"
     },
     "site": {
-      "name": "site",
-      "confirm": "Confirmer l'ajout de chantier"
+      "name": "chantier"
     },
     "gasoline": {
-      "name": "gasoline",
-      "confirm": "Confirm gasoline addition"
+      "name": "essence"
     },
     "logs": {
       "confirm": "Confirmer l'ajout de bille",
@@ -60,16 +81,16 @@
           "ph": "Entrez le code a barre"
         },
         "logging": {
-          "label": "Numéro d'abattage",
-          "ph": "Entrez le numéro d'abattage"
+          "label": "N° d'abattage",
+          "ph": "Entrez le N° d'abattage"
         },
         "index": {
-          "label": "Numéro d'indice",
-          "ph": "Entrez le numéro d'indice"
+          "label": "N° d'indice",
+          "ph": "Entrez le N° d'indice"
         },
         "id": {
-          "label": "Numéro de bille",
-          "ph": "Numéro d'abattage / Numéro d'indice"
+          "label": "N° de bille",
+          "ph": "N° d'abattage / N° d'indice"
         },
         "gasoline": {
           "label": "Essence",
@@ -77,18 +98,18 @@
         },
         "dgb": {
           "label": "DGB",
-          "ph": "Entrez le numéro DGB"
+          "ph": "Entrez le N° DGB"
         },
         "dpb": {
           "label": "DPB",
-          "ph": "Entrez le numéro DPB"
+          "ph": "Entrez le N° DPB"
         },
         "length": {
-          "label": "Longeur",
-          "ph": "Entrez le longeur"
+          "label": "Longueur",
+          "ph": "Entrez le longueur"
         },
         "diameterAvg": {
-          "label": "Diamétre moyenne",
+          "label": "Diamètre moyen",
           "ph": "( DGB + DPB ) / 2"
         },
         "volume": {
@@ -115,7 +136,7 @@
         "aac": {
           "label": "AAC",
           "ph": "ex: 23-26-95",
-          "err": "Elle doit suivre ce schéma (un ou deux numéros) - (un ou deux numéros) - (un ou deux numéros)"
+          "err": "Merci de respecter ce schéma (un ou deux N°s) - (un ou deux N°s) - (un ou deux N°s)"
         },
         "cuber": {
           "label": "Cubeur",
@@ -127,7 +148,7 @@
         },
         "date": {
           "label": "Date",
-          "ph": "Please select date"
+          "ph": "Veuillez choisir une date"
         },
         "parcAsDefault": {
           "label": "Choisir comme fiche actuelle"
