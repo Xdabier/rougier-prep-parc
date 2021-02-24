@@ -6,8 +6,8 @@
     "settings": "Paramètres",
     "id": "ID",
     "logId": "ID bille",
-    "prepFileId": "ID fiche prép. parc {{fileId}}",
     "parcId": "ID Parc",
+    "prepFileId": "ID fiche prép. parc {{fileId}}",
     "creationDate": "Créé le {{date}}",
     "lastLogDate": "Dernière bille le {{date}}",
     "logs": "Billes",
@@ -25,7 +25,8 @@
     "en": "Anglais",
     "yes": "Oui",
     "no": "Non",
-    "default": "Par défaut"
+    "default": "Par défaut",
+    "validErr": "Veuillez vous assurer que tous les champs sont valides."
   },
   "changeLanguageAlert": {
     "title": "Changement de langue",
@@ -76,6 +77,7 @@
     },
     "logs": {
       "confirm": "Confirmer l'ajout de bille",
+      "succMsg": "Bille ajouter avec succée!",
       "fields": {
         "barCode": {
           "label": "Code a barre",
@@ -133,6 +135,7 @@
     },
     "parcPrep": {
       "confirm": "Confirmer l'ajout de fiche",
+      "succMsg": "Fiche préparation parc ajouter avec succée!",
       "fields": {
         "aac": {
           "label": "AAC",
