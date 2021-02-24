@@ -48,14 +48,14 @@ const STYLES = StyleSheet.create({
         color: '#000'
     },
     label: {
-        maxWidth: widthPercentageToDP(27.669902912621357),
-        width: widthPercentageToDP(27.669902912621357),
+        maxWidth: widthPercentageToDP(31),
+        width: widthPercentageToDP(31),
         fontSize: 16
     },
     textInput: {
         padding: 0,
-        maxWidth: widthPercentageToDP(60.922330097087375),
-        width: widthPercentageToDP(60.922330097087375),
+        maxWidth: widthPercentageToDP(58),
+        width: widthPercentageToDP(58),
         borderBottomWidth: 1,
         borderBottomColor: '#707070',
         fontSize: 16

@@ -1,6 +1,7 @@
 import React, {
     createRef,
     RefObject,
+    useCallback,
     useContext,
     useEffect,
     useState
@@ -69,6 +70,7 @@ const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
 const AddLogDetails: React.FunctionComponent<{
     modalVisible: boolean;
     parcPrepFileId?: number | null;
+    scannedBarCode?: string | null;
     oldLog?: LogDetailsInterface | null;
     gasolineList: GasolineInterface[];
     onClose: (refresh?: boolean) => void;
@@ -76,16 +78,18 @@ const AddLogDetails: React.FunctionComponent<{
     modalVisible,
     onClose,
     oldLog,
+    scannedBarCode,
     parcPrepFileId,
     gasolineList
 }: {
     modalVisible: boolean;
     parcPrepFileId?: number | null;
+    scannedBarCode?: string | null;
     oldLog?: LogDetailsInterface | null;
     onClose: (refresh?: boolean) => void;
     gasolineList: GasolineInterface[];
 }) => {
-    const [barCode, setBarCode] = useState<string>('');
+    const [barCode, setBarCode] = useState<string>(scannedBarCode || '');
     const [logging, setLogging] = useState<string>('');
     const [index, setIndex] = useState<string>('');
     const [id, setId] = useState<string>('');
@@ -169,31 +173,38 @@ const AddLogDetails: React.FunctionComponent<{
         }
     };
 
-    const resetFields = (data?: LogDetailsInterface) => {
-        setGasoline(
-            data
-                ? {
-                      code: data.gasCode,
-                      name: data.gasName
-                  }
-                : {
-                      code: '',
-                      name: ''
-                  }
-        );
-        setBarCode(data ? data.barCode : '');
-        setVolume(data ? `${data.volume}` : '');
-        setLengthVal(data ? `${data.lengthVal}` : '');
-        setLogging(data ? `${data.logging}` : '');
-        setIndex(data ? `${data.indicator}` : '');
-        setDgb(data ? `${data.dgb}` : '');
-        setDpb(data ? `${data.dpb}` : '');
-        setId(data ? `${data.id}` : '');
-        setDiameterAvg(data ? `${data.diameter}` : '');
-        setQuality(data ? `${data.quality}` : '');
-        setStatus(data ? `${data.status}` : '');
-        setPatternStatus(data ? `${data.statusPattern}` : '');
-    };
+    const resetFields = useCallback(
+        (data?: LogDetailsInterface) => {
+            setGasoline(
+                data
+                    ? {
+                          code: data.gasCode,
+                          name: data.gasName
+                      }
+                    : {
+                          code: '',
+                          name: ''
+                      }
+            );
+            setBarCode(data ? data.barCode : '');
+            setVolume(data ? `${data.volume}` : '');
+            setLengthVal(data ? `${data.lengthVal}` : '');
+            setLogging(data ? `${data.logging}` : '');
+            setIndex(data ? `${data.indicator}` : '');
+            setDgb(data ? `${data.dgb}` : '');
+            setDpb(data ? `${data.dpb}` : '');
+            setId(data ? `${data.id}` : '');
+            setDiameterAvg(data ? `${data.diameter}` : '');
+            setQuality(data ? `${data.quality}` : '');
+            setStatus(data ? `${data.status}` : '');
+            setPatternStatus(data ? `${data.statusPattern}` : '');
+
+            if (scannedBarCode && !data) {
+                setBarCode(scannedBarCode);
+            }
+        },
+        [scannedBarCode]
+    );
 
     useEffect(() => {
         if (oldLog) {
@@ -201,7 +212,7 @@ const AddLogDetails: React.FunctionComponent<{
         } else {
             resetFields();
         }
-    }, [modalVisible, oldLog]);
+    }, [modalVisible, oldLog, resetFields]);
 
     const validForm = () =>
         barCode &&
@@ -482,7 +493,8 @@ const AddLogDetails: React.FunctionComponent<{
 
 AddLogDetails.defaultProps = {
     parcPrepFileId: null,
-    oldLog: null
+    oldLog: null,
+    scannedBarCode: null
 };
 
 export default AddLogDetails;

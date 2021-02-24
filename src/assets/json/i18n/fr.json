@@ -24,7 +24,9 @@
     "fr": "Français",
     "en": "Anglais",
     "yes": "Oui",
+    "validate": "Valider",
     "no": "Non",
+    "code": "Code: {{val}}",
     "default": "Par défaut",
     "validErr": "Veuillez vous assurer que tous les champs sont valides."
   },

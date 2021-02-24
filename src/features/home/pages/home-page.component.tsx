@@ -28,6 +28,7 @@ import EventTopicEnum from '../../../core/enum/event-topic.enum';
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
+import CameraModal from '../../../shared/components/camera-modal/camera-modal.component';
 
 const {
     appPage,
@@ -68,7 +69,9 @@ const STYLES = StyleSheet.create({
 });
 
 const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
+    const [barCode, setBarCode] = useState<string>('');
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
+    const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
     const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
         false
     );
@@ -107,7 +110,9 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     <View />
                 )}
                 <View style={[vSpacer60]} />
-                <MatButton onPress={() => true} disabled={!homeParcPrepFile}>
+                <MatButton
+                    onPress={() => setCameraModalShow(true)}
+                    disabled={!homeParcPrepFile}>
                     <View
                         style={[
                             fullWidth,
@@ -210,8 +215,22 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                 </MatButton>
             </ScrollView>
 
+            <CameraModal
+                modalVisible={cameraModalShow}
+                onClose={(code?: string) => {
+                    setCameraModalShow(false);
+
+                    if (code) {
+                        setBarCode(code);
+                        setAddLogModalShow(true);
+                    }
+                }}
+                modalName={translate('common.scanBarCode')}
+            />
+
             <AddLogDetails
                 gasolineList={gasolines}
+                scannedBarCode={barCode}
                 modalVisible={addLogModalShow}
                 onClose={(refresh) => {
                     setAddLogModalShow(false);

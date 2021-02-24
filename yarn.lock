@@ -6144,6 +6144,11 @@ react-native-safe-area-context@^3.1.9:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.1.9.tgz#48864ea976b0fa57142a2cc523e1fd3314e7247e"
   integrity sha512-wmcGbdyE/vBSL5IjDPReoJUEqxkZsywZw5gPwsVUV1NBpw5eTIdnL6Y0uNKHE25Z661moxPHQz6kwAkYQyorxA==
 
+react-native-scan-barcode@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-scan-barcode/-/react-native-scan-barcode-3.1.5.tgz#7a6a0f1b9460e75766e3d34f3a3bf1504b73173f"
+  integrity sha512-m+XI5nAna0m5zcqwfxsswUCO7vpA01JyqUu3di0QhR4DmC0VHyAMTZv8VCTTeRC8clonRo9xIHR7i7reQIHwdw==
+
 react-native-screens@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.17.1.tgz#c3c0ac750af48741c5b1635511e6af2a27b74309"

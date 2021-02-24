@@ -8,7 +8,7 @@ export const MAIN_DARK_GREY = `#727272`;
 
 export const MAIN_ELEVATION = 3;
 export const BORDER_RADIUS = 8;
-export const PADDING_HORIZONTAL = 20;
+export const PADDING_HORIZONTAL = 15;
 export const PAGE_TITLE_LINE_HEIGHT = 39;
 export const STACK_HEADER_HEIGHT = 57;
 export const FILTER_ROW_HEIGHT = 41;
