@@ -25,6 +25,7 @@
     "en": "English",
     "yes": "Yes",
     "no": "No",
+    "default": "Default",
     "validErr": "Please make sure all the fields are valid."
   },
   "changeLanguageAlert": {
@@ -76,6 +77,7 @@
     },
     "logs": {
       "confirm": "Confirm log addition",
+      "succMsg": "Log added successfully!",
       "fields": {
         "barCode": {
           "label": "Bar code",

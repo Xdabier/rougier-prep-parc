@@ -1,4 +1,4 @@
-import React, {createRef, RefObject, useState} from 'react';
+import React, {createRef, RefObject, useEffect, useState} from 'react';
 import {
     Modal,
     SafeAreaView,
@@ -28,8 +28,12 @@ import ActionSheetContent from '../action-sheet-content/action-sheet-content.com
 import MatButton from '../mat-button.component';
 import SelectInput from '../select-input/select-input.component';
 import {AuxiliaryInterface} from '../../../core/interfaces/auxiliary.interface';
-import SqlLiteService from '../../../core/services/sql-lite.service';
 import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
+import {
+    insertParcPrepFile,
+    updateParcPrep
+} from '../../../core/services/parc-prep.service';
+import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 
 const {
     fullWidth,
@@ -62,16 +66,19 @@ const AddParcFileDetails: React.FunctionComponent<{
     modalVisible: boolean;
     cubers: CuberInterface[];
     sites: SiteInterface[];
+    oldFile?: ParcPrepAllDetailsInterface | null;
     onClose: (refresh?: boolean) => void;
 }> = ({
     modalVisible,
     onClose,
     cubers,
+    oldFile,
     sites
 }: {
     modalVisible: boolean;
     onClose: (refresh?: boolean) => void;
     cubers: CuberInterface[];
+    oldFile?: ParcPrepAllDetailsInterface | null;
     sites: SiteInterface[];
 }) => {
     const [aac, setAac] = useState<string>('');
@@ -103,11 +110,27 @@ const AddParcFileDetails: React.FunctionComponent<{
         setSite(undefined);
     };
 
+    useEffect(() => {
+        if (oldFile) {
+            setAac(oldFile.aac);
+            setAacValid(true);
+            setCuber({
+                name: oldFile.cuberName,
+                code: oldFile.cuberCode
+            });
+            setSite({
+                name: oldFile.siteName,
+                code: oldFile.siteCode
+            });
+            setDate(new Date(oldFile.creationDate));
+            setDefaultParc(!!oldFile.isDefault);
+        }
+    }, [oldFile]);
+
     const confirmInsertion = () => {
         if (validForm() && cuber && site) {
-            const SQLITE_SERVICE: SqlLiteService = new SqlLiteService();
+            // const SQLITE_SERVICE: SqlLiteService = new SqlLiteService();
             const EL: ParcPrepInterface = {
-                logsNumber: 0,
                 allSynced: 0,
                 creationDate: date.toISOString(),
                 aac,
@@ -115,25 +138,49 @@ const AddParcFileDetails: React.FunctionComponent<{
                 site: site.code,
                 defaultParcFile: defaultParc ? 1 : 0
             };
-            SQLITE_SERVICE.insertParcPrep(EL)
-                .then((res) => {
-                    if (res && res.rows) {
-                        clearFields();
-                        onClose(true);
-                        ToastAndroid.show(
-                            translate('modals.parcPrep.succMsg'),
-                            ToastAndroid.SHORT
-                        );
-                    }
-                })
-                .catch((reason: SQLError) => {
-                    if (!reason.code) {
-                        ToastAndroid.show(
-                            translate('common.dupErr'),
-                            ToastAndroid.LONG
-                        );
-                    }
-                });
+
+            if (oldFile) {
+                EL.id = `${oldFile.id}`;
+                updateParcPrep(EL)
+                    .then((res) => {
+                        if (res && res.rows) {
+                            clearFields();
+                            onClose(true);
+                            ToastAndroid.show(
+                                translate('modals.parcPrep.succMsg'),
+                                ToastAndroid.SHORT
+                            );
+                        }
+                    })
+                    .catch((reason: SQLError) => {
+                        if (!reason.code) {
+                            ToastAndroid.show(
+                                translate('common.dupErr'),
+                                ToastAndroid.LONG
+                            );
+                        }
+                    });
+            } else {
+                insertParcPrepFile(EL)
+                    .then((res) => {
+                        if (res && res.rows) {
+                            clearFields();
+                            onClose(true);
+                            ToastAndroid.show(
+                                translate('modals.parcPrep.succMsg'),
+                                ToastAndroid.SHORT
+                            );
+                        }
+                    })
+                    .catch((reason: SQLError) => {
+                        if (!reason.code) {
+                            ToastAndroid.show(
+                                translate('common.dupErr'),
+                                ToastAndroid.LONG
+                            );
+                        }
+                    });
+            }
         } else {
             ToastAndroid.show(translate('common.validErr'), ToastAndroid.LONG);
         }
@@ -178,7 +225,11 @@ const AddParcFileDetails: React.FunctionComponent<{
     return (
         <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
             <ModalHeader
-                title={translate('common.addParcPrepFile')}
+                title={translate(
+                    oldFile
+                        ? 'common.editParcPrepFile'
+                        : 'common.addParcPrepFile'
+                )}
                 onClose={onClose}
             />
             <SafeAreaView style={[appPage]}>
@@ -253,6 +304,10 @@ const AddParcFileDetails: React.FunctionComponent<{
             </ActionSheetComponent>
         </Modal>
     );
+};
+
+AddParcFileDetails.defaultProps = {
+    oldFile: null
 };
 
 export default AddParcFileDetails;

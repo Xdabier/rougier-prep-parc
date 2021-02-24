@@ -8,7 +8,7 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useCallback, useEffect, useState} from 'react';
+import {useContext, useState} from 'react';
 import {publish as eventPub} from 'pubsub-js';
 import {HomeScreenProps} from '../../../core/types/home-screen-props.type';
 import CommonStyles, {
@@ -22,15 +22,12 @@ import {translate} from '../../../utils/i18n.utils';
 import PageTitle from '../../../shared/components/page-title/page-title.component';
 import ParcPrepCard from '../../../shared/components/parc-prep-card/parc-prep-card.component';
 import MatButton from '../../../shared/components/mat-button.component';
-import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
 import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
 import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/add-parc-file-modal.component';
-import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
-import SqlLiteService from '../../../core/services/sql-lite.service';
-import NameToTableEnum from '../../../core/enum/name-to-table.enum';
-import {CuberInterface} from '../../../core/interfaces/cuber.interface';
-import {SiteInterface} from '../../../core/interfaces/site.interface';
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
+import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 
 const {
     appPage,
@@ -71,64 +68,19 @@ const STYLES = StyleSheet.create({
 });
 
 const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
-    const [files, setFiles] = useState<ParcPrepInterface[]>([]);
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
     const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
         false
     );
-
-    const [gasolineList, setGasolineList] = useState<GasolineInterface[]>([]);
-    const [cubers, setCubers] = useState<CuberInterface[]>([]);
-    const [sites, setSites] = useState<SiteInterface[]>([]);
-
-    const fetchFiles = useCallback(() => {
-        const SQLiteService: SqlLiteService = new SqlLiteService();
-        SQLiteService.getParcPrepFiles<ParcPrepInterface>()
-            .then((value: ParcPrepInterface[]) => {
-                setFiles(value);
-            })
-            .catch((reason) => {
-                console.error('getParcPrepFiles line 90', reason);
-            });
-    }, []);
-
-    useEffect(() => {
-        const SQLiteService: SqlLiteService = new SqlLiteService();
-        const getGasolineList = (close = false) => {
-            SQLiteService.getAux<GasolineInterface>(
-                NameToTableEnum.gasoline,
-                close
-            )
-                .then((value: GasolineInterface[]) => {
-                    setGasolineList(value);
-                    fetchFiles();
-                })
-                .catch((reason) => {
-                    console.error('gas line 96', reason);
-                });
-        };
-        const getCubers = (close = false) => {
-            SQLiteService.getAux<CuberInterface>(NameToTableEnum.cuber, close)
-                .then((value: CuberInterface[]) => {
-                    setCubers(value);
-                    getGasolineList(true);
-                })
-                .catch((reason) => {
-                    console.error('parc line 104', reason);
-                });
-        };
-        const getSites = (close = false) => {
-            SQLiteService.getAux<SiteInterface>(NameToTableEnum.site, close)
-                .then((value: SiteInterface[]) => {
-                    setSites(value);
-                    getCubers();
-                })
-                .catch((reason) => {
-                    console.error('sites line 114', reason);
-                });
-        };
-        getSites();
-    }, [fetchFiles]);
+    const [oldParc, setOldParc] = useState<ParcPrepAllDetailsInterface | null>(
+        null
+    );
+    const {
+        homeParcPrepFile,
+        gasolines,
+        cubers,
+        sites
+    } = useContext<MainStateContextInterface>(MainStateContext);
 
     return (
         <SafeAreaView style={[appPage]}>
@@ -138,12 +90,16 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     justifyAlignCenter,
                     scrollView
                 ]}>
-                {files && files.length ? (
+                {homeParcPrepFile ? (
                     <>
                         <PageTitle title={translate('homePage.title')} />
 
                         <ParcPrepCard
-                            parcPrepFile={files[0]}
+                            parcPrepFile={homeParcPrepFile}
+                            editParc={() => {
+                                setOldParc(homeParcPrepFile);
+                                setAddParcFileModalShow(true);
+                            }}
                             onAddLog={() => setAddLogModalShow(true)}
                         />
                     </>
@@ -151,7 +107,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     <View />
                 )}
                 <View style={[vSpacer60]} />
-                <MatButton onPress={() => true} disabled={!files.length}>
+                <MatButton onPress={() => true} disabled={!homeParcPrepFile}>
                     <View
                         style={[
                             fullWidth,
@@ -205,7 +161,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                 <View style={[vSpacer12]} />
                 <MatButton
                     onPress={() => setAddLogModalShow(true)}
-                    disabled={!files.length}>
+                    disabled={!homeParcPrepFile}>
                     <View
                         style={[
                             fullWidth,
@@ -229,7 +185,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton onPress={() => true} disabled={!files.length}>
+                <MatButton onPress={() => true} disabled={!homeParcPrepFile}>
                     <View
                         style={[
                             fullWidth,
@@ -255,20 +211,27 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
             </ScrollView>
 
             <AddLogDetails
-                gasolineList={gasolineList}
+                gasolineList={gasolines}
                 modalVisible={addLogModalShow}
-                onClose={() => setAddLogModalShow(false)}
+                onClose={(refresh) => {
+                    setAddLogModalShow(false);
+
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateParcPrep);
+                    }
+                }}
             />
 
             <AddParcFileDetails
+                oldFile={oldParc}
                 cubers={cubers}
                 sites={sites}
                 modalVisible={addParcFileModalShow}
                 onClose={(refresh: boolean | undefined) => {
                     setAddParcFileModalShow(false);
+                    setOldParc(null);
 
                     if (refresh) {
-                        fetchFiles();
                         eventPub(EventTopicEnum.updateParcPrep);
                     }
                 }}

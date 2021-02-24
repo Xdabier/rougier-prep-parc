@@ -1,20 +1,36 @@
-import {GasolineInterface} from './gasoline.interface';
-
-type LogNumber = `${number}/${number}`;
-
 export interface LogInterface {
-    parcPrepFileId: string;
+    parcPrepId: number;
     creationDate: string;
-    barCode: number;
+    barCode: string;
     logging: number;
-    index: number;
-    id: LogNumber;
-    gasoline: GasolineInterface;
+    indicator: number;
+    id: string;
+    gasoline: string;
     dgb: number;
     dpb: number;
     diameter: number;
     volume: number;
-    quality: number;
+    lengthVal: number;
+    quality: string;
+    status: string;
+    statusPattern: string;
+}
+
+export interface LogDetailsInterface {
+    gasName: string;
+    gasCode: string;
+    parcPrepId: number;
+    creationDate: string;
+    barCode: string;
+    logging: number;
+    lengthVal: number;
+    indicator: number;
+    id: string;
+    dgb: number;
+    dpb: number;
+    diameter: number;
+    volume: number;
+    quality: string;
     status: string;
     statusPattern: string;
 }

@@ -10,6 +10,6 @@ export default openDatabase(
     PARAMS,
     () => {},
     (err) => {
-        console.error('EB ERR =>', err);
+        console.error('DB ERR =>', err);
     }
 );

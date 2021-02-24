@@ -4,8 +4,6 @@ export interface ParcPrepInterface {
     site: string;
     creationDate: string;
     allSynced: 0 | 1;
-    defaultParcFile: 0 | 1;
+    defaultParcFile?: 0 | 1;
     id?: string;
-    lastLogDate?: string;
-    logsNumber?: number;
 }

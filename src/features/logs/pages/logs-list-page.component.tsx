@@ -2,7 +2,7 @@ import * as React from 'react';
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionSheetComponent from 'react-native-actions-sheet';
-import {createRef, RefObject, useEffect, useState} from 'react';
+import {createRef, RefObject, useContext, useState} from 'react';
 import {LogsListScreenProps} from '../../../core/types/logs-list-screen-props.type';
 import CommonStyles, {
     BORDER_RADIUS,
@@ -14,15 +14,15 @@ import CommonStyles, {
     poppinsRegular
 } from '../../../styles';
 import MatButton from '../../../shared/components/mat-button.component';
-import {LogInterface} from '../../../core/interfaces/log.interface';
+import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
 import LogCard from '../../../shared/components/log-card/log-card.component';
 import PageTitle from '../../../shared/components/page-title/page-title.component';
 import {translate} from '../../../utils/i18n.utils';
 import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
 import ActionSheetContent from '../../../shared/components/action-sheet-content/action-sheet-content.component';
-import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
-import SqlLiteService from '../../../core/services/sql-lite.service';
-import NameToTableEnum from '../../../core/enum/name-to-table.enum';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
+import {getLogs} from '../../../core/services/logs.service';
 
 const {
     appPage,
@@ -104,53 +104,47 @@ const STYLES = StyleSheet.create({
 
 const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
 
-const parcIds = [554560, 623104, 763546, 38525, 105956, 878269];
-
 const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
-    const [logs, setLogs] = useState<LogInterface[]>([]);
+    const {
+        logs,
+        setLogs,
+        gasolines,
+        parcIds,
+        filteringId,
+        setFilteringId
+    } = useContext<MainStateContextInterface>(MainStateContext);
+
+    const [oldLog, setOldLog] = useState<LogDetailsInterface | null>(null);
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
-    const [filteringId, setFilteringId] = useState<string>(`${parcIds[0]}`);
 
-    const [gasolineList, setGasolineList] = useState<GasolineInterface[]>([]);
-
-    useEffect(() => {
-        const SQLiteService: SqlLiteService = new SqlLiteService();
-        const fetchLogs = () => {
-            SQLiteService.getLogs<LogInterface>()
-                .then((value: LogInterface[]) => {
-                    setLogs(value);
-                })
-                .catch((reason) => {
-                    console.error('LogsListPage line 122', reason);
-                });
-        };
-        const getGasolineList = (close = false) => {
-            SQLiteService.getAux<GasolineInterface>(
-                NameToTableEnum.gasoline,
-                close
-            )
-                .then((value: GasolineInterface[]) => {
-                    setGasolineList(value);
-                    fetchLogs();
-                })
-                .catch((reason) => {
-                    console.error('gas line 96', reason);
-                });
-        };
-        getGasolineList();
-    }, []);
-
-    const renderItem = ({item}: {item: LogInterface}) => (
+    const renderItem = ({item}: {item: LogDetailsInterface}) => (
         <>
-            <LogCard logItem={item} />
+            <LogCard
+                logItem={item}
+                editLog={() => {
+                    setOldLog(item);
+                    setAddLogModalShow(true);
+                }}
+            />
             <View style={[vSpacer12]} />
         </>
     );
 
+    const refreshFilter = (parcId: string) => {
+        getLogs(+parcId).then((value: LogDetailsInterface[]) => {
+            if (setLogs) {
+                setLogs(value);
+            }
+        });
+    };
+
     const renderFilterBtn = ({item}: {item: string}, _i: number) => (
         <MatButton
             onPress={() => {
-                setFilteringId(`${item}`);
+                if (setFilteringId) {
+                    setFilteringId(`${item}`);
+                }
+                refreshFilter(item);
                 actionSheetRef.current?.setModalVisible(false);
             }}
             key={_i}>
@@ -174,41 +168,42 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
 
     return (
         <SafeAreaView style={[appPage]}>
+            <>
+                <PageTitle title={translate('logsListPage.title')} />
+
+                <View
+                    style={[
+                        fullWidth,
+                        centerHorizontally,
+                        spaceBetween,
+                        alignCenter
+                    ]}>
+                    <Text style={[STYLES.filterLabel, mainColor]}>
+                        {translate('common.parcId')}
+                    </Text>
+                    <MatButton
+                        isElevated
+                        onPress={() => {
+                            actionSheetRef.current?.setModalVisible();
+                        }}>
+                        <View
+                            style={[
+                                centerHorizontally,
+                                spaceBetween,
+                                alignCenter,
+                                STYLES.filterButton
+                            ]}>
+                            <Text>{filteringId}</Text>
+                            <Icon
+                                name="keyboard-arrow-down"
+                                size={TEXT_LINE_HEIGHT}
+                            />
+                        </View>
+                    </MatButton>
+                </View>
+            </>
             {logs.length ? (
                 <>
-                    <PageTitle title={translate('logsListPage.title')} />
-
-                    <View
-                        style={[
-                            fullWidth,
-                            centerHorizontally,
-                            spaceBetween,
-                            alignCenter
-                        ]}>
-                        <Text style={[STYLES.filterLabel, mainColor]}>
-                            {translate('common.parcId')}
-                        </Text>
-                        <MatButton
-                            isElevated
-                            onPress={() => {
-                                actionSheetRef.current?.setModalVisible();
-                            }}>
-                            <View
-                                style={[
-                                    centerHorizontally,
-                                    spaceBetween,
-                                    alignCenter,
-                                    STYLES.filterButton
-                                ]}>
-                                <Text>{filteringId}</Text>
-                                <Icon
-                                    name="keyboard-arrow-down"
-                                    size={TEXT_LINE_HEIGHT}
-                                />
-                            </View>
-                        </MatButton>
-                    </View>
-
                     <View style={[vSpacer25]} />
 
                     <FlatList
@@ -235,7 +230,10 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                 <MatButton
                     isFab
                     isElevated
-                    onPress={() => setAddLogModalShow(true)}>
+                    onPress={() => {
+                        setOldLog(null);
+                        setAddLogModalShow(true);
+                    }}>
                     <View
                         style={[
                             centerVertically,
@@ -249,9 +247,22 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
             </View>
 
             <AddLogDetails
-                gasolineList={gasolineList}
+                parcPrepFileId={filteringId ? +filteringId : null}
+                oldLog={oldLog}
+                gasolineList={gasolines}
                 modalVisible={addLogModalShow}
-                onClose={() => setAddLogModalShow(false)}
+                onClose={() => {
+                    setAddLogModalShow(false);
+                    if (filteringId) {
+                        getLogs(+filteringId).then(
+                            (value: LogDetailsInterface[]) => {
+                                if (setLogs) {
+                                    setLogs(value);
+                                }
+                            }
+                        );
+                    }
+                }}
             />
 
             <ActionSheetComponent

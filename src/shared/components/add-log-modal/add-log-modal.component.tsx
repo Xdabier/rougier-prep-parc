@@ -1,14 +1,22 @@
-import React, {createRef, RefObject, useState} from 'react';
+import React, {
+    createRef,
+    RefObject,
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import {
     Modal,
     SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
+    ToastAndroid,
     View
 } from 'react-native';
 import ActionSheetComponent from 'react-native-actions-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {ResultSet, SQLError} from 'react-native-sqlite-storage';
 import CommonStyles, {
     FILTER_ROW_HEIGHT,
     MAIN_LIGHT_GREY,
@@ -23,6 +31,13 @@ import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
 import {AuxiliaryInterface} from '../../../core/interfaces/auxiliary.interface';
 import MatButton from '../mat-button.component';
 import SelectInput from '../select-input/select-input.component';
+import {
+    LogDetailsInterface,
+    LogInterface
+} from '../../../core/interfaces/log.interface';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
+import {insertLog, updateLog} from '../../../core/services/logs.service';
 
 const {
     fullWidth,
@@ -53,22 +68,31 @@ const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
 
 const AddLogDetails: React.FunctionComponent<{
     modalVisible: boolean;
+    parcPrepFileId?: number | null;
+    oldLog?: LogDetailsInterface | null;
     gasolineList: GasolineInterface[];
-    onClose: () => void;
+    onClose: (refresh?: boolean) => void;
 }> = ({
     modalVisible,
     onClose,
+    oldLog,
+    parcPrepFileId,
     gasolineList
 }: {
     modalVisible: boolean;
-    onClose: () => void;
+    parcPrepFileId?: number | null;
+    oldLog?: LogDetailsInterface | null;
+    onClose: (refresh?: boolean) => void;
     gasolineList: GasolineInterface[];
 }) => {
     const [barCode, setBarCode] = useState<string>('');
     const [logging, setLogging] = useState<string>('');
     const [index, setIndex] = useState<string>('');
     const [id, setId] = useState<string>('');
-    const [gasoline, setGasoline] = useState<GasolineInterface>();
+    const [gasoline, setGasoline] = useState<GasolineInterface>({
+        code: '',
+        name: ''
+    });
     const [dgb, setDgb] = useState<string>('');
     const [dpb, setDpb] = useState<string>('');
     const [lengthVal, setLengthVal] = useState<string>('');
@@ -78,6 +102,10 @@ const AddLogDetails: React.FunctionComponent<{
     const [status, setStatus] = useState<string>('');
     const [patternStatus, setPatternStatus] = useState<string>('');
 
+    const {defaultParc} = useContext<MainStateContextInterface>(
+        MainStateContext
+    );
+
     const setVolumeFn = (_lengthVal: number, _diameter: number) =>
         _lengthVal && _diameter
             ? ((Math.PI / 4) * (_diameter * _diameter) * _lengthVal) / 1000000
@@ -85,7 +113,7 @@ const AddLogDetails: React.FunctionComponent<{
 
     const onLengthChange = (text: string) => {
         setLengthVal(text);
-        setVolume(`${setVolumeFn(+text, +diameterAvg)}`);
+        setVolume(`${setVolumeFn(+text, +diameterAvg).toFixed(3)}`);
     };
 
     const onLoggingIndexingChange = (
@@ -104,7 +132,7 @@ const AddLogDetails: React.FunctionComponent<{
         if (type === 'logging') {
             setLogging(value);
             if (value.length || index.length) {
-                setId(`${logging}/${index || ''}`);
+                setId(`${value}/${index || ''}`);
             } else if (!value.length || !index.length) {
                 setId('');
             }
@@ -141,30 +169,144 @@ const AddLogDetails: React.FunctionComponent<{
         }
     };
 
-    const validForm = () =>
-        !(
-            barCode &&
-            barCode.length >= 6 &&
-            logging &&
-            logging.length >= 1 &&
-            index &&
-            index.length >= 1 &&
-            gasoline &&
-            dgb &&
-            dgb.length >= 1 &&
-            dpb &&
-            dpb.length >= 1 &&
-            lengthVal &&
-            lengthVal.length >= 1 &&
-            diameterAvg &&
-            diameterAvg.length >= 1 &&
-            volume &&
-            volume.length >= 1 &&
-            status &&
-            status.length >= 1 &&
-            patternStatus &&
-            patternStatus.length >= 1
+    const resetFields = (data?: LogDetailsInterface) => {
+        setGasoline(
+            data
+                ? {
+                      code: data.gasCode,
+                      name: data.gasName
+                  }
+                : {
+                      code: '',
+                      name: ''
+                  }
         );
+        setBarCode(data ? data.barCode : '');
+        setVolume(data ? `${data.volume}` : '');
+        setLengthVal(data ? `${data.lengthVal}` : '');
+        setLogging(data ? `${data.logging}` : '');
+        setIndex(data ? `${data.indicator}` : '');
+        setDgb(data ? `${data.dgb}` : '');
+        setDpb(data ? `${data.dpb}` : '');
+        setId(data ? `${data.id}` : '');
+        setDiameterAvg(data ? `${data.diameter}` : '');
+        setQuality(data ? `${data.quality}` : '');
+        setStatus(data ? `${data.status}` : '');
+        setPatternStatus(data ? `${data.statusPattern}` : '');
+    };
+
+    useEffect(() => {
+        if (oldLog) {
+            resetFields(oldLog);
+        } else {
+            resetFields();
+        }
+    }, [modalVisible, oldLog]);
+
+    const validForm = () =>
+        barCode &&
+        barCode.length >= 6 &&
+        logging &&
+        logging.length >= 1 &&
+        index &&
+        index.length >= 1 &&
+        gasoline &&
+        dgb &&
+        dgb.length >= 1 &&
+        dpb &&
+        dpb.length >= 1 &&
+        lengthVal &&
+        lengthVal.length >= 1 &&
+        diameterAvg &&
+        diameterAvg.length >= 1 &&
+        volume &&
+        volume.length >= 1 &&
+        status &&
+        status.length >= 1 &&
+        patternStatus &&
+        patternStatus.length >= 1;
+
+    const confirmInsertion = () => {
+        if (
+            validForm() &&
+            gasoline &&
+            defaultParc &&
+            Object.keys(defaultParc).length
+        ) {
+            const EL: LogInterface = {
+                id,
+                creationDate: new Date().toISOString(),
+                parcPrepId:
+                    parcPrepFileId && parcPrepFileId >= 0
+                        ? parcPrepFileId
+                        : defaultParc.parcId,
+                barCode,
+                dgb: +dgb,
+                diameter: +diameterAvg,
+                dpb: +dpb,
+                gasoline: gasoline.code,
+                indicator: +index,
+                logging: +logging,
+                quality,
+                status,
+                lengthVal: +lengthVal,
+                statusPattern: patternStatus,
+                volume: +volume
+            };
+
+            if (oldLog) {
+                EL.parcPrepId = oldLog.parcPrepId;
+                updateLog(oldLog.id, EL)
+                    .then((res: ResultSet) => {
+                        console.log('res = ', res);
+                        if (res && res.rows) {
+                            resetFields();
+                            onClose(true);
+                            ToastAndroid.show(
+                                translate('modals.logs.succMsg'),
+                                ToastAndroid.SHORT
+                            );
+                        }
+                    })
+                    .catch((reason: SQLError) => {
+                        console.log('er = ', reason);
+                        if (!reason.code) {
+                            ToastAndroid.show(
+                                translate('common.dupErr'),
+                                ToastAndroid.LONG
+                            );
+                        }
+                    });
+            } else {
+                insertLog(EL)
+                    .then((res: ResultSet) => {
+                        console.log('res = ', res);
+                        if (res && res.rows) {
+                            resetFields();
+                            onClose(true);
+                            ToastAndroid.show(
+                                translate('modals.logs.succMsg'),
+                                ToastAndroid.SHORT
+                            );
+                        }
+                    })
+                    .catch((reason: SQLError) => {
+                        console.log('er = ', reason);
+                        if (!reason.code) {
+                            ToastAndroid.show(
+                                translate('common.dupErr'),
+                                ToastAndroid.LONG
+                            );
+                        }
+                    });
+            }
+        } else {
+            ToastAndroid.show(
+                'Ne default parc, or one of the fields is wrong.',
+                ToastAndroid.LONG
+            );
+        }
+    };
 
     const onSelectMenu = (visible = true): void => {
         actionSheetRef.current?.setModalVisible(visible);
@@ -200,7 +342,10 @@ const AddLogDetails: React.FunctionComponent<{
 
     return (
         <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
-            <ModalHeader title={translate('common.addLog')} onClose={onClose} />
+            <ModalHeader
+                title={translate(oldLog ? 'common.editLog' : 'common.addLog')}
+                onClose={onClose}
+            />
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
                     <FormInput
@@ -312,8 +457,8 @@ const AddLogDetails: React.FunctionComponent<{
                 </ScrollView>
             </SafeAreaView>
             <ModalFooter
-                disabled={validForm()}
-                onPress={() => true}
+                disabled={!validForm()}
+                onPress={confirmInsertion}
                 title={translate('modals.logs.confirm')}
             />
 
@@ -333,6 +478,11 @@ const AddLogDetails: React.FunctionComponent<{
             </ActionSheetComponent>
         </Modal>
     );
+};
+
+AddLogDetails.defaultProps = {
+    parcPrepFileId: null,
+    oldLog: null
 };
 
 export default AddLogDetails;

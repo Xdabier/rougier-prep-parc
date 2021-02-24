@@ -24,7 +24,8 @@
     "fr": "Français",
     "en": "Anglais",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "default": "Par défaut"
   },
   "changeLanguageAlert": {
     "title": "Changement de langue",

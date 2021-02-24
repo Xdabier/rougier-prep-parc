@@ -9,8 +9,9 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import ReactNativeRestart from 'react-native-restart';
+import {publish as eventPub} from 'pubsub-js';
 import {SettingsScreenProps} from '../../../core/types/settings-screen-props.type';
 import CommonStyles, {
     BORDER_RADIUS,
@@ -24,6 +25,9 @@ import MatButton from '../../../shared/components/mat-button.component';
 import syncStorage from '../../../core/services/sync-storage.service';
 import CURRENT_LANGUAGE from '../../../core/constants/storage-keys.constant';
 import AddAuxModal from '../../../shared/components/add-aux-modal/add-aux-modal.component';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
+import EventTopicEnum from '../../../core/enum/event-topic.enum';
 
 const {
     appPage,
@@ -55,8 +59,8 @@ const STYLES = StyleSheet.create({
 });
 
 const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
-    const [currentUser, setCurrentUser] = useState<string>('USER-259995663');
     const [modalToShow, setModalToShow] = useState<string>('');
+    const {user} = useContext<MainStateContextInterface>(MainStateContext);
 
     const showModal = (modalName: 'cuber' | 'site' | 'gasoline') => {
         setModalToShow(translate(`modals.${modalName}.name`));
@@ -96,7 +100,7 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
                     <PageTitle title={translate('settings.title')} />
-                    <Text style={[STYLES.userTitle]}>{currentUser}</Text>
+                    <Text style={[STYLES.userTitle]}>{user?.username}</Text>
                     <View style={[vSpacer60]} />
                     <MatButton>
                         <View
@@ -189,8 +193,12 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
 
             <AddAuxModal
                 modalVisible={!!modalToShow.length}
-                onClose={() => {
+                onClose={(refresh) => {
                     setModalToShow('');
+
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateAux);
+                    }
                 }}
                 modalName={modalToShow}
             />

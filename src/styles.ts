@@ -83,6 +83,9 @@ export interface AppStyleSheet {
     appPage: {
         [key: string]: any;
     };
+    hSpacer5: {
+        [key: string]: any;
+    };
     hSpacer17: {
         [key: string]: any;
     };
@@ -90,6 +93,12 @@ export interface AppStyleSheet {
         [key: string]: any;
     };
     pT2: {
+        [key: string]: any;
+    };
+    pB30: {
+        [key: string]: any;
+    };
+    pB60: {
         [key: string]: any;
     };
     vSpacer25: {
@@ -120,6 +129,9 @@ export interface AppStyleSheet {
         [key: string]: any;
     };
     fullWidth: {
+        [key: string]: any;
+    };
+    fullHeight: {
         [key: string]: any;
     };
     centerHorizontally: {
@@ -257,6 +269,9 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     hSpacer17: {
         width: 17
     },
+    hSpacer5: {
+        width: 5
+    },
     vSpacer12: {
         height: 12
     },
@@ -313,6 +328,15 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         color: MAIN_LIGHT_GREY,
         fontSize: 30,
         textAlign: 'center'
+    },
+    fullHeight: {
+        height: '100%'
+    },
+    pB30: {
+        paddingBottom: 30
+    },
+    pB60: {
+        paddingBottom: 60
     }
 });
 

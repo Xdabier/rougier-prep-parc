@@ -10,7 +10,7 @@ import CommonStyles, {
 } from '../../../styles';
 import {translate} from '../../../utils/i18n.utils';
 import MatButton from '../mat-button.component';
-import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
+import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 
 const {
     mainColor,
@@ -27,9 +27,14 @@ const {
     justifyCenter,
     info,
     title,
-    subTitle
+    subTitle,
+    hSpacer5
 } = CommonStyles;
+
 const STYLES = StyleSheet.create({
+    firstHalfOfCard: {
+        maxWidth: '55%'
+    },
     mainView: {
         width: Dimensions.get('screen').width - (PADDING_HORIZONTAL + 2) * 2,
         padding: 11,
@@ -62,18 +67,31 @@ const STYLES = StyleSheet.create({
     },
     buttonTextClear: {
         color: MAIN_RED
+    },
+    defCardCapsule: {
+        borderRadius: BORDER_RADIUS,
+        paddingHorizontal: 5,
+        paddingVertical: 2,
+        backgroundColor: 'rgba(69, 96, 14, .3)'
+    },
+    defCardIdx: {
+        fontSize: 10,
+        color: MAIN_GREEN
     }
 });
 
 const ParcPrepCard: React.FunctionComponent<{
-    parcPrepFile: ParcPrepInterface;
+    parcPrepFile: ParcPrepAllDetailsInterface;
     onAddLog: () => void;
+    editParc?: () => void;
 }> = ({
     parcPrepFile,
-    onAddLog
+    onAddLog,
+    editParc
 }: {
-    parcPrepFile: ParcPrepInterface;
+    parcPrepFile: ParcPrepAllDetailsInterface;
     onAddLog: () => void;
+    editParc?: () => void;
 }) => (
     <View
         style={[
@@ -84,12 +102,42 @@ const ParcPrepCard: React.FunctionComponent<{
             rougierShadow
         ]}>
         <View
-            style={[centerVertically, justifyAlignLeftVertical, justifyCenter]}>
+            style={[
+                STYLES.firstHalfOfCard,
+                centerVertically,
+                justifyAlignLeftVertical,
+                justifyCenter
+            ]}>
             <Text style={[mainColor, title, regularFont, textAlignLeft]}>
                 {translate('common.id')}{' '}
                 <Text style={[mainColor, subTitle, regularFont, textAlignLeft]}>
                     {parcPrepFile.id}
                 </Text>
+                <View style={[hSpacer5]} />
+                {parcPrepFile.isDefault ? (
+                    <View style={[STYLES.defCardCapsule]}>
+                        <Text style={[STYLES.defCardIdx]}>
+                            {translate('common.default')}
+                        </Text>
+                    </View>
+                ) : (
+                    <View />
+                )}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.parcPrep.fields.aac.label')}: ${
+                    parcPrepFile.aac
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.parcPrep.fields.cuber.label')}: ${
+                    parcPrepFile.cuberName
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.parcPrep.fields.site.label')}: ${
+                    parcPrepFile.siteName
+                }`}
             </Text>
             <Text style={[info, regularFont, textAlignLeft]}>
                 {translate('common.creationDate', {
@@ -158,7 +206,7 @@ const ParcPrepCard: React.FunctionComponent<{
                     </Text>
                 </View>
             </MatButton>
-            <MatButton onPress={() => true}>
+            <MatButton onPress={editParc}>
                 <View
                     style={[
                         STYLES.button,
@@ -189,5 +237,9 @@ const ParcPrepCard: React.FunctionComponent<{
         </View>
     </View>
 );
+
+ParcPrepCard.defaultProps = {
+    editParc: () => true
+};
 
 export default ParcPrepCard;

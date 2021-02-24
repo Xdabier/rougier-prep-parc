@@ -9,7 +9,7 @@ import CommonStyles, {
 } from '../../../styles';
 import {translate} from '../../../utils/i18n.utils';
 import MatButton from '../mat-button.component';
-import {LogInterface} from '../../../core/interfaces/log.interface';
+import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
 
 const {
     fullWidth,
@@ -56,8 +56,15 @@ const STYLES = StyleSheet.create({
 });
 
 const LogCard: React.FunctionComponent<{
-    logItem: LogInterface;
-}> = ({logItem}: {logItem: LogInterface}) => (
+    logItem: LogDetailsInterface;
+    editLog?: () => void;
+}> = ({
+    logItem,
+    editLog
+}: {
+    logItem: LogDetailsInterface;
+    editLog?: () => void;
+}) => (
     <View
         style={[
             STYLES.mainView,
@@ -76,8 +83,33 @@ const LogCard: React.FunctionComponent<{
             </Text>
             <Text style={[info, regularFont, textAlignLeft]}>
                 {translate('common.prepFileId', {
-                    fileId: logItem.parcPrepFileId
+                    fileId: logItem.parcPrepId
                 })}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.diameterAvg.label')}: ${
+                    logItem.diameter
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.volume.label')}: ${
+                    logItem.volume
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.quality.label')}: ${
+                    logItem.quality
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.status.label')}: ${
+                    logItem.status
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.gasoline.label')}: ${
+                    logItem.gasName
+                }`}
             </Text>
             <Text style={[info, regularFont, textAlignLeft]}>
                 {translate('common.creationDate', {
@@ -90,7 +122,7 @@ const LogCard: React.FunctionComponent<{
                     justifyAlignRightHorizontal,
                     fullWidth
                 ]}>
-                <MatButton onPress={() => true}>
+                <MatButton onPress={editLog}>
                     <View
                         style={[
                             STYLES.button,
@@ -109,5 +141,9 @@ const LogCard: React.FunctionComponent<{
         </View>
     </View>
 );
+
+LogCard.defaultProps = {
+    editLog: () => true
+};
 
 export default LogCard;

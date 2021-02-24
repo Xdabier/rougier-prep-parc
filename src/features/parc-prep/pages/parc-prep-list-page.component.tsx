@@ -1,21 +1,21 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {useCallback, useEffect, useState} from 'react';
-import {subscribe as eventSub} from 'pubsub-js';
+import {useContext, useState} from 'react';
+import {publish as eventPub} from 'pubsub-js';
 import {ParcPrepScreenProps} from '../../../core/types/parc-prep-screen-props.type';
 import CommonStyles, {
     FAB_BOTTOM_DISTANCE,
     STACK_HEADER_HEIGHT
 } from '../../../styles';
-import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
 import ParcPrepCard from '../../../shared/components/parc-prep-card/parc-prep-card.component';
 import MatButton from '../../../shared/components/mat-button.component';
 import AddLogDetails from '../../../shared/components/add-log-modal/add-log-modal.component';
-import {GasolineInterface} from '../../../core/interfaces/gasoline.interface';
-import SqlLiteService from '../../../core/services/sql-lite.service';
-import NameToTableEnum from '../../../core/enum/name-to-table.enum';
 import {translate} from '../../../utils/i18n.utils';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
+import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
+import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/add-parc-file-modal.component';
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
 
 const {
@@ -28,6 +28,7 @@ const {
     fabButton,
     backgroundMain,
     pT2,
+    pB60,
     noContent
 } = CommonStyles;
 
@@ -36,51 +37,36 @@ const STYLES = StyleSheet.create({
         bottom: FAB_BOTTOM_DISTANCE + STACK_HEADER_HEIGHT
     }
 });
-const SQLiteService: SqlLiteService = new SqlLiteService();
 
 const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
-    const [files, setFiles] = useState<ParcPrepInterface[]>([]);
-    const [gasolineList, setGasolineList] = useState<GasolineInterface[]>([]);
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
+    const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
+        false
+    );
+    const [oldParc, setOldParc] = useState<ParcPrepAllDetailsInterface | null>(
+        null
+    );
+    const [selectedParcId, setSelectedParcId] = useState<number>();
 
-    const fetchFiles = useCallback(() => {
-        SQLiteService.getParcPrepFiles<ParcPrepInterface>()
-            .then((value: ParcPrepInterface[]) => {
-                setFiles(value);
-            })
-            .catch((reason) => {
-                console.error('getParcPrepFiles line 90', reason);
-            });
-    }, []);
+    const {
+        gasolines,
+        parcPrepFiles,
+        cubers,
+        sites
+    } = useContext<MainStateContextInterface>(MainStateContext);
 
-    useEffect(() => {
-        const subForEvent = (): void => {
-            eventSub(EventTopicEnum.updateParcPrep, () => {
-                fetchFiles();
-            });
-        };
-        const getGasolineList = (close = false) => {
-            SQLiteService.getAux<GasolineInterface>(
-                NameToTableEnum.gasoline,
-                close
-            )
-                .then((value: GasolineInterface[]) => {
-                    setGasolineList(value);
-                    fetchFiles();
-                    subForEvent();
-                })
-                .catch((reason) => {
-                    console.error('gas line 96', reason);
-                });
-        };
-        getGasolineList();
-    }, [SQLiteService, fetchFiles]);
-
-    const renderItem = ({item}: {item: ParcPrepInterface}) => (
+    const renderItem = ({item}: {item: ParcPrepAllDetailsInterface}) => (
         <>
             <ParcPrepCard
                 parcPrepFile={item}
-                onAddLog={() => setAddLogModalShow(true)}
+                editParc={() => {
+                    setOldParc(item);
+                    setAddParcFileModalShow(true);
+                }}
+                onAddLog={() => {
+                    setSelectedParcId(item.id);
+                    setAddLogModalShow(true);
+                }}
             />
             <View style={[vSpacer12]} />
         </>
@@ -88,15 +74,16 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
 
     return (
         <SafeAreaView style={[appPage]}>
-            {files.length ? (
+            {parcPrepFiles.length ? (
                 <FlatList
                     contentContainerStyle={[
                         centerVertically,
                         justifyAlignCenter,
                         scrollView,
-                        pT2
+                        pT2,
+                        pB60
                     ]}
-                    data={files}
+                    data={parcPrepFiles}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => `${index}`}
                 />
@@ -113,7 +100,7 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
                     isFab
                     isElevated
                     onPress={() => true}
-                    disabled={!files.length}>
+                    disabled={!parcPrepFiles.length}>
                     <View
                         style={[
                             centerVertically,
@@ -127,9 +114,31 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
             </View>
 
             <AddLogDetails
-                gasolineList={gasolineList}
+                parcPrepFileId={selectedParcId}
+                gasolineList={gasolines}
                 modalVisible={addLogModalShow}
-                onClose={() => setAddLogModalShow(false)}
+                onClose={(refresh: boolean | undefined) => {
+                    setAddLogModalShow(false);
+
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateParcPrep);
+                    }
+                }}
+            />
+
+            <AddParcFileDetails
+                oldFile={oldParc}
+                cubers={cubers}
+                sites={sites}
+                modalVisible={addParcFileModalShow}
+                onClose={(refresh: boolean | undefined) => {
+                    setAddParcFileModalShow(false);
+                    setOldParc(null);
+
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateParcPrep);
+                    }
+                }}
             />
         </SafeAreaView>
     );

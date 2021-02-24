@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import {Modal, SafeAreaView, ScrollView, ToastAndroid} from 'react-native';
-import {SQLError} from 'react-native-sqlite-storage';
+import {ResultSet, SQLError} from 'react-native-sqlite-storage';
 import CommonStyles from '../../../styles';
 import ModalHeader from '../modal-header/modal-header.component';
 import {translate} from '../../../utils/i18n.utils';
 import ModalFooter from '../modal-footer/modal-footer.component';
 import FormInput from '../form-input/form-input.component';
 import {AuxiliaryInterface} from '../../../core/interfaces/auxiliary.interface';
-import SqlLiteService from '../../../core/services/sql-lite.service';
+import {insertAux} from '../../../core/services/aux-data.service';
 import NameToTableEnum from '../../../core/enum/name-to-table.enum';
 
 const {fullWidth, appPage} = CommonStyles;
 
 const AddAuxModal: React.FunctionComponent<{
     modalVisible: boolean;
-    onClose: () => void;
+    onClose: (refresh?: boolean) => void;
     modalName: string;
 }> = ({
     modalVisible,
@@ -22,44 +22,45 @@ const AddAuxModal: React.FunctionComponent<{
     modalName
 }: {
     modalVisible: boolean;
-    onClose: () => void;
+    onClose: (refresh?: boolean) => void;
     modalName: string;
 }) => {
     const [name, setName] = useState<string>('');
     const [code, setCode] = useState<string>('');
 
     const validForm = () =>
-        !(name && name.length >= 1 && code && code.length >= 1);
+        name && name.length >= 1 && code && code.length >= 1;
 
     const confirmInsertion = () => {
-        const SQLITE_SERVICE: SqlLiteService = new SqlLiteService();
         const EL: AuxiliaryInterface = {
             name: name.toUpperCase(),
             code: code.toUpperCase()
         };
-
-        // @ts-ignore
-        SQLITE_SERVICE.insertAux(EL, NameToTableEnum[modalName])
-            .then((res) => {
-                if (res && res.rows) {
-                    setName('');
-                    setCode('');
-                    onClose();
-                    ToastAndroid.show(
-                        translate('modals.aux.succMsg', {val: modalName}),
-                        ToastAndroid.SHORT
-                    );
-                }
-            })
-            .catch((reason: SQLError) => {
-                console.error('add aux l58', reason);
-                if (!reason.code) {
-                    ToastAndroid.show(
-                        translate('common.dupErr'),
-                        ToastAndroid.LONG
-                    );
-                }
-            });
+        if (validForm()) {
+            // @ts-ignore
+            insertAux(EL, NameToTableEnum[modalName])
+                .then((res: ResultSet) => {
+                    console.log('res = ', res);
+                    if (res && res.rows) {
+                        setCode('');
+                        setName('');
+                        onClose(true);
+                        ToastAndroid.show(
+                            translate('modals.aux.succMsg', {val: modalName}),
+                            ToastAndroid.SHORT
+                        );
+                    }
+                })
+                .catch((reason: SQLError) => {
+                    console.log('er = ', reason);
+                    if (!reason.code) {
+                        ToastAndroid.show(
+                            translate('common.dupErr'),
+                            ToastAndroid.LONG
+                        );
+                    }
+                });
+        }
     };
 
     return (
@@ -93,7 +94,7 @@ const AddAuxModal: React.FunctionComponent<{
                 </ScrollView>
             </SafeAreaView>
             <ModalFooter
-                disabled={validForm()}
+                disabled={!validForm()}
                 onPress={() => {
                     confirmInsertion();
                 }}
