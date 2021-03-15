@@ -19,6 +19,7 @@ import CommonStyles, {
 import ModalHeader from '../modal-header/modal-header.component';
 import {translate} from '../../../utils/i18n.utils';
 import ModalFooter from '../modal-footer/modal-footer.component';
+import requestCloseModal from '../../../utils/modal.utils';
 
 const {
     fullWidth,
@@ -98,8 +99,25 @@ const CameraModal: React.FunctionComponent<{
     };
 
     return (
-        <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
-            <ModalHeader title={modalName} onClose={onClose} />
+        <Modal
+            style={[fullWidth]}
+            onRequestClose={() => {
+                requestCloseModal(
+                    onClose,
+                    translate('closeModalAlert.message_code')
+                );
+            }}
+            animationType="slide"
+            visible={modalVisible}>
+            <ModalHeader
+                title={modalName}
+                onClose={() => {
+                    requestCloseModal(
+                        onClose,
+                        translate('closeModalAlert.message_code')
+                    );
+                }}
+            />
             <SafeAreaView
                 style={[centerVertically, justifyAlignCenter, fullWidth]}>
                 <View

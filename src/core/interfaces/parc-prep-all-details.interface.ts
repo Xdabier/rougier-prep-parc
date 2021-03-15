@@ -9,6 +9,6 @@ export interface ParcPrepAllDetailsInterface {
     lastLogDate: string | null;
     lastLogId: string | null;
     logsNumber: number;
-    id: number;
+    id: string;
     isDefault: 0 | 1;
 }

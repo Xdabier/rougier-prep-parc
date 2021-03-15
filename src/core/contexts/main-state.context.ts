@@ -10,7 +10,7 @@ const MainStateContext: React.Context<MainStateContextInterface> = React.createC
         sites: [],
         cubers: [],
         defaultParc: {
-            parcId: -1,
+            parcId: '',
             id: -1
         }
     }

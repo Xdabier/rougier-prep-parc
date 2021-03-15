@@ -34,6 +34,11 @@
     "title": "Changement de langue",
     "message": "voulez-vous vraiment changer de langue ?"
   },
+  "closeModalAlert": {
+    "title": "Etes-vous sûr ? ",
+    "message": "Vous voulez fermer sans sauvegarder votre formulaire ?",
+    "message_code": "Vous voulez fermer sans scanner le code ?"
+  },
   "homePage": {
     "title": "Fiche préparation parc actuel"
   },

@@ -39,6 +39,8 @@ import {
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {insertLog, updateLog} from '../../../core/services/logs.service';
+import CameraModal from '../camera-modal/camera-modal.component';
+import requestCloseModal from '../../../utils/modal.utils';
 
 const {
     fullWidth,
@@ -69,7 +71,7 @@ const actionSheetRef: RefObject<ActionSheetComponent> = createRef();
 
 const AddLogDetails: React.FunctionComponent<{
     modalVisible: boolean;
-    parcPrepFileId?: number | null;
+    parcPrepFileId?: string | null;
     scannedBarCode?: string | null;
     oldLog?: LogDetailsInterface | null;
     gasolineList: GasolineInterface[];
@@ -83,12 +85,13 @@ const AddLogDetails: React.FunctionComponent<{
     gasolineList
 }: {
     modalVisible: boolean;
-    parcPrepFileId?: number | null;
+    parcPrepFileId?: string | null;
     scannedBarCode?: string | null;
     oldLog?: LogDetailsInterface | null;
     onClose: (refresh?: boolean) => void;
     gasolineList: GasolineInterface[];
 }) => {
+    const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
     const [barCode, setBarCode] = useState<string>(scannedBarCode || '');
     const [logging, setLogging] = useState<string>('');
     const [index, setIndex] = useState<string>('');
@@ -248,7 +251,7 @@ const AddLogDetails: React.FunctionComponent<{
                 id,
                 creationDate: new Date().toISOString(),
                 parcPrepId:
-                    parcPrepFileId && parcPrepFileId >= 0
+                    parcPrepFileId && parcPrepFileId.length
                         ? parcPrepFileId
                         : defaultParc.parcId,
                 barCode,
@@ -352,10 +355,20 @@ const AddLogDetails: React.FunctionComponent<{
     );
 
     return (
-        <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
+        <Modal
+            style={[fullWidth]}
+            onRequestClose={() => {
+                requestCloseModal(onClose);
+            }}
+            animationType="slide"
+            visible={modalVisible}>
             <ModalHeader
+                scanCode
+                onBarCodeScanner={() => setCameraModalShow(true)}
                 title={translate(oldLog ? 'common.editLog' : 'common.addLog')}
-                onClose={onClose}
+                onClose={() => {
+                    requestCloseModal(onClose);
+                }}
             />
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
@@ -487,6 +500,18 @@ const AddLogDetails: React.FunctionComponent<{
                     renderElement={renderFilterBtn}
                 />
             </ActionSheetComponent>
+
+            <CameraModal
+                modalVisible={cameraModalShow}
+                onClose={(code?: string) => {
+                    setCameraModalShow(false);
+
+                    if (code && code.length) {
+                        setBarCode(code);
+                    }
+                }}
+                modalName={translate('common.scanBarCode')}
+            />
         </Modal>
     );
 };

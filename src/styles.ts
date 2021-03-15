@@ -194,7 +194,7 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
         fontSize: 19
     },
     subTitle: {
-        fontSize: 15,
+        fontSize: 12,
         textAlign: 'left',
         opacity: 0.76
     },

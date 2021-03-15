@@ -11,7 +11,7 @@ import {unSyncParcPrepFile} from './parc-prep.service';
 const SQLiteService: SqlLiteService = new SqlLiteService();
 
 export const getLogs = async (
-    parcId: number,
+    parcId: string,
     close = false
 ): Promise<LogDetailsInterface[]> => {
     try {
@@ -29,6 +29,29 @@ export const getLogs = async (
             });
         }
         return RES.rows.raw() as LogDetailsInterface[];
+    } catch (e) {
+        return Promise.reject(e);
+    }
+};
+
+export const getRawLogs = async (
+    parcId: string,
+    close = false
+): Promise<LogInterface[]> => {
+    try {
+        const RES: ResultSet = await SQLiteService.executeQuery(
+            `SELECT l.barCode, l.logging, l.indicator,
+            l.lengthVal, l.id, l.dgb, l.dpb, l.diameter, l.volume,
+            l.quality, l.status, l.statusPattern, l.gasoline FROM log AS l
+            WHERE l.parcPrepId = ?;`,
+            [parcId]
+        );
+        if (close && !SQLiteService.finished) {
+            SQLiteService.db.close().catch((reason: SQLError) => {
+                console.error('err log = ', reason);
+            });
+        }
+        return RES.rows.raw() as LogInterface[];
     } catch (e) {
         return Promise.reject(e);
     }

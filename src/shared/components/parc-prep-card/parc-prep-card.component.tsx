@@ -84,14 +84,17 @@ const ParcPrepCard: React.FunctionComponent<{
     parcPrepFile: ParcPrepAllDetailsInterface;
     onAddLog: () => void;
     editParc?: () => void;
+    syncParc?: () => void;
 }> = ({
     parcPrepFile,
     onAddLog,
-    editParc
+    editParc,
+    syncParc
 }: {
     parcPrepFile: ParcPrepAllDetailsInterface;
     onAddLog: () => void;
     editParc?: () => void;
+    syncParc?: () => void;
 }) => (
     <View
         style={[
@@ -182,7 +185,7 @@ const ParcPrepCard: React.FunctionComponent<{
                 justifyAlignRightVertical,
                 justifyCenter
             ]}>
-            <MatButton onPress={() => true}>
+            <MatButton onPress={syncParc}>
                 <View
                     style={[
                         STYLES.button,
@@ -239,7 +242,8 @@ const ParcPrepCard: React.FunctionComponent<{
 );
 
 ParcPrepCard.defaultProps = {
-    editParc: () => true
+    editParc: () => true,
+    syncParc: () => true
 };
 
 export default ParcPrepCard;

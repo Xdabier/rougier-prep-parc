@@ -11,6 +11,10 @@ import {ParcPrepAllDetailsInterface} from '../interfaces/parc-prep-all-details.i
 
 const SQLiteService: SqlLiteService = new SqlLiteService();
 
+export function randomInt(min = 100, max = 99999): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 export const getParcPrepFilesIds = async (close = false): Promise<string[]> => {
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
@@ -46,10 +50,10 @@ export const updateParcPrep = async (
 
         if (defaultParcFile && id) {
             await updateParcPrepStats({
-                parcPrepId: +id,
+                parcPrepId: id,
                 isDefault: 1
             });
-            return upsertDefaultParcId({parcId: +id, id: 0});
+            return upsertDefaultParcId({parcId: id, id: 0});
         }
         return UPD;
     } catch (e) {
@@ -70,8 +74,44 @@ export const unSyncParcPrepFile = async (id: string): Promise<ResultSet> => {
     }
 };
 
+export const markSyncedParcPrepFile = async (
+    id: string
+): Promise<ResultSet> => {
+    try {
+        const UNSYNC: ParcPrepInterface = {
+            id: `${id}`,
+            allSynced: 1
+        } as ParcPrepInterface;
+
+        return await updateParcPrep(UNSYNC);
+    } catch (e) {
+        return Promise.reject(e);
+    }
+};
+
+export const getRawParcPrepFileById = async (
+    id: string,
+    close = false
+): Promise<ParcPrepInterface[]> => {
+    try {
+        const RES: ResultSet = await SQLiteService.executeQuery(
+            `SELECT pp.id, pp.aac, pp.creationDate, pp.cuber,
+            pp.site FROM parc_prep AS pp WHERE pp.id = ?;`,
+            [id]
+        );
+        if (close && !SQLiteService.finished) {
+            SQLiteService.db.close().catch((reason: SQLError) => {
+                console.error('err parc_prep = ', reason);
+            });
+        }
+        return RES.rows.raw() as ParcPrepInterface[];
+    } catch (e) {
+        return Promise.reject(e);
+    }
+};
+
 export const getParcPrepFileById = async (
-    id: number,
+    id: string,
     close = false
 ): Promise<ParcPrepAllDetailsInterface[]> => {
     try {
@@ -123,6 +163,7 @@ export const insertParcPrepFile = async (
 ): Promise<ResultSet> => {
     try {
         const {defaultParcFile, ...others} = element;
+        others.id = `${others.cuber}${randomInt()}`;
         const KEYS = Object.keys(others);
         const STR: string = `INSERT INTO parc_prep (${KEYS.join(
             ', '
@@ -131,20 +172,20 @@ export const insertParcPrepFile = async (
             STR,
             KEYS.map((x: string) => (others as any)[x])
         );
-        const ROW_ID: ResultSet = await SQLiteService.executeQuery(
-            'SELECT last_insert_rowid();'
-        );
-        const ID: number = ROW_ID.rows.item(0)['last_insert_rowid()'];
+        // const ROW_ID: ResultSet = await SQLiteService.executeQuery(
+        //     'SELECT last_insert_rowid();'
+        // );
+        // const ID: number = ROW_ID.rows.item(0)['last_insert_rowid()'];
         const STATS: ParcPrepStatsInterface = {
             isDefault: defaultParcFile !== undefined ? defaultParcFile : 0,
             logsNumber: 0,
-            parcPrepId: ID
+            parcPrepId: others.id
         };
 
         const INIT_STATS = await insertParcPrepStats(STATS);
 
         if (element.defaultParcFile) {
-            return upsertDefaultParcId({parcId: ID, id: 0});
+            return upsertDefaultParcId({parcId: others.id, id: 0});
         }
         return INIT_STATS;
     } catch (e) {

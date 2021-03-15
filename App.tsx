@@ -72,7 +72,7 @@ const App = () => {
     ] = useState<ParcPrepAllDetailsInterface | null>(null);
     const [user, setUser] = useState<UserInterface>();
     const [defaultParc, setDefParc] = useState<DefParcInterface>({
-        parcId: -1,
+        parcId: '',
         id: -1
     });
 

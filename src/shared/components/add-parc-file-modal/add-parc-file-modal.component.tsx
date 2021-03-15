@@ -34,6 +34,7 @@ import {
     updateParcPrep
 } from '../../../core/services/parc-prep.service';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
+import requestCloseModal from '../../../utils/modal.utils';
 
 const {
     fullWidth,
@@ -223,18 +224,27 @@ const AddParcFileDetails: React.FunctionComponent<{
     );
 
     return (
-        <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
+        <Modal
+            style={[fullWidth]}
+            onRequestClose={() => {
+                requestCloseModal(onClose);
+            }}
+            animationType="slide"
+            visible={modalVisible}>
             <ModalHeader
                 title={translate(
                     oldFile
                         ? 'common.editParcPrepFile'
                         : 'common.addParcPrepFile'
                 )}
-                onClose={onClose}
+                onClose={() => {
+                    requestCloseModal(onClose);
+                }}
             />
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
                     <FormInput
+                        maxLength={8}
                         title={translate('modals.parcPrep.fields.aac.label')}
                         placeholder={translate('modals.parcPrep.fields.aac.ph')}
                         onChangeText={setAac}

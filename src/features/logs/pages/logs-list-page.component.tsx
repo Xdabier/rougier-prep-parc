@@ -3,6 +3,7 @@ import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionSheetComponent from 'react-native-actions-sheet';
 import {createRef, RefObject, useContext, useState} from 'react';
+import {publish as eventPub} from 'pubsub-js';
 import {LogsListScreenProps} from '../../../core/types/logs-list-screen-props.type';
 import CommonStyles, {
     BORDER_RADIUS,
@@ -23,6 +24,7 @@ import ActionSheetContent from '../../../shared/components/action-sheet-content/
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {getLogs} from '../../../core/services/logs.service';
+import EventTopicEnum from '../../../core/enum/event-topic.enum';
 
 const {
     appPage,
@@ -131,7 +133,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
     );
 
     const refreshFilter = (parcId: string) => {
-        getLogs(+parcId).then((value: LogDetailsInterface[]) => {
+        getLogs(parcId).then((value: LogDetailsInterface[]) => {
             if (setLogs) {
                 setLogs(value);
             }
@@ -247,20 +249,16 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
             </View>
 
             <AddLogDetails
-                parcPrepFileId={filteringId ? +filteringId : null}
+                parcPrepFileId={
+                    filteringId && filteringId.length ? filteringId : null
+                }
                 oldLog={oldLog}
                 gasolineList={gasolines}
                 modalVisible={addLogModalShow}
-                onClose={() => {
+                onClose={(refresh) => {
                     setAddLogModalShow(false);
-                    if (filteringId) {
-                        getLogs(+filteringId).then(
-                            (value: LogDetailsInterface[]) => {
-                                if (setLogs) {
-                                    setLogs(value);
-                                }
-                            }
-                        );
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateParcPrep);
                     }
                 }}
             />

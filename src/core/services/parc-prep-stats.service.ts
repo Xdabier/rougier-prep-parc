@@ -5,7 +5,7 @@ import {ParcPrepStatsInterface} from '../interfaces/parc-prep-stats.interface';
 const SQLiteService: SqlLiteService = new SqlLiteService();
 
 export const getParcPrepStatsById = async (
-    id: number,
+    id: string,
     close = false
 ): Promise<ParcPrepStatsInterface[]> => {
     try {

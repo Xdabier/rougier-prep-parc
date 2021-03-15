@@ -1,7 +1,7 @@
 export interface ParcPrepStatsInterface {
     lastLogDate?: string;
-    parcPrepId: number;
-    id?: number;
+    parcPrepId: string;
+    id?: string;
     lastLogId?: string;
     logsNumber?: number;
     isDefault: 0 | 1;
