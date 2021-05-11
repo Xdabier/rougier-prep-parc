@@ -69,6 +69,7 @@ const FormInput: React.FunctionComponent<{
     defaultValue?: string;
     maxLength?: number;
     disabled?: boolean;
+    required?: boolean;
     pattern?: string[];
     keyboardType?: KeyboardTypeOptions;
     value?: string;
@@ -82,6 +83,7 @@ const FormInput: React.FunctionComponent<{
     errText,
     onChangeText,
     disabled,
+    required,
     pattern,
     maxLength,
     keyboardType,
@@ -93,6 +95,7 @@ const FormInput: React.FunctionComponent<{
     errText?: string;
     maxLength?: number;
     disabled?: boolean;
+    required?: boolean;
     pattern?: string[];
     keyboardType?: KeyboardTypeOptions;
     value?: string;
@@ -132,7 +135,9 @@ const FormInput: React.FunctionComponent<{
                     alignCenter,
                     STYLES.fieldContainer
                 ]}>
-                <Text style={[STYLES.label, STYLES.textStyle]}>{title}</Text>
+                <Text style={[STYLES.label, STYLES.textStyle]}>
+                    {required ? `${title} *` : title}
+                </Text>
                 <TextInput
                     maxLength={maxLength}
                     keyboardType={keyboardType || 'default'}
@@ -172,6 +177,7 @@ FormInput.defaultProps = {
     errText: '',
     keyboardType: 'default',
     disabled: false,
+    required: false,
     maxLength: 60,
     pattern: [],
     onValidation: () => {},

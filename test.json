@@ -1,39 +1,39 @@
 {
-  "aac": "56-88-11",
-  "creationDate": "2021-02-28T09:21:27.131Z",
-  "cuber": "M05132",
-  "id": "M0513290328",
-  "logs": [
-    {
-      "barCode": "6194007510014",
-      "dgb": 55,
-      "diameter": 44,
-      "dpb": 33,
-      "gasoline": "LOT",
-      "id": "3464/55",
-      "indicator": 55,
-      "lengthVal": 12336,
-      "logging": 3464,
-      "quality": "Tty",
-      "status": "Ggs",
-      "statusPattern": "Gsbs",
-      "volume": 18.757
-    },
-    {
-      "barCode": "33611948494",
-      "dgb": 22,
-      "diameter": 16.5,
-      "dpb": 11,
-      "gasoline": "ANA",
-      "id": "554/332",
-      "indicator": 332,
-      "lengthVal": 1669,
-      "logging": 554,
-      "quality": "Uuo",
-      "status": "True",
-      "statusPattern": "Biok",
-      "volume": 0.357
-    }
-  ],
-  "site": "41IV"
+    "aac": "56-88-11",
+    "creationDate": "2021-02-28T09:21:27.131Z",
+    "cuber": "M05132",
+    "id": "M0513290328",
+    "logs": [
+        {
+            "barCode": "6194007510014",
+            "dgb": 55,
+            "diameter": 44,
+            "dpb": 33,
+            "gasoline": "LOT",
+            "id": "3464/55",
+            "indicator": 55,
+            "lengthVal": 12336,
+            "logging": 3464,
+            "quality": "Tty",
+            "status": "Ggs",
+            "statusPattern": "Gsbs",
+            "volume": 18.757
+        },
+        {
+            "barCode": "33611948494",
+            "dgb": 22,
+            "diameter": 16.5,
+            "dpb": 11,
+            "gasoline": "ANA",
+            "id": "554/332",
+            "indicator": 332,
+            "lengthVal": 1669,
+            "logging": 554,
+            "quality": "Uuo",
+            "status": "True",
+            "statusPattern": "Biok",
+            "volume": 0.357
+        }
+    ],
+    "site": "41IV"
 }

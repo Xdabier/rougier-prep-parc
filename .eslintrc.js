@@ -13,7 +13,7 @@ module.exports = {
         createDefaultProgram: true
     },
     rules: {
-        "global-require": "off",
-        "no-underscore-dangle": "off"
+        'global-require': 'off',
+        'no-underscore-dangle': 'off'
     }
 };

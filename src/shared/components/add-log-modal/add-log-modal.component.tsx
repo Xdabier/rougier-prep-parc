@@ -234,11 +234,7 @@ const AddLogDetails: React.FunctionComponent<{
         diameterAvg &&
         diameterAvg.length >= 1 &&
         volume &&
-        volume.length >= 1 &&
-        status &&
-        status.length >= 1 &&
-        patternStatus &&
-        patternStatus.length >= 1;
+        volume.length >= 1;
 
     const confirmInsertion = () => {
         if (
@@ -272,7 +268,6 @@ const AddLogDetails: React.FunctionComponent<{
                 EL.parcPrepId = oldLog.parcPrepId;
                 updateLog(oldLog.id, EL)
                     .then((res: ResultSet) => {
-                        console.log('res = ', res);
                         if (res && res.rows) {
                             resetFields();
                             onClose(true);
@@ -283,7 +278,7 @@ const AddLogDetails: React.FunctionComponent<{
                         }
                     })
                     .catch((reason: SQLError) => {
-                        console.log('er = ', reason);
+                        console.error('er = ', reason);
                         if (!reason.code) {
                             ToastAndroid.show(
                                 translate('common.dupErr'),
@@ -378,6 +373,7 @@ const AddLogDetails: React.FunctionComponent<{
                         onChangeText={setBarCode}
                         keyboardType="number-pad"
                         value={barCode}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.logging.label')}
@@ -387,6 +383,7 @@ const AddLogDetails: React.FunctionComponent<{
                         }}
                         keyboardType="number-pad"
                         value={logging}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.index.label')}
@@ -396,6 +393,7 @@ const AddLogDetails: React.FunctionComponent<{
                         }}
                         keyboardType="number-pad"
                         value={index}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.id.label')}
@@ -403,6 +401,7 @@ const AddLogDetails: React.FunctionComponent<{
                         onChangeText={setId}
                         value={id}
                         disabled
+                        required
                     />
                     <SelectInput
                         title={translate('modals.logs.fields.gasoline.label')}
@@ -411,6 +410,7 @@ const AddLogDetails: React.FunctionComponent<{
                         )}
                         showSelectMenu={onSelectMenu}
                         value={gasoline?.name}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.dgb.label')}
@@ -420,6 +420,7 @@ const AddLogDetails: React.FunctionComponent<{
                         }}
                         keyboardType="number-pad"
                         value={dgb}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.dpb.label')}
@@ -429,6 +430,7 @@ const AddLogDetails: React.FunctionComponent<{
                         }}
                         keyboardType="number-pad"
                         value={dpb}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.length.label')}
@@ -436,6 +438,7 @@ const AddLogDetails: React.FunctionComponent<{
                         onChangeText={onLengthChange}
                         value={lengthVal}
                         keyboardType="number-pad"
+                        required
                     />
                     <FormInput
                         title={translate(
@@ -447,6 +450,7 @@ const AddLogDetails: React.FunctionComponent<{
                         onChangeText={setDiameterAvg}
                         value={diameterAvg}
                         disabled
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.volume.label')}
@@ -454,12 +458,14 @@ const AddLogDetails: React.FunctionComponent<{
                         onChangeText={setVolume}
                         value={volume}
                         disabled
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.quality.label')}
                         placeholder={translate('modals.logs.fields.quality.ph')}
                         onChangeText={setQuality}
                         value={quality}
+                        required
                     />
                     <FormInput
                         title={translate('modals.logs.fields.status.label')}

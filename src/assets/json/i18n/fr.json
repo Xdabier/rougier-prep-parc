@@ -1,170 +1,176 @@
 {
-  "common": {
-    "home": "Acceuil",
-    "parcPrep": "Prép. parc",
-    "log": "Bille",
-    "settings": "Paramètres",
-    "id": "ID",
-    "logId": "ID bille",
-    "parcId": "ID Parc",
-    "prepFileId": "ID fiche prép. parc {{fileId}}",
-    "creationDate": "Créé le {{date}}",
-    "lastLogDate": "Dernière bille le {{date}}",
-    "logs": "Billes",
-    "logsNumber": "{{numLogs}} Billes",
-    "addParcPrepFile": "Ajouter fiche prép. parc",
-    "editParcPrepFile": "Modifier fiche",
-    "editLog": "Modifier bille",
-    "addLog": "Ajouter bille",
-    "sync": "Synchroniser",
-    "scanBarCode": "Scan code a barre",
-    "syncAll": "Synchroniser touts",
-    "synced": "Synchronisé",
-    "dupErr": "Identifiant dupliqué !",
-    "fr": "Français",
-    "en": "Anglais",
-    "yes": "Oui",
-    "validate": "Valider",
-    "no": "Non",
-    "code": "Code: {{val}}",
-    "default": "Par défaut",
-    "validErr": "Veuillez vous assurer que tous les champs sont valides."
-  },
-  "changeLanguageAlert": {
-    "title": "Changement de langue",
-    "message": "voulez-vous vraiment changer de langue ?"
-  },
-  "closeModalAlert": {
-    "title": "Etes-vous sûr ? ",
-    "message": "Vous voulez fermer sans sauvegarder votre formulaire ?",
-    "message_code": "Vous voulez fermer sans scanner le code ?"
-  },
-  "homePage": {
-    "title": "Fiche préparation parc actuel"
-  },
-  "logsListPage": {
-    "title": "Bille de parc",
-    "filterInputPh": "Commencez à taper l'id...",
-    "noContent": "Aucun bille n'a encore été ajouté."
-  },
-  "parcPrep": {
-    "noContent": "Vous devez d'abord ajouter les fiches de préparation du parc."
-  },
-  "settings": {
-    "title": "Utilisateur",
-    "setUser": "Définir l'utilisateur actuel",
-    "addGasoline": "Ajouter l'essence",
-    "addCuber": "Ajouter cubeur",
-    "addSite": "Ajouter chantier"
-  },
-  "modals": {
-    "aux": {
-      "title": "Ajouter {{val}}",
-      "succMsg": "{{val}} ajouter avec succée!",
-      "confirm": "Confirmer l'ajout de {{val}}",
-      "fields": {
-        "name": {
-          "label": "Nom",
-          "ph": "Entrez le nom de {{val}}"
-        },
-        "code": {
-          "label": "Code",
-          "ph": "Entrez le code de {{val}}"
-        }
-      }
+    "common": {
+        "home": "Acceuil",
+        "parcPrep": "Prép. parc",
+        "log": "Bille",
+        "settings": "Paramètres",
+        "id": "ID",
+        "logId": "ID bille",
+        "parcId": "ID Parc",
+        "prepFileId": "ID fiche prép. parc {{fileId}}",
+        "creationDate": "Créé le {{date}}",
+        "lastLogDate": "Dernière bille le {{date}}",
+        "logs": "Billes",
+        "logsNumber": "{{numLogs}} Billes",
+        "addParcPrepFile": "Ajouter fiche prép. parc",
+        "editParcPrepFile": "Modifier fiche",
+        "editLog": "Modifier bille",
+        "addLog": "Ajouter bille",
+        "sync": "Synchroniser",
+        "scanBarCode": "Scan code a barre",
+        "syncAll": "Synchroniser touts",
+        "synced": "Synchronisé",
+        "dupErr": "Identifiant dupliqué !",
+        "fr": "Français",
+        "en": "Anglais",
+        "yes": "Oui",
+        "validate": "Valider",
+        "no": "Non",
+        "code": "Code: {{val}}",
+        "default": "Par défaut",
+        "validErr": "Veuillez vous assurer que tous les champs sont valides.",
+        "requiredField": "Ce champ est requis"
     },
-    "cuber": {
-      "name": "cubeur"
+    "changeLanguageAlert": {
+        "title": "Changement de langue",
+        "message": "voulez-vous vraiment changer de langue ?"
     },
-    "site": {
-      "name": "chantier"
+    "closeModalAlert": {
+        "title": "Etes-vous sûr ? ",
+        "message": "Vous voulez fermer sans sauvegarder votre formulaire ?",
+        "message_code": "Vous voulez fermer sans scanner le code ?"
     },
-    "gasoline": {
-      "name": "essence"
+    "homePage": {
+        "title": "Fiche préparation parc actuel"
     },
-    "logs": {
-      "confirm": "Confirmer l'ajout de bille",
-      "succMsg": "Bille ajouter avec succée!",
-      "fields": {
-        "barCode": {
-          "label": "Code a barre",
-          "ph": "Entrez le code a barre"
-        },
-        "logging": {
-          "label": "N° d'abattage",
-          "ph": "Entrez le N° d'abattage"
-        },
-        "index": {
-          "label": "N° d'indice",
-          "ph": "Entrez le N° d'indice"
-        },
-        "id": {
-          "label": "N° de bille",
-          "ph": "N° d'abattage / N° d'indice"
-        },
-        "gasoline": {
-          "label": "Essence",
-          "ph": "Sélectionnez l'essence"
-        },
-        "dgb": {
-          "label": "DGB",
-          "ph": "Entrez le N° DGB"
-        },
-        "dpb": {
-          "label": "DPB",
-          "ph": "Entrez le N° DPB"
-        },
-        "length": {
-          "label": "Longueur",
-          "ph": "Entrez le longueur"
-        },
-        "diameterAvg": {
-          "label": "Diamètre moyen",
-          "ph": "( DGB + DPB ) / 2"
-        },
-        "volume": {
-          "label": "Volume",
-          "ph": "Formule de volume"
-        },
-        "quality": {
-          "label": "Qualité",
-          "ph": "Entrez la qualité"
-        },
-        "status": {
-          "label": "Status",
-          "ph": "Entrez la status"
-        },
-        "patternStatus": {
-          "label": "Motif status",
-          "ph": "Entrez la motif status"
-        }
-      }
+    "logsListPage": {
+        "title": "Bille de parc",
+        "filterInputPh": "Commencez à taper l'id...",
+        "noContent": "Aucun bille n'a encore été ajouté."
     },
     "parcPrep": {
-      "confirm": "Confirmer l'ajout de fiche",
-      "succMsg": "Fiche préparation parc ajouter avec succée!",
-      "fields": {
-        "aac": {
-          "label": "AAC",
-          "ph": "ex: 23-26-95",
-          "err": "Merci de respecter ce schéma (un ou deux N°s) - (un ou deux N°s) - (un ou deux N°s)"
+        "noContent": "Vous devez d'abord ajouter les fiches de préparation du parc."
+    },
+    "settings": {
+        "title": "Utilisateur",
+        "setUser": "Définir l'utilisateur actuel",
+        "addGasoline": "Ajouter l'essence",
+        "addCuber": "Ajouter cubeur",
+        "addSite": "Ajouter chantier"
+    },
+    "modals": {
+        "aux": {
+            "title": "Ajouter {{val}}",
+            "succMsg": "{{val}} ajouter avec succée!",
+            "confirm": "Confirmer l'ajout de {{val}}",
+            "fields": {
+                "name": {
+                    "label": "Nom",
+                    "ph": "Entrez le nom de {{val}}"
+                },
+                "code": {
+                    "label": "Code",
+                    "ph": "Entrez le code de {{val}}"
+                }
+            }
         },
         "cuber": {
-          "label": "Cubeur",
-          "ph": "Sélectionnez le cubeur"
+            "name": "cubeur"
         },
         "site": {
-          "label": "Chantier",
-          "ph": "Sélectionnez le chantier"
+            "name": "chantier"
         },
-        "date": {
-          "label": "Date",
-          "ph": "Veuillez choisir une date"
+        "gasoline": {
+            "name": "essence"
         },
-        "parcAsDefault": {
-          "label": "Choisir comme fiche actuelle"
+        "logs": {
+            "confirm": "Confirmer l'ajout de bille",
+            "succMsg": "Bille ajouter avec succée!",
+            "fields": {
+                "barCode": {
+                    "label": "Code a barre",
+                    "ph": "Entrez le code a barre"
+                },
+                "logging": {
+                    "label": "N° d'abattage",
+                    "ph": "Entrez le N° d'abattage"
+                },
+                "index": {
+                    "label": "N° de tronçon",
+                    "ph": "Entrez le N° de tronçon"
+                },
+                "id": {
+                    "label": "N° de bille",
+                    "ph": "N° d'abattage / N° de tronçon"
+                },
+                "gasoline": {
+                    "label": "Essence",
+                    "ph": "Sélectionnez l'essence"
+                },
+                "dgb": {
+                    "label": "DGB",
+                    "ph": "Entrez le N° DGB"
+                },
+                "dpb": {
+                    "label": "DPB",
+                    "ph": "Entrez le N° DPB"
+                },
+                "length": {
+                    "label": "Longueur",
+                    "ph": "Entrez le longueur"
+                },
+                "diameterAvg": {
+                    "label": "Diamètre moyen",
+                    "ph": "( DGB + DPB ) / 2"
+                },
+                "volume": {
+                    "label": "Volume",
+                    "ph": "Formule de volume"
+                },
+                "quality": {
+                    "label": "Qualité",
+                    "ph": "Entrez la qualité"
+                },
+                "status": {
+                    "label": "statut",
+                    "ph": "Entrez la statut"
+                },
+                "patternStatus": {
+                    "label": "Motif statut",
+                    "ph": "Entrez la motif statut"
+                }
+            }
+        },
+        "parcPrep": {
+            "confirm": "Confirmer l'ajout de fiche",
+            "succMsg": "Fiche préparation parc ajouter avec succée!",
+            "fields": {
+                "id": {
+                    "label": "ID de fiche",
+                    "ph": "ex: FICHE-4569",
+                    "err": "L'ID doit comporter au moins 3 caractères"
+                },
+                "aac": {
+                    "label": "AAC",
+                    "ph": "ex: 23-26-95",
+                    "err": "Merci de respecter ce schéma (un ou deux N°s) - (un ou deux N°s) - (un ou deux N°s)"
+                },
+                "cuber": {
+                    "label": "Cubeur",
+                    "ph": "Sélectionnez le cubeur"
+                },
+                "site": {
+                    "label": "Chantier",
+                    "ph": "Sélectionnez le chantier"
+                },
+                "date": {
+                    "label": "Date",
+                    "ph": "Veuillez choisir une date"
+                },
+                "parcAsDefault": {
+                    "label": "Choisir comme fiche actuelle"
+                }
+            }
         }
-      }
     }
-  }
 }

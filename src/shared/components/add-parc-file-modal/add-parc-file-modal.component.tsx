@@ -82,6 +82,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     oldFile?: ParcPrepAllDetailsInterface | null;
     sites: SiteInterface[];
 }) => {
+    const [id, setId] = useState<string>('');
     const [aac, setAac] = useState<string>('');
     const [aacValid, setAacValid] = useState<boolean | boolean[]>(true);
     const [cuber, setCuber] = useState<CuberInterface>();
@@ -113,6 +114,7 @@ const AddParcFileDetails: React.FunctionComponent<{
 
     useEffect(() => {
         if (oldFile) {
+            setId(oldFile.id);
             setAac(oldFile.aac);
             setAacValid(true);
             setCuber({
@@ -132,6 +134,7 @@ const AddParcFileDetails: React.FunctionComponent<{
         if (validForm() && cuber && site) {
             // const SQLITE_SERVICE: SqlLiteService = new SqlLiteService();
             const EL: ParcPrepInterface = {
+                id,
                 allSynced: 0,
                 creationDate: date.toISOString(),
                 aac,
@@ -254,6 +257,7 @@ const AddParcFileDetails: React.FunctionComponent<{
                         ]}
                         errText={translate('modals.parcPrep.fields.aac.err')}
                         onValidation={setAacValid}
+                        required
                     />
                     <SelectInput
                         title={translate('modals.parcPrep.fields.cuber.label')}
@@ -264,6 +268,7 @@ const AddParcFileDetails: React.FunctionComponent<{
                             onSelectMenu('cubers');
                         }}
                         value={cuber?.name}
+                        required
                     />
                     <SelectInput
                         title={translate('modals.parcPrep.fields.site.label')}
@@ -274,6 +279,7 @@ const AddParcFileDetails: React.FunctionComponent<{
                             onSelectMenu('sites');
                         }}
                         value={site?.name}
+                        required
                     />
                     <DateInput
                         title={translate('modals.parcPrep.fields.date.label')}

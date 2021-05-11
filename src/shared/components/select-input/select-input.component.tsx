@@ -59,16 +59,19 @@ const STYLES = StyleSheet.create({
 const SelectInput: React.FunctionComponent<{
     title: string;
     value?: string;
+    required?: boolean;
     placeholder?: string;
     showSelectMenu?: () => void;
 }> = ({
     title,
     value,
+    required,
     placeholder,
     showSelectMenu
 }: {
     title: string;
     value?: string;
+    required?: boolean;
     placeholder?: string;
     showSelectMenu?: () => void;
 }) => (
@@ -82,7 +85,7 @@ const SelectInput: React.FunctionComponent<{
                 STYLES.fieldContainer
             ]}>
             <Text style={[STYLES.label, STYLES.textStyle, STYLES.val]}>
-                {title}
+                {required ? `${title} *` : title}
             </Text>
             <View
                 style={[
@@ -125,7 +128,8 @@ const SelectInput: React.FunctionComponent<{
 SelectInput.defaultProps = {
     showSelectMenu: () => {},
     value: '',
-    placeholder: ''
+    placeholder: '',
+    required: false
 };
 
 export default SelectInput;
