@@ -59,10 +59,7 @@ const STYLES = StyleSheet.create({
     filterRow: {
         height: FILTER_ROW_HEIGHT
     },
-    fabButtonView: {
-        bottom: MISSING_SPACE,
-        marginBottom: FAB_BOTTOM_MARGIN
-    },
+    fabButtonView: {},
     filterButton: {
         width: 234 - 13 * 2,
         height: FILTER_ROW_HEIGHT,
@@ -113,7 +110,8 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
         gasolines,
         parcIds,
         filteringId,
-        setFilteringId
+        setFilteringId,
+        keyboardHeight
     } = useContext<MainStateContextInterface>(MainStateContext);
 
     const [oldLog, setOldLog] = useState<LogDetailsInterface | null>(null);
@@ -169,65 +167,98 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
     );
 
     return (
-        <SafeAreaView style={[appPage]}>
-            <>
-                <PageTitle title={translate('logsListPage.title')} />
-
-                <View
-                    style={[
-                        fullWidth,
-                        centerHorizontally,
-                        spaceBetween,
-                        alignCenter
-                    ]}>
-                    <Text style={[STYLES.filterLabel, mainColor]}>
-                        {translate('common.parcId')}
-                    </Text>
-                    <MatButton
-                        isElevated
-                        onPress={() => {
-                            actionSheetRef.current?.setModalVisible();
-                        }}>
-                        <View
-                            style={[
-                                centerHorizontally,
-                                spaceBetween,
-                                alignCenter,
-                                STYLES.filterButton
-                            ]}>
-                            <Text>{filteringId}</Text>
-                            <Icon
-                                name="keyboard-arrow-down"
-                                size={TEXT_LINE_HEIGHT}
-                            />
-                        </View>
-                    </MatButton>
-                </View>
-            </>
-            {logs.length ? (
+        <>
+            <SafeAreaView style={[appPage]}>
                 <>
-                    <View style={[vSpacer25]} />
+                    <PageTitle title={translate('logsListPage.title')} />
 
-                    <FlatList
-                        contentContainerStyle={[
-                            centerVertically,
-                            justifyAlignCenter,
-                            scrollView,
-                            pT2,
-                            STYLES.listBottomSpacing
-                        ]}
-                        data={logs}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => `${index}`}
-                    />
+                    <View
+                        style={[
+                            fullWidth,
+                            centerHorizontally,
+                            spaceBetween,
+                            alignCenter
+                        ]}>
+                        <Text style={[STYLES.filterLabel, mainColor]}>
+                            {translate('common.parcId')}
+                        </Text>
+                        <MatButton
+                            isElevated
+                            onPress={() => {
+                                actionSheetRef.current?.setModalVisible();
+                            }}>
+                            <View
+                                style={[
+                                    centerHorizontally,
+                                    spaceBetween,
+                                    alignCenter,
+                                    STYLES.filterButton
+                                ]}>
+                                <Text>{filteringId}</Text>
+                                <Icon
+                                    name="keyboard-arrow-down"
+                                    size={TEXT_LINE_HEIGHT}
+                                />
+                            </View>
+                        </MatButton>
+                    </View>
                 </>
-            ) : (
-                <View>
-                    <Text style={[noContent]}>
-                        {translate('logsListPage.noContent')}
-                    </Text>
-                </View>
-            )}
+                {logs.length ? (
+                    <>
+                        <View style={[vSpacer25]} />
+
+                        <FlatList
+                            contentContainerStyle={[
+                                centerVertically,
+                                justifyAlignCenter,
+                                scrollView,
+                                pT2,
+                                STYLES.listBottomSpacing
+                            ]}
+                            data={logs}
+                            renderItem={renderItem}
+                            keyExtractor={(item, index) => `${index}`}
+                        />
+                    </>
+                ) : (
+                    <View>
+                        <Text style={[noContent]}>
+                            {translate('logsListPage.noContent')}
+                        </Text>
+                    </View>
+                )}
+
+                <AddLogDetails
+                    parcPrepFileId={
+                        filteringId && filteringId.length ? filteringId : null
+                    }
+                    oldLog={oldLog}
+                    gasolineList={gasolines}
+                    modalVisible={addLogModalShow}
+                    onClose={(refresh) => {
+                        setAddLogModalShow(false);
+                        if (refresh) {
+                            eventPub(EventTopicEnum.updateParcPrep);
+                        }
+                    }}
+                />
+
+                <ActionSheetComponent
+                    initialOffsetFromBottom={0.6}
+                    ref={actionSheetRef}
+                    statusBarTranslucent
+                    bounceOnOpen
+                    bounciness={4}
+                    gestureEnabled
+                    defaultOverlayOpacity={0.3}>
+                    <ActionSheetContent
+                        actionSheetRef={actionSheetRef}
+                        valuesList={parcIds}
+                        keyboardHeight={keyboardHeight}
+                        renderElement={renderFilterBtn}
+                    />
+                </ActionSheetComponent>
+            </SafeAreaView>
             <View style={[fabButtonView, STYLES.fabButtonView]}>
                 <MatButton
                     isFab
@@ -247,37 +278,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                     </View>
                 </MatButton>
             </View>
-
-            <AddLogDetails
-                parcPrepFileId={
-                    filteringId && filteringId.length ? filteringId : null
-                }
-                oldLog={oldLog}
-                gasolineList={gasolines}
-                modalVisible={addLogModalShow}
-                onClose={(refresh) => {
-                    setAddLogModalShow(false);
-                    if (refresh) {
-                        eventPub(EventTopicEnum.updateParcPrep);
-                    }
-                }}
-            />
-
-            <ActionSheetComponent
-                initialOffsetFromBottom={0.6}
-                ref={actionSheetRef}
-                statusBarTranslucent
-                bounceOnOpen
-                bounciness={4}
-                gestureEnabled
-                defaultOverlayOpacity={0.3}>
-                <ActionSheetContent
-                    actionSheetRef={actionSheetRef}
-                    valuesList={parcIds}
-                    renderElement={renderFilterBtn}
-                />
-            </ActionSheetComponent>
-        </SafeAreaView>
+        </>
     );
 };
 

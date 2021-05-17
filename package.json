@@ -9,7 +9,7 @@
         "test": "jest",
         "lint:eslint": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
         "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./",
-        "prettier:write": "npx prettier \"--write src/**/*.{js,jsx,ts,tsx,json}\"; npx prettier --write \"*.{js,jsx,ts,tsx,json}\""
+        "prettier:write": "npx prettier --write src/**/*.{js,jsx,ts,tsx,json}; npx prettier --write *.{js,jsx,ts,tsx,json}"
     },
     "dependencies": {
         "@react-native-community/async-storage": "^1.12.1",

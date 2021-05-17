@@ -30,7 +30,7 @@ const STYLES = StyleSheet.create({
     },
     errorText: {
         color: MAIN_RED,
-        fontSize: 14,
+        fontSize: 13,
         fontFamily: poppinsRegular,
         maxWidth: widthPercentageToDP(60.922330097087375),
         width: widthPercentageToDP(60.922330097087375)
@@ -50,7 +50,7 @@ const STYLES = StyleSheet.create({
     label: {
         maxWidth: widthPercentageToDP(31),
         width: widthPercentageToDP(31),
-        fontSize: 16
+        fontSize: 14
     },
     textInput: {
         padding: 0,
@@ -58,7 +58,7 @@ const STYLES = StyleSheet.create({
         width: widthPercentageToDP(58),
         borderBottomWidth: 1,
         borderBottomColor: '#707070',
-        fontSize: 16
+        fontSize: 14
     }
 });
 

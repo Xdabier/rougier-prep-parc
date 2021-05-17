@@ -223,6 +223,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                         </View>
                     </View>
                 </MatButton>
+                <View style={[vSpacer60]} />
             </ScrollView>
 
             <CameraModal

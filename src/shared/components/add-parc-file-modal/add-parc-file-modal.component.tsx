@@ -1,4 +1,10 @@
-import React, {createRef, RefObject, useEffect, useState} from 'react';
+import React, {
+    createRef,
+    RefObject,
+    useContext,
+    useEffect,
+    useState
+} from 'react';
 import {
     Modal,
     SafeAreaView,
@@ -35,6 +41,8 @@ import {
 } from '../../../core/services/parc-prep.service';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 import requestCloseModal from '../../../utils/modal.utils';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
 
 const {
     fullWidth,
@@ -83,6 +91,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     sites: SiteInterface[];
 }) => {
     const [id, setId] = useState<string>('');
+    const [idValid, setIdValid] = useState<boolean | boolean[]>(true);
     const [aac, setAac] = useState<string>('');
     const [aacValid, setAacValid] = useState<boolean | boolean[]>(true);
     const [cuber, setCuber] = useState<CuberInterface>();
@@ -94,7 +103,12 @@ const AddParcFileDetails: React.FunctionComponent<{
         'cubers' | 'sites' | 'none'
     >('none');
 
-    const validForm = () => !!(aacValid && aac && aac.length && cuber && site);
+    const {keyboardHeight} = useContext<MainStateContextInterface>(
+        MainStateContext
+    );
+
+    const validForm = () =>
+        !!(idValid && aacValid && aac && aac.length && cuber && site);
 
     const onSelectMenu = (list: 'cubers' | 'sites' | 'none'): void => {
         setSelectedList(list);
@@ -117,6 +131,7 @@ const AddParcFileDetails: React.FunctionComponent<{
             setId(oldFile.id);
             setAac(oldFile.aac);
             setAacValid(true);
+            setIdValid(true);
             setCuber({
                 name: oldFile.cuberName,
                 code: oldFile.cuberCode
@@ -132,7 +147,6 @@ const AddParcFileDetails: React.FunctionComponent<{
 
     const confirmInsertion = () => {
         if (validForm() && cuber && site) {
-            // const SQLITE_SERVICE: SqlLiteService = new SqlLiteService();
             const EL: ParcPrepInterface = {
                 id,
                 allSynced: 0,
@@ -247,6 +261,18 @@ const AddParcFileDetails: React.FunctionComponent<{
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
                     <FormInput
+                        maxLength={25}
+                        title={translate('modals.parcPrep.fields.id.label')}
+                        placeholder={translate('modals.parcPrep.fields.id.ph')}
+                        onChangeText={setId}
+                        value={id}
+                        pattern={['^(.){3,}$']}
+                        errText={translate('modals.parcPrep.fields.id.err')}
+                        onValidation={setIdValid}
+                        disabled={!!oldFile && !!oldFile?.id}
+                        required
+                    />
+                    <FormInput
                         maxLength={8}
                         title={translate('modals.parcPrep.fields.aac.label')}
                         placeholder={translate('modals.parcPrep.fields.aac.ph')}
@@ -313,6 +339,7 @@ const AddParcFileDetails: React.FunctionComponent<{
                 gestureEnabled
                 defaultOverlayOpacity={0.3}>
                 <ActionSheetContent
+                    keyboardHeight={keyboardHeight}
                     actionSheetRef={actionSheetRef}
                     valuesList={selectedList === 'cubers' ? cubers : sites}
                     renderElement={renderFilterBtn}

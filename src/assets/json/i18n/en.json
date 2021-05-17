@@ -31,6 +31,9 @@
         "validErr": "Please make sure all the fields are valid.",
         "requiredField": "This field is required"
     },
+    "actionSheet": {
+        "ph": "Filter the list by name, ex: Jean-pierre "
+    },
     "changeLanguageAlert": {
         "title": "Language change",
         "message": "do you really want to change the language ?"
@@ -120,7 +123,7 @@
                     "ph": "Enter length value"
                 },
                 "diameterAvg": {
-                    "label": "Average diameter",
+                    "label": "Average dm",
                     "ph": "( DGB + DPB ) / 2"
                 },
                 "volume": {
@@ -148,7 +151,7 @@
                 "id": {
                     "label": "Form ID",
                     "ph": "ex: FICHE-4569",
-                    "err": "The ID should be at least 3 characters"
+                    "err": "The ID should be alpha-num and at least 3 characters."
                 },
                 "aac": {
                     "label": "AAC",

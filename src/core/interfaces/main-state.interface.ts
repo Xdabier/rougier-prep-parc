@@ -9,6 +9,7 @@ import {ParcPrepAllDetailsInterface} from './parc-prep-all-details.interface';
 export interface MainStateContextInterface {
     setFilteringId?: (v: string) => void;
     filteringId?: string;
+    keyboardHeight?: number;
     setUser?: (v: UserInterface) => void;
     user?: UserInterface;
     setDefaultParc?: (v: DefParcInterface) => void;

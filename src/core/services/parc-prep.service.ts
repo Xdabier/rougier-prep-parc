@@ -163,7 +163,6 @@ export const insertParcPrepFile = async (
 ): Promise<ResultSet> => {
     try {
         const {defaultParcFile, ...others} = element;
-        others.id = `${others.cuber}${randomInt()}`;
         const KEYS = Object.keys(others);
         const STR: string = `INSERT INTO parc_prep (${KEYS.join(
             ', '

@@ -109,7 +109,7 @@ const AddLogDetails: React.FunctionComponent<{
     const [status, setStatus] = useState<string>('');
     const [patternStatus, setPatternStatus] = useState<string>('');
 
-    const {defaultParc} = useContext<MainStateContextInterface>(
+    const {defaultParc, keyboardHeight} = useContext<MainStateContextInterface>(
         MainStateContext
     );
 
@@ -501,6 +501,7 @@ const AddLogDetails: React.FunctionComponent<{
                 gestureEnabled
                 defaultOverlayOpacity={0.3}>
                 <ActionSheetContent
+                    keyboardHeight={keyboardHeight}
                     actionSheetRef={actionSheetRef}
                     valuesList={gasolineList || []}
                     renderElement={renderFilterBtn}

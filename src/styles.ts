@@ -101,6 +101,12 @@ export interface AppStyleSheet {
     pB60: {
         [key: string]: any;
     };
+    p5: {
+        [key: string]: any;
+    };
+    mB10: {
+        [key: string]: any;
+    };
     vSpacer25: {
         [key: string]: any;
     };
@@ -293,6 +299,7 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     fabButtonView: {
         position: 'absolute',
         right: 10,
+        bottom: 10,
         borderRadius: FAB_BORDER_RADIUS
     },
     fabButton: {
@@ -337,6 +344,12 @@ const CommonStyles = StyleSheet.create<AppStyleSheet>({
     },
     pB60: {
         paddingBottom: 60
+    },
+    p5: {
+        padding: 5
+    },
+    mB10: {
+        marginBottom: 10
     }
 });
 

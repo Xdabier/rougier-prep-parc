@@ -31,6 +31,11 @@
         "validErr": "Veuillez vous assurer que tous les champs sont valides.",
         "requiredField": "Ce champ est requis"
     },
+    "actionSheet": {
+        "searchBar": {
+            "ph": "Filtrez la liste par nom, ex: Jean-pierre "
+        }
+    },
     "changeLanguageAlert": {
         "title": "Changement de langue",
         "message": "voulez-vous vraiment changer de langue ?"
@@ -120,7 +125,7 @@
                     "ph": "Entrez le longueur"
                 },
                 "diameterAvg": {
-                    "label": "Diamètre moyen",
+                    "label": "DIAM moyen",
                     "ph": "( DGB + DPB ) / 2"
                 },
                 "volume": {
@@ -148,7 +153,7 @@
                 "id": {
                     "label": "ID de fiche",
                     "ph": "ex: FICHE-4569",
-                    "err": "L'ID doit comporter au moins 3 caractères"
+                    "err": "L'ID doit être alphanumérique et comporter au moins 3 caractères"
                 },
                 "aac": {
                     "label": "AAC",

@@ -101,11 +101,13 @@ const LogCard: React.FunctionComponent<{
                     logItem.quality
                 }`}
             </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.status.label')}: ${
-                    logItem.status
-                }`}
-            </Text>
+            {!!logItem.status && (
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.status.label')}: ${
+                        logItem.status
+                    }`}
+                </Text>
+            )}
             <Text style={[info, regularFont, textAlignLeft]}>
                 {`${translate('modals.logs.fields.gasoline.label')}: ${
                     logItem.gasName

@@ -9,7 +9,7 @@ import CommonStyles, {
 const {
     fullViewWidthInside,
     centerHorizontally,
-    spaceBetween,
+    justifyAlignTLeftHorizontal,
     alignCenter
 } = CommonStyles;
 const LINE_HEIGHT = 25;
@@ -27,9 +27,10 @@ const STYLES = StyleSheet.create({
         color: '#000'
     },
     label: {
+        marginLeft: 10,
         maxWidth: widthPercentageToDP(60.922330097087375),
         width: widthPercentageToDP(60.922330097087375),
-        fontSize: 16
+        fontSize: 14
     }
 });
 
@@ -50,7 +51,7 @@ const FormCheckbox: React.FunctionComponent<{
         style={[
             fullViewWidthInside,
             centerHorizontally,
-            spaceBetween,
+            justifyAlignTLeftHorizontal,
             alignCenter,
             STYLES.fieldContainer
         ]}>

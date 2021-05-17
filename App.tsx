@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Text, View} from 'react-native';
+import {Dimensions, Keyboard, KeyboardEvent, Text, View} from 'react-native';
 import {subscribe as eventSub} from 'pubsub-js';
 import HomeStackScreens from './src/features/home';
 import LogsStackScreens from './src/features/logs';
@@ -75,8 +75,20 @@ const App = () => {
         parcId: '',
         id: -1
     });
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    const onKeyboardDidShow = (e: KeyboardEvent) => {
+        const spacerHeight =
+            Dimensions.get('window').height - e.endCoordinates.height;
+        setKeyboardHeight(spacerHeight);
+    };
+
+    const onKeyboardDidHide = () => {
+        setKeyboardHeight(0);
+    };
 
     const MAIN_CONTEXT: MainStateContextInterface = {
+        keyboardHeight,
         cubers,
         defaultParc,
         gasolines,
@@ -208,6 +220,14 @@ const App = () => {
         eventSub(EventTopicEnum.updateAux, () => {
             refreshAux();
         });
+
+        Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+
+        return (): void => {
+            Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow);
+            Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide);
+        };
     }, []);
 
     return isReady ? (

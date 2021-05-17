@@ -30,12 +30,12 @@ const STYLES = StyleSheet.create({
         lineHeight: LINE_HEIGHT,
         textAlign: 'left',
         color: '#000',
-        fontSize: 16
+        fontSize: 14
     },
     label: {
         maxWidth: widthPercentageToDP(31),
         width: widthPercentageToDP(31),
-        fontSize: 16
+        fontSize: 14
     },
     textInput: {
         height: LINE_HEIGHT + 8,

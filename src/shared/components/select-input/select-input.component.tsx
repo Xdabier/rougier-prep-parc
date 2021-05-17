@@ -28,7 +28,7 @@ const STYLES = StyleSheet.create({
         fontFamily: poppinsRegular,
         lineHeight: LINE_HEIGHT,
         textAlign: 'left',
-        fontSize: 16
+        fontSize: 14
     },
     ph: {
         color: MAIN_LIGHT_GREY
@@ -39,7 +39,7 @@ const STYLES = StyleSheet.create({
     label: {
         maxWidth: widthPercentageToDP(31),
         width: widthPercentageToDP(31),
-        fontSize: 16
+        fontSize: 14
     },
     textInput: {
         height: LINE_HEIGHT + 8,
