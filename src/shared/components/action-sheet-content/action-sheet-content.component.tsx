@@ -1,4 +1,4 @@
-import React, {RefObject, useState} from 'react';
+import React, {RefObject, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import ActionSheetComponent from 'react-native-actions-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -55,11 +55,20 @@ const ActionSheetContent: React.FunctionComponent<{
     keyboardHeight?: number;
     renderElement: (val: {item: any}, index: number) => any;
 }) => {
-    const [elementsList, setElementsList] = useState(valuesList);
+    const [elementsList, setElementsList] = useState([] as any[]);
     const [searchKey, setSearchKey] = useState('');
+
+    const initElementsList = () => {
+        if (valuesList.length && valuesList.length > 99) {
+            setElementsList(valuesList.slice(0, 30));
+        } else {
+            setElementsList(valuesList);
+        }
+    };
 
     const clearInput = () => {
         setSearchKey('');
+        initElementsList();
     };
 
     const onKeywordChange = (_value: string) => {
@@ -71,8 +80,10 @@ const ActionSheetContent: React.FunctionComponent<{
             setElementsList(newList);
             return;
         }
-        setElementsList(valuesList);
+        initElementsList();
     };
+
+    useEffect(initElementsList, [valuesList]);
 
     return (
         <View>
