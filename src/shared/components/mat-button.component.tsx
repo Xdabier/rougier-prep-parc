@@ -12,9 +12,6 @@ const STYLES = StyleSheet.create({
     buttonParent: {
         overflow: 'hidden'
     },
-    isDisabled: {
-        opacity: 0.5
-    },
     elevationPadding: {
         padding: 2
     },
@@ -33,6 +30,7 @@ const MatButton: React.FunctionComponent<{
     isFab?: boolean;
     isIcon?: boolean;
     disabled?: boolean;
+    disabledOpacity?: number;
     isElevated?: boolean;
     onPress?: () => void;
 }> = ({
@@ -40,6 +38,7 @@ const MatButton: React.FunctionComponent<{
     isFab,
     isIcon,
     disabled,
+    disabledOpacity,
     isElevated,
     onPress
 }: {
@@ -47,12 +46,13 @@ const MatButton: React.FunctionComponent<{
     isFab?: boolean;
     isIcon?: boolean;
     disabled?: boolean;
+    disabledOpacity?: number;
     isElevated?: boolean;
     onPress?: () => void;
 }) => (
     <View
         style={[
-            disabled ? STYLES.isDisabled : {},
+            disabled ? {opacity: disabledOpacity} : {},
             STYLES.buttonParent,
             isIcon ? {} : STYLES.buttonRadius,
             isFab ? STYLES.fabButton : {},
@@ -71,6 +71,7 @@ MatButton.defaultProps = {
     isFab: false,
     isElevated: false,
     disabled: false,
+    disabledOpacity: 0.5,
     isIcon: false,
     onPress: () => {}
 };

@@ -15,7 +15,9 @@ const {
     spaceBetween,
     alignCenter,
     centerVertically,
-    justifyAlignCenter
+    justifyAlignCenter,
+    justifyAlignTopVertical,
+    justifyAlignLeftVertical
 } = CommonStyles;
 const LINE_HEIGHT = 25;
 const STYLES = StyleSheet.create({
@@ -29,21 +31,23 @@ const STYLES = StyleSheet.create({
         fontFamily: poppinsRegular,
         lineHeight: LINE_HEIGHT,
         textAlign: 'left',
-        color: '#000',
-        fontSize: 14
+        color: '#000'
     },
     label: {
         maxWidth: widthPercentageToDP(31),
         width: widthPercentageToDP(31),
-        fontSize: 14
+        fontSize: 14,
+        opacity: 0.6,
+        fontWeight: 'bold'
     },
     textInput: {
         height: LINE_HEIGHT + 8,
-        maxWidth: widthPercentageToDP(58),
-        width: widthPercentageToDP(58),
+        maxWidth: widthPercentageToDP(92),
+        width: widthPercentageToDP(92),
         borderBottomWidth: 1,
         borderBottomColor: '#707070',
-        paddingRight: 5
+        paddingRight: 5,
+        fontSize: 16
     },
     iconButton: {
         width: LINE_HEIGHT - 4,
@@ -79,9 +83,9 @@ const DateInput: React.FunctionComponent<{
             <View
                 style={[
                     fullViewWidthInside,
-                    centerHorizontally,
-                    spaceBetween,
-                    alignCenter,
+                    centerVertically,
+                    justifyAlignTopVertical,
+                    justifyAlignLeftVertical,
                     STYLES.fieldContainer
                 ]}>
                 <Text style={[STYLES.label, STYLES.textStyle]}>{title}</Text>
@@ -105,7 +109,7 @@ const DateInput: React.FunctionComponent<{
                             </Text>
                         </View>
 
-                        <MatButton isIcon>
+                        <MatButton isIcon disabled disabledOpacity={1}>
                             <View
                                 style={[
                                     STYLES.iconButton,

@@ -16,8 +16,10 @@ import CommonStyles, {
 const {
     fullViewWidthInside,
     centerHorizontally,
-    spaceBetween,
-    alignCenter
+    centerVertically,
+    justifyAlignTopVertical,
+    justifyAlignLeftVertical,
+    spaceBetween
 } = CommonStyles;
 const LINE_HEIGHT = 25;
 const STYLES = StyleSheet.create({
@@ -50,15 +52,17 @@ const STYLES = StyleSheet.create({
     label: {
         maxWidth: widthPercentageToDP(31),
         width: widthPercentageToDP(31),
-        fontSize: 14
+        fontSize: 14,
+        opacity: 0.6,
+        fontWeight: 'bold'
     },
     textInput: {
         padding: 0,
-        maxWidth: widthPercentageToDP(58),
-        width: widthPercentageToDP(58),
+        maxWidth: widthPercentageToDP(95),
+        width: widthPercentageToDP(95),
         borderBottomWidth: 1,
         borderBottomColor: '#707070',
-        fontSize: 14
+        fontSize: 16
     }
 });
 
@@ -130,9 +134,9 @@ const FormInput: React.FunctionComponent<{
             <View
                 style={[
                     fullViewWidthInside,
-                    centerHorizontally,
-                    spaceBetween,
-                    alignCenter,
+                    centerVertically,
+                    justifyAlignTopVertical,
+                    justifyAlignLeftVertical,
                     STYLES.fieldContainer
                 ]}>
                 <Text style={[STYLES.label, STYLES.textStyle]}>
