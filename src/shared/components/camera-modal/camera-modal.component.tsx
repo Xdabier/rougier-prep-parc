@@ -102,10 +102,10 @@ const CameraModal: React.FunctionComponent<{
         <Modal
             style={[fullWidth]}
             onRequestClose={() => {
-                requestCloseModal(
-                    onClose,
-                    translate('closeModalAlert.message_code')
-                );
+                requestCloseModal(() => {
+                    setCode('');
+                    onClose();
+                }, translate('closeModalAlert.message_code'));
             }}
             animationType="slide"
             visible={modalVisible}>

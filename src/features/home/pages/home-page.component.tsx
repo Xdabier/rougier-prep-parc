@@ -29,7 +29,10 @@ import {MainStateContextInterface} from '../../../core/interfaces/main-state.int
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 import CameraModal from '../../../shared/components/camera-modal/camera-modal.component';
-import {generateSingleSyncFile} from '../../../core/services/sync-tools.service';
+import {
+    convertSyncFile,
+    generateSingleSyncFile
+} from '../../../core/services/sync-tools.service';
 
 const {
     appPage,
@@ -110,7 +113,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                                     generateSingleSyncFile(
                                         homeParcPrepFile?.id
                                     ).then((value) => {
-                                        console.log(value);
+                                        console.log(convertSyncFile(value));
                                     });
                                 }
                             }}

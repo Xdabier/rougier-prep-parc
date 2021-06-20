@@ -5,5 +5,5 @@ export interface ParcPrepInterface {
     creationDate: string;
     allSynced: 0 | 1;
     defaultParcFile?: 0 | 1;
-    id?: string;
+    id: string;
 }
