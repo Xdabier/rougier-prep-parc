@@ -5,10 +5,11 @@ import {
     ScrollView,
     StyleSheet,
     Text,
+    ToastAndroid,
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useMemo, useState} from 'react';
 import {publish as eventPub} from 'pubsub-js';
 import {HomeScreenProps} from '../../../core/types/home-screen-props.type';
 import CommonStyles, {
@@ -29,10 +30,8 @@ import {MainStateContextInterface} from '../../../core/interfaces/main-state.int
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 import CameraModal from '../../../shared/components/camera-modal/camera-modal.component';
-import {
-    convertSyncFile,
-    generateSingleSyncFile
-} from '../../../core/services/sync-tools.service';
+import syncForm from '../../../core/services/sync-logs.service';
+import {requestServerEdit} from '../../../utils/modal.utils';
 
 const {
     appPage,
@@ -72,7 +71,9 @@ const STYLES = StyleSheet.create({
     }
 });
 
-const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
+const HomePage: React.FunctionComponent<HomeScreenProps> = ({
+    navigation
+}: any) => {
     const [barCode, setBarCode] = useState<string>('');
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
     const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
@@ -86,8 +87,87 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
         homeParcPrepFile,
         gasolines,
         cubers,
-        sites
+        sites,
+        serverData,
+        parcPrepFiles
     } = useContext<MainStateContextInterface>(MainStateContext);
+
+    const onSyncClicked = async () => {
+        try {
+            if (serverData && homeParcPrepFile) {
+                eventPub(EventTopicEnum.setSpinner, true);
+                const RES = await syncForm(homeParcPrepFile, serverData);
+                if (RES) {
+                    ToastAndroid.show(
+                        translate('common.succSync'),
+                        ToastAndroid.SHORT
+                    );
+                }
+                eventPub(EventTopicEnum.setSpinner, false);
+                return;
+            }
+
+            if (!serverData) {
+                requestServerEdit(() => {
+                    navigation.navigate('settingsStack');
+                    setTimeout(
+                        () => eventPub(EventTopicEnum.showServerModal),
+                        666
+                    );
+                });
+            }
+        } catch (e) {
+            eventPub(EventTopicEnum.setSpinner, false);
+            ToastAndroid.show(
+                translate('common.syncError'),
+                ToastAndroid.SHORT
+            );
+            throw Error(e);
+        }
+    };
+
+    const notSyncedFiles = useMemo(
+        () =>
+            parcPrepFiles.filter(
+                (file: ParcPrepAllDetailsInterface) =>
+                    !file.allSynced && file.logsNumber
+            ),
+        [parcPrepFiles]
+    );
+
+    const onSyncAllClicked = async () => {
+        if (!serverData) {
+            requestServerEdit(() => {
+                navigation.navigate('settingsStack');
+                setTimeout(() => eventPub(EventTopicEnum.showServerModal), 666);
+            });
+        }
+        if (serverData && notSyncedFiles && notSyncedFiles.length) {
+            try {
+                eventPub(EventTopicEnum.setSpinner, true);
+                const SYNC_ALL = notSyncedFiles.map(
+                    (file: ParcPrepAllDetailsInterface) =>
+                        syncForm(file, serverData)
+                );
+
+                const RES = await Promise.all(SYNC_ALL);
+                eventPub(EventTopicEnum.setSpinner, false);
+                if (!RES.includes(0)) {
+                    ToastAndroid.show(
+                        translate('common.succAllSync'),
+                        ToastAndroid.SHORT
+                    );
+                }
+            } catch (e) {
+                eventPub(EventTopicEnum.setSpinner, false);
+                ToastAndroid.show(
+                    translate('common.syncError'),
+                    ToastAndroid.SHORT
+                );
+                throw Error(e);
+            }
+        }
+    };
 
     return (
         <SafeAreaView style={[appPage]}>
@@ -108,15 +188,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                                 setAddParcFileModalShow(true);
                             }}
                             onAddLog={() => setAddLogModalShow(true)}
-                            syncParc={() => {
-                                if (homeParcPrepFile?.id) {
-                                    generateSingleSyncFile(
-                                        homeParcPrepFile?.id
-                                    ).then((value) => {
-                                        console.log(convertSyncFile(value));
-                                    });
-                                }
-                            }}
+                            syncParc={onSyncClicked}
                         />
                     </>
                 ) : (
@@ -203,7 +275,9 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = () => {
                     </View>
                 </MatButton>
                 <View style={[vSpacer12]} />
-                <MatButton onPress={() => true} disabled={!homeParcPrepFile}>
+                <MatButton
+                    onPress={onSyncAllClicked}
+                    disabled={!notSyncedFiles.length}>
                     <View
                         style={[
                             fullWidth,

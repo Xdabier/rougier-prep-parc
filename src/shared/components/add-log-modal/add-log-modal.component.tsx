@@ -40,7 +40,7 @@ import {MainStateContextInterface} from '../../../core/interfaces/main-state.int
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {insertLog, updateLog} from '../../../core/services/logs.service';
 import CameraModal from '../camera-modal/camera-modal.component';
-import requestCloseModal from '../../../utils/modal.utils';
+import {requestCloseModal} from '../../../utils/modal.utils';
 
 const {
     fullWidth,
@@ -272,7 +272,7 @@ const AddLogDetails: React.FunctionComponent<{
                             resetFields();
                             onClose(true);
                             ToastAndroid.show(
-                                translate('modals.logs.succMsg'),
+                                translate('modals.logs.succMsgEdit'),
                                 ToastAndroid.SHORT
                             );
                         }
@@ -353,7 +353,10 @@ const AddLogDetails: React.FunctionComponent<{
         <Modal
             style={[fullWidth]}
             onRequestClose={() => {
-                requestCloseModal(onClose);
+                requestCloseModal(() => {
+                    resetFields();
+                    onClose();
+                });
             }}
             animationType="slide"
             visible={modalVisible}>
@@ -362,7 +365,10 @@ const AddLogDetails: React.FunctionComponent<{
                 onBarCodeScanner={() => setCameraModalShow(true)}
                 title={translate(oldLog ? 'common.editLog' : 'common.addLog')}
                 onClose={() => {
-                    requestCloseModal(onClose);
+                    requestCloseModal(() => {
+                        resetFields();
+                        onClose();
+                    });
                 }}
             />
             <SafeAreaView style={[appPage]}>

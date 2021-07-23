@@ -67,7 +67,11 @@ const AddAuxModal: React.FunctionComponent<{
         <Modal style={[fullWidth]} animationType="slide" visible={modalVisible}>
             <ModalHeader
                 title={translate('modals.aux.title', {val: modalName})}
-                onClose={onClose}
+                onClose={() => {
+                    setCode('');
+                    setName('');
+                    onClose();
+                }}
             />
             <SafeAreaView style={[appPage]}>
                 <ScrollView>

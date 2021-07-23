@@ -9,9 +9,9 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useContext, useState} from 'react';
+import {useEffect, useState} from 'react';
 import ReactNativeRestart from 'react-native-restart';
-import {publish as eventPub} from 'pubsub-js';
+import {publish as eventPub, subscribe as eventSub} from 'pubsub-js';
 import {SettingsScreenProps} from '../../../core/types/settings-screen-props.type';
 import CommonStyles, {
     BORDER_RADIUS,
@@ -19,20 +19,17 @@ import CommonStyles, {
     poppinsMedium,
     poppinsRegular
 } from '../../../styles';
-import PageTitle from '../../../shared/components/page-title/page-title.component';
 import {I18n, translate} from '../../../utils/i18n.utils';
 import MatButton from '../../../shared/components/mat-button.component';
 import syncStorage from '../../../core/services/sync-storage.service';
 import CURRENT_LANGUAGE from '../../../core/constants/storage-keys.constant';
 import AddAuxModal from '../../../shared/components/add-aux-modal/add-aux-modal.component';
-import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
-import MainStateContext from '../../../core/contexts/main-state.context';
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
+import SetServerInfo from '../../../shared/components/set-server-info-modal/set-server-info-modal.component';
 
 const {
     appPage,
     hSpacer17,
-    vSpacer60,
     vSpacer100,
     centerHorizontally,
     justifyAlignTLeftHorizontal,
@@ -60,7 +57,7 @@ const STYLES = StyleSheet.create({
 
 const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
     const [modalToShow, setModalToShow] = useState<string>('');
-    const {user} = useContext<MainStateContextInterface>(MainStateContext);
+    const [showServerModal, setShowServerModal] = useState<boolean>(false);
 
     const showModal = (modalName: 'cuber' | 'site' | 'gasoline') => {
         setModalToShow(translate(`modals.${modalName}.name`));
@@ -86,6 +83,16 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
         }
     ];
 
+    useEffect(() => {
+        eventSub(EventTopicEnum.showServerModal, () => {
+            setShowServerModal(true);
+        });
+
+        eventSub(EventTopicEnum.hideServerModal, () => {
+            setShowServerModal(false);
+        });
+    }, []);
+
     const setLanguage = () => {
         Alert.alert(
             translate('changeLanguageAlert.title'),
@@ -99,10 +106,7 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
         <>
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
-                    <PageTitle title={translate('settings.title')} />
-                    <Text style={[STYLES.userTitle]}>{user?.username}</Text>
-                    <View style={[vSpacer60]} />
-                    <MatButton>
+                    <MatButton onPress={() => setShowServerModal(true)}>
                         <View
                             style={[
                                 STYLES.button,
@@ -111,10 +115,14 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
                                 fullViewWidthInside,
                                 alignCenter
                             ]}>
-                            <Icon name="person" color="#000" size={30} />
+                            <Icon
+                                name="perm-data-setting"
+                                color="#000"
+                                size={30}
+                            />
                             <View style={[hSpacer17]} />
                             <Text style={[STYLES.buttonText]}>
-                                {translate('settings.setUser')}
+                                {translate('settings.setServer')}
                             </Text>
                         </View>
                     </MatButton>
@@ -190,6 +198,17 @@ const SettingsPage: React.FunctionComponent<SettingsScreenProps> = () => {
                     <View style={[vSpacer100]} />
                 </ScrollView>
             </SafeAreaView>
+
+            <SetServerInfo
+                modalVisible={showServerModal}
+                onClose={(refresh) => {
+                    setShowServerModal(false);
+
+                    if (refresh) {
+                        eventPub(EventTopicEnum.updateServer);
+                    }
+                }}
+            />
 
             <AddAuxModal
                 modalVisible={!!modalToShow.length}

@@ -19,7 +19,7 @@ import CommonStyles, {
 import ModalHeader from '../modal-header/modal-header.component';
 import {translate} from '../../../utils/i18n.utils';
 import ModalFooter from '../modal-footer/modal-footer.component';
-import requestCloseModal from '../../../utils/modal.utils';
+import {requestCloseModal} from '../../../utils/modal.utils';
 
 const {
     fullWidth,

@@ -3,27 +3,27 @@ interface OdooParcPrepBodyInterface {
     cuber: string;
     site: string;
     creation_date: string;
-    id: string;
+    name: string;
 }
 
 export interface OdooLogsBodyInterface {
-    bar_code: string;
-    logging: number;
-    indicator: number;
-    length: number;
-    id: string;
+    barcode: string;
+    num_abattage: number;
+    num_indice: number;
+    longueur: number;
+    num_bille: string;
     dgb: number;
     dpb: number;
-    diameter: number;
+    diameter_moyen: number;
     volume: number;
     quality: string;
-    status?: string;
-    status_pattern?: string;
-    gasoline: string;
+    statut?: string;
+    motif_statut?: string;
+    essence: string;
 }
 
 export interface OdooSyncBodyInterface extends OdooParcPrepBodyInterface {
-    logs: OdooLogsBodyInterface[];
     sync: boolean;
     sync_date: string;
+    billes: OdooLogsBodyInterface[];
 }

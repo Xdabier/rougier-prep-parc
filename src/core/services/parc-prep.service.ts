@@ -32,13 +32,16 @@ export const getParcPrepFilesIds = async (close = false): Promise<string[]> => {
 };
 
 export const updateParcPrep = async (
-    element: ParcPrepInterface
+    element: ParcPrepInterface,
+    noSync = true
 ): Promise<ResultSet> => {
     try {
-        const UN_SYNCED: ParcPrepInterface = {
-            ...element,
-            allSynced: 0
-        };
+        const UN_SYNCED: ParcPrepInterface = element;
+
+        if (noSync) {
+            UN_SYNCED.allSynced = 0;
+        }
+
         const {id, defaultParcFile, ...others} = UN_SYNCED;
         const KEYS = Object.keys(others);
         const UPD = await SQLiteService.executeQuery(
@@ -61,29 +64,17 @@ export const updateParcPrep = async (
     }
 };
 
-export const unSyncParcPrepFile = async (id: string): Promise<ResultSet> => {
-    try {
-        const UNSYNC: ParcPrepInterface = {
-            id: `${id}`,
-            allSynced: 0
-        } as ParcPrepInterface;
-
-        return await updateParcPrep(UNSYNC);
-    } catch (e) {
-        return Promise.reject(e);
-    }
-};
-
-export const markSyncedParcPrepFile = async (
-    id: string
+export const updateSyncParcPrepFile = async (
+    id: string,
+    syncStatus: 1 | 0
 ): Promise<ResultSet> => {
     try {
-        const UNSYNC: ParcPrepInterface = {
+        const SYNC_STATUS: ParcPrepInterface = {
             id: `${id}`,
-            allSynced: 1
+            allSynced: syncStatus
         } as ParcPrepInterface;
 
-        return await updateParcPrep(UNSYNC);
+        return await updateParcPrep(SYNC_STATUS, false);
     } catch (e) {
         return Promise.reject(e);
     }

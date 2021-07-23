@@ -1,7 +1,7 @@
 import {Alert, AlertButton} from 'react-native';
 import {translate} from './i18n.utils';
 
-const requestCloseModal = (callback: () => void, msg?: string) => {
+export const requestCloseModal = (callback: () => void, msg?: string) => {
     const ALERT_BTNS: AlertButton[] = [
         {
             text: translate('common.yes'),
@@ -23,4 +23,24 @@ const requestCloseModal = (callback: () => void, msg?: string) => {
     );
 };
 
-export default requestCloseModal;
+export const requestServerEdit = (callback: () => void, msg?: string) => {
+    const ALERT_BTNS: AlertButton[] = [
+        {
+            text: translate('noServerData.confirm'),
+            style: 'default',
+            onPress: () => {
+                callback();
+            }
+        },
+        {
+            text: translate('noServerData.no'),
+            style: 'cancel'
+        }
+    ];
+    Alert.alert(
+        translate('noServerData.title'),
+        msg || translate('noServerData.message'),
+        ALERT_BTNS,
+        {cancelable: true}
+    );
+};

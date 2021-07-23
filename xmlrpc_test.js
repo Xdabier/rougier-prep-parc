@@ -22,10 +22,10 @@ setTimeout(() => {
     // Creates an XML-RPC client. Passes the host information on where to
     // make the XML-RPC calls.
     const url = 'http://207.180.249.27';
-    const port = '8020';
-    const db = 'IRIS_DATABASE';
-    const user = 'admin';
-    const pwd = 'admin';
+    const port = '8032';
+    const db = 'RG_GABON_DB';
+    const user = 'fedia.belhoula@gmail.com';
+    const pwd = '2020@dmin';
 
     const odoo = new Odoo({
         url,
@@ -41,16 +41,16 @@ setTimeout(() => {
         }
 
         return odoo.execute_kw(
-            'res.partner',
+            'reforest.fiche_saisie_mobile',
             'create',
             [
                 [
                     {
                         "aac": "7-5-9",
-                        "creation_date": "17/05/2021",
+                        "creation_date": "05/17/21",
                         "cuber": "S08279",
                         "id": "Abcy",
-                        "logs": [
+                        "billes": [
                             {
                                 "bar_code": "5449484",
                                 "dgb": 54,
@@ -95,7 +95,7 @@ setTimeout(() => {
                         ],
                         "site": "24MO",
                         "sync": true,
-                        "sync_date": "20/06/2021"
+                        "sync_date": "06/02/21"
                     }
                 ]
             ],

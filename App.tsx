@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Dimensions, Keyboard, KeyboardEvent, Text, View} from 'react-native';
 import {subscribe as eventSub} from 'pubsub-js';
+import Spinner from 'react-native-loading-spinner-overlay';
 import HomeStackScreens from './src/features/home';
 import LogsStackScreens from './src/features/logs';
 import ParcPrepStackScreens from './src/features/parc-prep';
@@ -40,12 +41,15 @@ import NameToTableEnum from './src/core/enum/name-to-table.enum';
 import {ParcPrepAllDetailsInterface} from './src/core/interfaces/parc-prep-all-details.interface';
 import {getLogs} from './src/core/services/logs.service';
 import EventTopicEnum from './src/core/enum/event-topic.enum';
+import {ServerInterface} from './src/core/interfaces/server.interface';
+import {getServerData} from './src/core/services/server-data.service';
 
 const TAB = createBottomTabNavigator<MainTabsNavigationProps>();
 
 const App = () => {
     const loadStorage = async () => syncStorage.init();
     const [isReady, setIsReady] = useState<boolean>(false);
+    const [isSpinning, setIsSpinning] = useState<boolean>(false);
 
     loadStorage()
         .then(() => {
@@ -62,6 +66,7 @@ const App = () => {
     const [gasolines, setGasolines] = useState<GasolineInterface[]>([]);
     const [logs, setLogs] = useState<LogDetailsInterface[]>([]);
     const [parcIds, setParcIds] = useState<string[]>([]);
+    const [serverData, setServerData] = useState<ServerInterface>();
     const [filteringId, setFilteringId] = useState<string>();
     const [parcPrepFiles, setParcPreps] = useState<
         ParcPrepAllDetailsInterface[]
@@ -99,6 +104,10 @@ const App = () => {
         parcIds,
         homeParcPrepFile,
         filteringId,
+        serverData,
+        setServerData: (v: ServerInterface) => {
+            setServerData(v);
+        },
         setHomeParcPrepFile: (v: ParcPrepAllDetailsInterface) => {
             setHomeParcPrep(v);
         },
@@ -163,17 +172,37 @@ const App = () => {
                 setDefParc(value[0]);
                 setFilteringId(`${value[0].parcId}`);
                 getParcPrepFileById(value[0].parcId).then((value1) => {
-                    if (value1 && value1.length) {
-                        setHomeParcPrep(value1[0]);
-                        getLogs(value[0].parcId).then(
-                            (value2: LogDetailsInterface[]) => {
-                                setLogs(value2);
-                            }
-                        );
+                    if (value1) {
+                        if (value1.length) {
+                            setHomeParcPrep(value1[0]);
+                            getLogs(value[0].parcId).then(
+                                (value2: LogDetailsInterface[]) => {
+                                    setLogs(value2);
+
+                                    getServerData().then(
+                                        (value3: ServerInterface[]) => {
+                                            if (value3 && value3.length) {
+                                                setServerData(value3[0]);
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                        } else {
+                            setHomeParcPrep(null);
+                        }
                     } else {
                         setHomeParcPrep(null);
                     }
                 });
+            }
+        });
+    };
+
+    const refreshServerData = () => {
+        getServerData().then((value: ServerInterface[]) => {
+            if (value && value.length) {
+                setServerData(value[0]);
             }
         });
     };
@@ -211,14 +240,26 @@ const App = () => {
         refreshDefault();
         refreshAux();
         refreshAllParcFiles();
+        refreshServerData();
 
         eventSub(EventTopicEnum.updateParcPrep, () => {
             refreshAllParcFiles();
             refreshDefault();
         });
 
+        eventSub(
+            EventTopicEnum.setSpinner,
+            (name: string, spinning: boolean) => {
+                setIsSpinning(spinning);
+            }
+        );
+
         eventSub(EventTopicEnum.updateAux, () => {
             refreshAux();
+        });
+
+        eventSub(EventTopicEnum.updateServer, () => {
+            refreshServerData();
         });
 
         Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
@@ -231,54 +272,75 @@ const App = () => {
     }, []);
 
     return isReady ? (
-        <MainStateContext.Provider value={MAIN_CONTEXT}>
-            <NavigationContainer>
-                <TAB.Navigator
-                    initialRouteName="homeStack"
-                    tabBarOptions={{
-                        style: {
-                            height: TAB_BAR_HEIGHT,
-                            paddingVertical: TAB_BAR_VERT_PADDING
-                        },
-                        activeTintColor: MAIN_RED,
-                        inactiveTintColor: MAIN_GREY,
-                        labelStyle: {
-                            fontFamily: poppinsRegular,
-                            fontSize: 12
-                        },
-                        tabStyle: {
-                            height: TAB_BAR_BUTTON_HEIGHT
-                        }
-                    }}
-                    screenOptions={({route}) => ({
-                        tabBarIcon: ({
-                            size,
-                            focused
-                        }: {
-                            focused: boolean;
-                            size: number;
-                        }) => {
-                            const COLOR = focused ? MAIN_RED : MAIN_GREY;
-                            const NAME = BarIconNameEnum[route.name];
-                            return (
-                                <Icon name={NAME} size={size} color={COLOR} />
-                            );
-                        },
-                        tabBarLabel: translate(BarLabelNameEnum[route.name])
-                    })}>
-                    <TAB.Screen
-                        name="parcPrepStack"
-                        component={ParcPrepStackScreens}
-                    />
-                    <TAB.Screen name="logsStack" component={LogsStackScreens} />
-                    <TAB.Screen name="homeStack" component={HomeStackScreens} />
-                    <TAB.Screen
-                        name="settingsStack"
-                        component={SettingsStackScreens}
-                    />
-                </TAB.Navigator>
-            </NavigationContainer>
-        </MainStateContext.Provider>
+        <>
+            <Spinner
+                visible={isSpinning}
+                animation="fade"
+                textStyle={{
+                    color: '#FFF'
+                }}
+                overlayColor="rgba(0, 0, 0, 0.7)"
+                textContent={translate('common.syncing')}
+            />
+            <MainStateContext.Provider value={MAIN_CONTEXT}>
+                <NavigationContainer>
+                    <TAB.Navigator
+                        initialRouteName="homeStack"
+                        tabBarOptions={{
+                            style: {
+                                height: TAB_BAR_HEIGHT,
+                                paddingVertical: TAB_BAR_VERT_PADDING
+                            },
+                            activeTintColor: MAIN_RED,
+                            inactiveTintColor: MAIN_GREY,
+                            labelStyle: {
+                                fontFamily: poppinsRegular,
+                                fontSize: 12
+                            },
+                            tabStyle: {
+                                height: TAB_BAR_BUTTON_HEIGHT
+                            }
+                        }}
+                        screenOptions={({route}) => ({
+                            tabBarIcon: ({
+                                size,
+                                focused
+                            }: {
+                                focused: boolean;
+                                size: number;
+                            }) => {
+                                const COLOR = focused ? MAIN_RED : MAIN_GREY;
+                                const NAME = BarIconNameEnum[route.name];
+                                return (
+                                    <Icon
+                                        name={NAME}
+                                        size={size}
+                                        color={COLOR}
+                                    />
+                                );
+                            },
+                            tabBarLabel: translate(BarLabelNameEnum[route.name])
+                        })}>
+                        <TAB.Screen
+                            name="parcPrepStack"
+                            component={ParcPrepStackScreens}
+                        />
+                        <TAB.Screen
+                            name="logsStack"
+                            component={LogsStackScreens}
+                        />
+                        <TAB.Screen
+                            name="homeStack"
+                            component={HomeStackScreens}
+                        />
+                        <TAB.Screen
+                            name="settingsStack"
+                            component={SettingsStackScreens}
+                        />
+                    </TAB.Navigator>
+                </NavigationContainer>
+            </MainStateContext.Provider>
+        </>
     ) : (
         <View>
             <Text>Loading...</Text>

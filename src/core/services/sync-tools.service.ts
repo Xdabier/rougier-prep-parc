@@ -34,25 +34,25 @@ export const convertLogsToSyncLogs = (
 ): OdooLogsBodyInterface[] =>
     logs.map((log: LogInterface) => {
         const ODOO_LOG_BODY: OdooLogsBodyInterface = {
-            id: log.id,
+            num_bille: log.id,
             dgb: log.dgb,
             dpb: log.dpb,
-            bar_code: log.barCode,
-            diameter: log.diameter,
-            gasoline: log.gasoline,
-            indicator: log.indicator,
-            logging: log.logging,
-            length: log.logging,
+            barcode: log.barCode,
+            diameter_moyen: log.diameter,
+            essence: log.gasoline,
+            num_indice: log.indicator,
+            num_abattage: log.logging,
+            longueur: log.logging,
             quality: log.quality,
             volume: log.volume
         };
 
         if (log.status) {
-            ODOO_LOG_BODY.status = log.status;
+            ODOO_LOG_BODY.statut = log.status;
         }
 
         if (log.statusPattern) {
-            ODOO_LOG_BODY.status_pattern = log.statusPattern;
+            ODOO_LOG_BODY.motif_statut = log.statusPattern;
         }
 
         return ODOO_LOG_BODY;
@@ -66,17 +66,17 @@ const parseTime = (time: number): string => {
 };
 
 const convertDate = (date: Date): string =>
-    `${parseTime(date.getDate())}/${parseTime(
-        date.getMonth() + 1
+    `${parseTime(date.getMonth() + 1)}/${parseTime(
+        date.getDate()
     )}/${date.getFullYear()}`;
 
 export const convertSyncFile = (
     syncFile: SyncDataInterface
 ): OdooSyncBodyInterface => ({
-    id: syncFile.id,
+    name: syncFile.id,
     sync: true,
     aac: syncFile.aac,
-    logs: convertLogsToSyncLogs(syncFile.logs),
+    billes: convertLogsToSyncLogs(syncFile.logs),
     creation_date: convertDate(new Date(syncFile.creationDate)),
     cuber: syncFile.cuber,
     site: syncFile.site,

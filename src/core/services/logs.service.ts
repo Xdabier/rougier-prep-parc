@@ -6,7 +6,7 @@ import {
     getParcPrepStatsById,
     updateParcPrepStats
 } from './parc-prep-stats.service';
-import {unSyncParcPrepFile} from './parc-prep.service';
+import {updateSyncParcPrepFile} from './parc-prep.service';
 
 const SQLiteService: SqlLiteService = new SqlLiteService();
 
@@ -70,7 +70,7 @@ export const insertLog = async (element: LogInterface) => {
             element.parcPrepId
         );
 
-        await unSyncParcPrepFile(`${element.parcPrepId}`);
+        await updateSyncParcPrepFile(`${element.parcPrepId}`, 0);
 
         const STATS: ParcPrepStatsInterface = {
             ...PARC_PREP_STATS[0],
@@ -96,7 +96,7 @@ export const updateLog = async (oldId: string, element: LogInterface) => {
             )} WHERE id = ?;`,
             [...KEYS.map((x: string) => (element as any)[x]), oldId]
         );
-        await unSyncParcPrepFile(`${element.parcPrepId}`);
+        await updateSyncParcPrepFile(`${element.parcPrepId}`, 0);
 
         return UP_L;
     } catch (e) {

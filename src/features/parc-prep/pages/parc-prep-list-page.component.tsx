@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {FlatList, SafeAreaView, Text, View} from 'react-native';
-import {useContext, useState} from 'react';
+import {FlatList, SafeAreaView, Text, ToastAndroid, View} from 'react-native';
+import {useContext, useMemo, useState} from 'react';
 import {publish as eventPub} from 'pubsub-js';
 import {ParcPrepScreenProps} from '../../../core/types/parc-prep-screen-props.type';
 import CommonStyles from '../../../styles';
@@ -14,6 +14,8 @@ import MainStateContext from '../../../core/contexts/main-state.context';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
 import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/add-parc-file-modal.component';
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
+import syncForm from '../../../core/services/sync-logs.service';
+import {requestServerEdit} from '../../../utils/modal.utils';
 
 const {
     appPage,
@@ -29,7 +31,9 @@ const {
     noContent
 } = CommonStyles;
 
-const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
+const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = ({
+    navigation
+}: any) => {
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
     const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
         false
@@ -43,8 +47,86 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
         gasolines,
         parcPrepFiles,
         cubers,
-        sites
+        sites,
+        serverData
     } = useContext<MainStateContextInterface>(MainStateContext);
+
+    const onSyncClicked = async (parcPrepForm: ParcPrepAllDetailsInterface) => {
+        try {
+            if (serverData && parcPrepForm) {
+                eventPub(EventTopicEnum.setSpinner, true);
+                const RES = await syncForm(parcPrepForm, serverData);
+                if (RES) {
+                    ToastAndroid.show(
+                        translate('common.succSync'),
+                        ToastAndroid.SHORT
+                    );
+                }
+                eventPub(EventTopicEnum.setSpinner, false);
+                return;
+            }
+
+            if (!serverData) {
+                requestServerEdit(() => {
+                    navigation.navigate('settingsStack');
+                    setTimeout(
+                        () => eventPub(EventTopicEnum.showServerModal),
+                        666
+                    );
+                });
+            }
+        } catch (e) {
+            eventPub(EventTopicEnum.setSpinner, false);
+            ToastAndroid.show(
+                translate('common.syncError'),
+                ToastAndroid.SHORT
+            );
+            throw Error(e);
+        }
+    };
+
+    const notSyncedFiles = useMemo(
+        () =>
+            parcPrepFiles.filter(
+                (file: ParcPrepAllDetailsInterface) =>
+                    !file.allSynced && file.logsNumber
+            ),
+        [parcPrepFiles]
+    );
+
+    const onSyncAllClicked = async () => {
+        if (!serverData) {
+            requestServerEdit(() => {
+                navigation.navigate('settingsStack');
+                setTimeout(() => eventPub(EventTopicEnum.showServerModal), 666);
+            });
+        }
+        if (serverData && notSyncedFiles && notSyncedFiles.length) {
+            try {
+                eventPub(EventTopicEnum.setSpinner, true);
+                const SYNC_ALL = notSyncedFiles.map(
+                    (file: ParcPrepAllDetailsInterface) =>
+                        syncForm(file, serverData)
+                );
+
+                const RES = await Promise.all(SYNC_ALL);
+                eventPub(EventTopicEnum.setSpinner, false);
+                if (!RES.includes(0)) {
+                    ToastAndroid.show(
+                        translate('common.succAllSync'),
+                        ToastAndroid.SHORT
+                    );
+                }
+            } catch (e) {
+                eventPub(EventTopicEnum.setSpinner, false);
+                ToastAndroid.show(
+                    translate('common.syncError'),
+                    ToastAndroid.SHORT
+                );
+                throw Error(e);
+            }
+        }
+    };
 
     const renderItem = ({item}: {item: ParcPrepAllDetailsInterface}) => (
         <>
@@ -57,6 +139,9 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
                 onAddLog={() => {
                     setSelectedParcId(item.id);
                     setAddLogModalShow(true);
+                }}
+                syncParc={() => {
+                    onSyncClicked(item).then();
                 }}
             />
             <View style={[vSpacer12]} />
@@ -120,8 +205,8 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = () => {
                 <MatButton
                     isFab
                     isElevated
-                    onPress={() => true}
-                    disabled={!parcPrepFiles.length}>
+                    onPress={onSyncAllClicked}
+                    disabled={!parcPrepFiles.length || !notSyncedFiles.length}>
                     <View
                         style={[
                             centerVertically,

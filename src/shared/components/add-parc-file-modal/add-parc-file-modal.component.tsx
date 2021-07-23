@@ -40,7 +40,7 @@ import {
     updateParcPrep
 } from '../../../core/services/parc-prep.service';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
-import requestCloseModal from '../../../utils/modal.utils';
+import {requestCloseModal} from '../../../utils/modal.utils';
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
 
@@ -120,6 +120,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     };
 
     const clearFields = () => {
+        setId('');
         setAac('');
         setDate(new Date());
         setCuber(undefined);
@@ -145,11 +146,16 @@ const AddParcFileDetails: React.FunctionComponent<{
         }
     }, [oldFile]);
 
+    const checkIfOnlyDefaultChanged = () =>
+        date.toISOString() === oldFile?.creationDate &&
+        cuber?.code === oldFile.cuberCode &&
+        site?.code === oldFile.siteCode &&
+        aac === oldFile.aac;
+
     const confirmInsertion = () => {
         if (validForm() && cuber && site) {
             const EL: ParcPrepInterface = {
                 id,
-                allSynced: 0,
                 creationDate: date.toISOString(),
                 aac,
                 cuber: cuber.code,
@@ -159,13 +165,13 @@ const AddParcFileDetails: React.FunctionComponent<{
 
             if (oldFile) {
                 EL.id = `${oldFile.id}`;
-                updateParcPrep(EL)
+                updateParcPrep(EL, !checkIfOnlyDefaultChanged())
                     .then((res) => {
                         if (res && res.rows) {
                             clearFields();
                             onClose(true);
                             ToastAndroid.show(
-                                translate('modals.parcPrep.succMsg'),
+                                translate('modals.parcPrep.succMsgEdit'),
                                 ToastAndroid.SHORT
                             );
                         }
@@ -244,7 +250,10 @@ const AddParcFileDetails: React.FunctionComponent<{
         <Modal
             style={[fullWidth]}
             onRequestClose={() => {
-                requestCloseModal(onClose);
+                requestCloseModal(() => {
+                    clearFields();
+                    onClose();
+                });
             }}
             animationType="slide"
             visible={modalVisible}>
@@ -255,7 +264,10 @@ const AddParcFileDetails: React.FunctionComponent<{
                         : 'common.addParcPrepFile'
                 )}
                 onClose={() => {
-                    requestCloseModal(onClose);
+                    requestCloseModal(() => {
+                        clearFields();
+                        onClose();
+                    });
                 }}
             />
             <SafeAreaView style={[appPage]}>

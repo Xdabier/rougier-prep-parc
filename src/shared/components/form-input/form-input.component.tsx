@@ -34,8 +34,8 @@ const STYLES = StyleSheet.create({
         color: MAIN_RED,
         fontSize: 13,
         fontFamily: poppinsRegular,
-        maxWidth: widthPercentageToDP(60.922330097087375),
-        width: widthPercentageToDP(60.922330097087375)
+        maxWidth: widthPercentageToDP(90),
+        width: widthPercentageToDP(90)
     },
     fieldContainer: {
         // marginBottom: 16
@@ -50,8 +50,8 @@ const STYLES = StyleSheet.create({
         color: '#000'
     },
     label: {
-        maxWidth: widthPercentageToDP(31),
-        width: widthPercentageToDP(31),
+        maxWidth: widthPercentageToDP(80),
+        width: widthPercentageToDP(80),
         fontSize: 14,
         opacity: 0.6,
         fontWeight: 'bold'
@@ -62,7 +62,7 @@ const STYLES = StyleSheet.create({
         width: widthPercentageToDP(95),
         borderBottomWidth: 1,
         borderBottomColor: '#707070',
-        fontSize: 16
+        fontSize: 14
     }
 });
 
@@ -76,7 +76,7 @@ const FormInput: React.FunctionComponent<{
     required?: boolean;
     pattern?: string[];
     keyboardType?: KeyboardTypeOptions;
-    value?: string;
+    value?: string | undefined | null;
     onChangeText?: (text: string) => void;
     onValidation?: (valids: boolean | boolean[]) => void;
 }> = ({
@@ -102,7 +102,7 @@ const FormInput: React.FunctionComponent<{
     required?: boolean;
     pattern?: string[];
     keyboardType?: KeyboardTypeOptions;
-    value?: string;
+    value?: string | undefined | null;
     onChangeText?: (text: string) => void;
     onValidation?: (valids: boolean | boolean[]) => void;
 }) => {
@@ -143,6 +143,7 @@ const FormInput: React.FunctionComponent<{
                     {required ? `${title} *` : title}
                 </Text>
                 <TextInput
+                    autoCapitalize="none"
                     maxLength={maxLength}
                     keyboardType={keyboardType || 'default'}
                     onChangeText={(text: string) => onChange(text)}
@@ -165,7 +166,6 @@ const FormInput: React.FunctionComponent<{
                         centerHorizontally,
                         spaceBetween
                     ]}>
-                    <View style={[STYLES.errorSpacer]} />
                     <Text style={[STYLES.errorText]}>{errText}</Text>
                 </View>
             ) : (
