@@ -42,7 +42,7 @@ export const convertLogsToSyncLogs = (
             essence: log.gasoline,
             num_indice: log.indicator,
             num_abattage: log.logging,
-            longueur: log.logging,
+            longueur: log.lengthVal,
             quality: log.quality,
             volume: log.volume
         };

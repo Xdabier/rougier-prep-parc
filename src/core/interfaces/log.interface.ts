@@ -2,8 +2,8 @@ export interface LogInterface {
     parcPrepId: string;
     creationDate: string;
     barCode: string;
-    logging: number;
-    indicator: number;
+    logging: string;
+    indicator: string;
     id: string;
     gasoline: string;
     dgb: number;
@@ -22,9 +22,9 @@ export interface LogDetailsInterface {
     parcPrepId: string;
     creationDate: string;
     barCode: string;
-    logging: number;
+    logging: string;
     lengthVal: number;
-    indicator: number;
+    indicator: string;
     id: string;
     dgb: number;
     dpb: number;

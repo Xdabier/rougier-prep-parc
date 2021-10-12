@@ -8,8 +8,8 @@ interface OdooParcPrepBodyInterface {
 
 export interface OdooLogsBodyInterface {
     barcode: string;
-    num_abattage: number;
-    num_indice: number;
+    num_abattage: string;
+    num_indice: string;
     longueur: number;
     num_bille: string;
     dgb: number;

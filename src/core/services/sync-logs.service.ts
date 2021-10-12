@@ -28,6 +28,7 @@ const syncSingleForm = async (
     if (parcForm?.id) {
         try {
             const SYNC_DATA = await generateSingleSyncFile(parcForm?.id);
+            console.log(convertSyncFile(SYNC_DATA));
             const RES = await sendToOdoo(
                 serverData,
                 convertSyncFile(SYNC_DATA)
