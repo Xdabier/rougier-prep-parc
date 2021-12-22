@@ -18,7 +18,6 @@ const {
     rougierShadow,
     spaceBetween,
     alignCenter,
-    hSpacer17,
     justifyAlignCenter,
     justifyAlignTLeftHorizontal,
     justifyAlignRightHorizontal
@@ -43,19 +42,7 @@ const STYLES = StyleSheet.create({
 const ModalHeader: React.FunctionComponent<{
     title: string;
     onClose: () => void;
-    scanCode?: boolean;
-    onBarCodeScanner?: () => void;
-}> = ({
-    title,
-    onClose,
-    scanCode,
-    onBarCodeScanner
-}: {
-    title: string;
-    onClose: () => void;
-    scanCode?: boolean;
-    onBarCodeScanner?: () => void;
-}) => (
+}> = ({title, onClose}: {title: string; onClose: () => void}) => (
     <View
         style={[
             rougierShadow,
@@ -76,25 +63,6 @@ const ModalHeader: React.FunctionComponent<{
             <Text style={[STYLES.title]}>{title}</Text>
         </View>
         <View style={[centerHorizontally, justifyAlignRightHorizontal]}>
-            {scanCode && onBarCodeScanner ? (
-                <MatButton onPress={onBarCodeScanner} isIcon>
-                    <View
-                        style={[
-                            iconButton,
-                            centerVertically,
-                            justifyAlignCenter
-                        ]}>
-                        <Icon
-                            name="qr-code-scanner"
-                            size={24}
-                            color={MAIN_RED}
-                        />
-                    </View>
-                </MatButton>
-            ) : (
-                <View />
-            )}
-            <View style={[hSpacer17]} />
             <MatButton onPress={onClose} isIcon>
                 <View
                     style={[iconButton, centerVertically, justifyAlignCenter]}>
@@ -104,10 +72,5 @@ const ModalHeader: React.FunctionComponent<{
         </View>
     </View>
 );
-
-ModalHeader.defaultProps = {
-    onBarCodeScanner: () => true,
-    scanCode: false
-};
 
 export default ModalHeader;

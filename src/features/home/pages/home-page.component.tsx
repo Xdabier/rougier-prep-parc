@@ -9,7 +9,7 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useContext, useEffect, useMemo, useState} from 'react';
+import {useContext, useMemo, useState} from 'react';
 import {publish as eventPub} from 'pubsub-js';
 import {HomeScreenProps} from '../../../core/types/home-screen-props.type';
 import CommonStyles, {
@@ -29,9 +29,10 @@ import EventTopicEnum from '../../../core/enum/event-topic.enum';
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-all-details.interface';
-import CameraModal from '../../../shared/components/camera-modal/camera-modal.component';
 import syncForm from '../../../core/services/sync-logs.service';
 import {requestServerEdit} from '../../../utils/modal.utils';
+import {getLogs} from '../../../core/services/logs.service';
+import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
 
 const {
     appPage,
@@ -74,9 +75,7 @@ const STYLES = StyleSheet.create({
 const HomePage: React.FunctionComponent<HomeScreenProps> = ({
     navigation
 }: any) => {
-    const [barCode, setBarCode] = useState<string>('');
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
-    const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
     const [addParcFileModalShow, setAddParcFileModalShow] = useState<boolean>(
         false
     );
@@ -89,41 +88,25 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
         cubers,
         sites,
         serverData,
+        setLogs,
+        setFilteringId,
         parcPrepFiles
     } = useContext<MainStateContextInterface>(MainStateContext);
 
-    const onSyncClicked = async () => {
-        try {
-            if (serverData && homeParcPrepFile) {
-                eventPub(EventTopicEnum.setSpinner, true);
-                const RES = await syncForm(homeParcPrepFile, serverData);
-                if (RES) {
-                    ToastAndroid.show(
-                        translate('common.succSync'),
-                        ToastAndroid.SHORT
-                    );
-                }
-                eventPub(EventTopicEnum.setSpinner, false);
-                return;
+    const refreshFilter = (parcId: string) => {
+        getLogs(parcId).then((value: LogDetailsInterface[]) => {
+            if (setLogs) {
+                setLogs(value);
             }
+        });
+    };
 
-            if (!serverData) {
-                requestServerEdit(() => {
-                    navigation.navigate('settingsStack');
-                    setTimeout(
-                        () => eventPub(EventTopicEnum.showServerModal),
-                        666
-                    );
-                });
-            }
-        } catch (e) {
-            eventPub(EventTopicEnum.setSpinner, false);
-            ToastAndroid.show(
-                translate('common.syncError'),
-                ToastAndroid.SHORT
-            );
-            throw Error(e);
+    const navToLogsList = (id: string) => {
+        if (setFilteringId) {
+            setFilteringId(id);
         }
+        refreshFilter(id);
+        navigation.navigate('logsStack');
     };
 
     const notSyncedFiles = useMemo(
@@ -188,43 +171,13 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
                                 setAddParcFileModalShow(true);
                             }}
                             onAddLog={() => setAddLogModalShow(true)}
-                            syncParc={onSyncClicked}
+                            goToLogs={navToLogsList}
                         />
                     </>
                 ) : (
                     <View />
                 )}
                 <View style={[vSpacer60]} />
-                <MatButton
-                    onPress={() => setCameraModalShow(true)}
-                    disabled={!homeParcPrepFile}>
-                    <View
-                        style={[
-                            fullWidth,
-                            STYLES.button,
-                            STYLES.buttonSecond,
-                            centerHorizontally,
-                            spaceEvenly
-                        ]}>
-                        <Icon
-                            name="qr-code-scanner"
-                            color="#fff"
-                            size={ICON_SIZE}
-                        />
-                        <View
-                            style={[
-                                STYLES.textView,
-                                textAlignCenter,
-                                centerHorizontally,
-                                justifyAlignCenter
-                            ]}>
-                            <Text style={[STYLES.buttonText, textAlignCenter]}>
-                                {translate('common.scanBarCode')}
-                            </Text>
-                        </View>
-                    </View>
-                </MatButton>
-                <View style={[vSpacer12]} />
                 <MatButton onPress={() => setAddParcFileModalShow(true)}>
                     <View
                         style={[
@@ -282,7 +235,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
                         style={[
                             fullWidth,
                             STYLES.button,
-                            STYLES.buttonMain,
+                            STYLES.buttonSecond,
                             centerHorizontally,
                             spaceEvenly
                         ]}>
@@ -303,22 +256,8 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
                 <View style={[vSpacer60]} />
             </ScrollView>
 
-            <CameraModal
-                modalVisible={cameraModalShow}
-                onClose={(code?: string) => {
-                    setCameraModalShow(false);
-
-                    if (code && code.length) {
-                        setBarCode(code);
-                        setAddLogModalShow(true);
-                    }
-                }}
-                modalName={translate('common.scanBarCode')}
-            />
-
             <AddLogDetails
                 gasolineList={gasolines}
-                scannedBarCode={barCode}
                 modalVisible={addLogModalShow}
                 onClose={(refresh) => {
                     setAddLogModalShow(false);

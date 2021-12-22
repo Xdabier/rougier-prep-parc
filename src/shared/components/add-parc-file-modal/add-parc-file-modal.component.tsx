@@ -43,6 +43,8 @@ import {ParcPrepAllDetailsInterface} from '../../../core/interfaces/parc-prep-al
 import {requestCloseModal} from '../../../utils/modal.utils';
 import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
 import MainStateContext from '../../../core/contexts/main-state.context';
+import CameraModal from '../camera-modal/camera-modal.component';
+import ScanInput from '../scan-input/scan-input.component';
 
 const {
     fullWidth,
@@ -91,6 +93,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     sites: SiteInterface[];
 }) => {
     const [id, setId] = useState<string>('');
+    const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
     const [idValid, setIdValid] = useState<boolean | boolean[]>(true);
     const [aac, setAac] = useState<string>('');
     const [aacValid, setAacValid] = useState<boolean | boolean[]>(true);
@@ -308,15 +311,20 @@ const AddParcFileDetails: React.FunctionComponent<{
                         value={cuber?.name}
                         required
                     />
-                    <SelectInput
+                    <ScanInput
                         title={translate('modals.parcPrep.fields.site.label')}
                         placeholder={translate(
                             'modals.parcPrep.fields.site.ph'
                         )}
-                        showSelectMenu={() => {
-                            onSelectMenu('sites');
+                        onChangeText={(text) => {
+                            setSite({
+                                name: '',
+                                code: text
+                            });
                         }}
-                        value={site?.name}
+                        keyboardType="default"
+                        value={site?.code}
+                        showCodeScanner={() => setCameraModalShow(true)}
                         required
                     />
                     <DateInput
@@ -340,6 +348,21 @@ const AddParcFileDetails: React.FunctionComponent<{
                 disabled={!validForm()}
                 onPress={confirmInsertion}
                 title={translate('modals.parcPrep.confirm')}
+            />
+
+            <CameraModal
+                modalVisible={cameraModalShow}
+                onClose={(code?: string) => {
+                    setCameraModalShow(false);
+
+                    if (code && code.length) {
+                        setSite({
+                            name: '',
+                            code
+                        });
+                    }
+                }}
+                modalName={translate('common.scanBarCode')}
             />
 
             <ActionSheetComponent

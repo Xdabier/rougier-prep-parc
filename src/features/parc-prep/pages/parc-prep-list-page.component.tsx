@@ -16,6 +16,8 @@ import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/a
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
 import syncForm from '../../../core/services/sync-logs.service';
 import {requestServerEdit} from '../../../utils/modal.utils';
+import {getLogs} from "../../../core/services/logs.service";
+import {LogDetailsInterface} from "../../../core/interfaces/log.interface";
 
 const {
     appPage,
@@ -48,41 +50,25 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = ({
         parcPrepFiles,
         cubers,
         sites,
-        serverData
+        serverData,
+        setLogs,
+        setFilteringId
     } = useContext<MainStateContextInterface>(MainStateContext);
 
-    const onSyncClicked = async (parcPrepForm: ParcPrepAllDetailsInterface) => {
-        try {
-            if (serverData && parcPrepForm) {
-                eventPub(EventTopicEnum.setSpinner, true);
-                const RES = await syncForm(parcPrepForm, serverData);
-                if (RES) {
-                    ToastAndroid.show(
-                        translate('common.succSync'),
-                        ToastAndroid.SHORT
-                    );
-                }
-                eventPub(EventTopicEnum.setSpinner, false);
-                return;
+    const refreshFilter = (parcId: string) => {
+        getLogs(parcId).then((value: LogDetailsInterface[]) => {
+            if (setLogs) {
+                setLogs(value);
             }
+        });
+    };
 
-            if (!serverData) {
-                requestServerEdit(() => {
-                    navigation.navigate('settingsStack');
-                    setTimeout(
-                        () => eventPub(EventTopicEnum.showServerModal),
-                        666
-                    );
-                });
-            }
-        } catch (e) {
-            eventPub(EventTopicEnum.setSpinner, false);
-            ToastAndroid.show(
-                translate('common.syncError'),
-                ToastAndroid.SHORT
-            );
-            throw Error(e);
+    const navToLogsList = (id: string) => {
+        if (setFilteringId) {
+            setFilteringId(id);
         }
+        refreshFilter(id);
+        navigation.navigate('logsStack');
     };
 
     const notSyncedFiles = useMemo(
@@ -140,9 +126,7 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = ({
                     setSelectedParcId(item.id);
                     setAddLogModalShow(true);
                 }}
-                syncParc={() => {
-                    onSyncClicked(item).then();
-                }}
+                goToLogs={navToLogsList}
             />
             <View style={[vSpacer12]} />
         </>

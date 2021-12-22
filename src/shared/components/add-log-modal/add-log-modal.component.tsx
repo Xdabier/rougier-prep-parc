@@ -41,6 +41,7 @@ import MainStateContext from '../../../core/contexts/main-state.context';
 import {insertLog, updateLog} from '../../../core/services/logs.service';
 import CameraModal from '../camera-modal/camera-modal.component';
 import {requestCloseModal} from '../../../utils/modal.utils';
+import ScanInput from '../scan-input/scan-input.component';
 
 const {
     fullWidth,
@@ -219,7 +220,7 @@ const AddLogDetails: React.FunctionComponent<{
 
     const validForm = () =>
         barCode &&
-        barCode.length >= 6 &&
+        barCode.length >= 4 &&
         logging &&
         logging.length >= 1 &&
         index &&
@@ -361,8 +362,6 @@ const AddLogDetails: React.FunctionComponent<{
             animationType="slide"
             visible={modalVisible}>
             <ModalHeader
-                scanCode
-                onBarCodeScanner={() => setCameraModalShow(true)}
                 title={translate(oldLog ? 'common.editLog' : 'common.addLog')}
                 onClose={() => {
                     requestCloseModal(() => {
@@ -373,12 +372,13 @@ const AddLogDetails: React.FunctionComponent<{
             />
             <SafeAreaView style={[appPage]}>
                 <ScrollView>
-                    <FormInput
+                    <ScanInput
                         title={translate('modals.logs.fields.barCode.label')}
                         placeholder={translate('modals.logs.fields.barCode.ph')}
                         onChangeText={setBarCode}
                         keyboardType="number-pad"
                         value={barCode}
+                        showCodeScanner={() => setCameraModalShow(true)}
                         required
                     />
                     <FormInput
@@ -455,14 +455,6 @@ const AddLogDetails: React.FunctionComponent<{
                         )}
                         onChangeText={setDiameterAvg}
                         value={diameterAvg}
-                        disabled
-                        required
-                    />
-                    <FormInput
-                        title={translate('modals.logs.fields.volume.label')}
-                        placeholder={translate('modals.logs.fields.volume.ph')}
-                        onChangeText={setVolume}
-                        value={volume}
                         disabled
                         required
                     />

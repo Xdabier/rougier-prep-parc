@@ -108,10 +108,10 @@ export const getParcPrepFileById = async (
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
             `SELECT pp.id, pp.aac, pp.creationDate, pp.allSynced,
-            si.name AS siteName, si.code AS siteCode, cu.name AS cuberName,
+            pp.site AS siteCode, cu.name AS cuberName,
             cu.code AS cuberCode, ps.lastLogDate, ps.lastLogId, ps.logsNumber,
             ps.isDefault FROM parc_prep AS pp INNER JOIN cuber AS
-            cu ON cu.code = pp.cuber JOIN site AS si ON si.code = pp.site
+            cu ON cu.code = pp.cuber
             INNER JOIN parcPrepStats AS ps ON ps.parcPrepId = pp.id WHERE pp.id = ?;`,
             [id]
         );
@@ -132,10 +132,10 @@ export const getParcPrepFiles = async (
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
             `SELECT pp.id, pp.aac, pp.creationDate, pp.allSynced,
-            si.name AS siteName, si.code AS siteCode, cu.name AS cuberName,
+            pp.site AS siteCode, cu.name AS cuberName,
             cu.code AS cuberCode, ps.lastLogDate, ps.lastLogId, ps.logsNumber,
             ps.isDefault FROM parc_prep AS pp INNER JOIN cuber AS
-            cu ON cu.code = pp.cuber INNER JOIN site AS si ON si.code = pp.site
+            cu ON cu.code = pp.cuber
             INNER JOIN parcPrepStats AS ps ON ps.parcPrepId = pp.id;`
         );
         if (close && !SQLiteService.finished) {

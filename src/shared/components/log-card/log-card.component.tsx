@@ -87,6 +87,11 @@ const LogCard: React.FunctionComponent<{
                 })}
             </Text>
             <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.barCode.label')}: ${
+                    logItem.barCode
+                }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
                 {`${translate('modals.logs.fields.diameterAvg.label')}: ${
                     logItem.diameter
                 }`}
@@ -95,6 +100,12 @@ const LogCard: React.FunctionComponent<{
                 {`${translate('modals.logs.fields.volume.label')}: ${
                     logItem.volume
                 }`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.dgb.label')}: ${logItem.dgb}`}
+            </Text>
+            <Text style={[info, regularFont, textAlignLeft]}>
+                {`${translate('modals.logs.fields.dpb.label')}: ${logItem.dpb}`}
             </Text>
             <Text style={[info, regularFont, textAlignLeft]}>
                 {`${translate('modals.logs.fields.quality.label')}: ${
