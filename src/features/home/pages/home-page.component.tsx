@@ -33,6 +33,7 @@ import syncForm from '../../../core/services/sync-logs.service';
 import {requestServerEdit} from '../../../utils/modal.utils';
 import {getLogs} from '../../../core/services/logs.service';
 import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
+import cleanUp from '../../../core/services/cleaning.service';
 
 const {
     appPage,
@@ -133,6 +134,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
                         syncForm(file, serverData)
                 );
 
+                await cleanUp();
                 const RES = await Promise.all(SYNC_ALL);
                 eventPub(EventTopicEnum.setSpinner, false);
                 if (!RES.includes(0)) {

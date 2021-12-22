@@ -16,8 +16,8 @@ import AddParcFileDetails from '../../../shared/components/add-parc-file-modal/a
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
 import syncForm from '../../../core/services/sync-logs.service';
 import {requestServerEdit} from '../../../utils/modal.utils';
-import {getLogs} from "../../../core/services/logs.service";
-import {LogDetailsInterface} from "../../../core/interfaces/log.interface";
+import {getLogs} from '../../../core/services/logs.service';
+import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
 
 const {
     appPage,
