@@ -4,5 +4,7 @@ export interface ParcPrepStatsInterface {
     id?: string;
     lastLogId?: string;
     logsNumber?: number;
+    sumVolumes?: number;
+    sumManualVolumes?: number;
     isDefault: 0 | 1;
 }

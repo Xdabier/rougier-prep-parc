@@ -8,6 +8,7 @@ import {
     View
 } from 'react-native';
 import ScanBarCode from 'react-native-scan-barcode';
+import Sound from 'react-native-sound';
 import CommonStyles, {
     BORDER_RADIUS,
     heightPercentageToDP,
@@ -60,6 +61,7 @@ const CameraModal: React.FunctionComponent<{
 }) => {
     const [code, setCode] = useState<string>('');
     const [permission, setPermission] = useState<boolean>(false);
+    const [sfx, setSfx] = useState<Sound | undefined>(undefined);
 
     const requestCameraPermission = async () => {
         try {
@@ -92,8 +94,23 @@ const CameraModal: React.FunctionComponent<{
         }
     }, [permission]);
 
+    useEffect(() => {
+        Sound.setCategory('Playback');
+        setSfx(
+            new Sound('scanner.mp3', Sound.MAIN_BUNDLE, (error) => {
+                if (error) {
+                    console.error('failed to load the sound', error);
+                }
+                // loaded successfully;
+            })
+        );
+    }, []);
+
     const onBarCodeScanned = (ev: {data: string; type: string}) => {
         if (ev) {
+            if (sfx) {
+                sfx.play();
+            }
             setCode(ev.data);
         }
     };

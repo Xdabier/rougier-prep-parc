@@ -16,6 +16,7 @@ export interface OdooLogsBodyInterface {
     dpb: number;
     diameter_moyen: number;
     volume: number;
+    volume_saisi?: number;
     quality: string;
     statut?: string;
     motif_statut?: string;

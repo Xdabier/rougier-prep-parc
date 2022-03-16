@@ -6,6 +6,8 @@
         "settings": "Paramètres",
         "id": "ID",
         "syncing": "Synchronisation...",
+        "sumVolumes": "Volumes cubée par bille: {{volume}}",
+        "sumManualVolumes": "Volumes saisi par bille: {{volume}}",
         "logId": "ID bille",
         "syncError": "Erreur de synchronisation, vérifiez peut-être la configuration de votre serveur.",
         "parcId": "ID Parc",
@@ -115,6 +117,10 @@
                 "logging": {
                     "label": "N° d'abattage",
                     "ph": "Entrez le N° d'abattage"
+                },
+                "manualVolume": {
+                    "label": "Volume saisi par l'opérateur",
+                    "ph": "Saisissez le volume (Facultatif)"
                 },
                 "index": {
                     "label": "N° de tronçon",

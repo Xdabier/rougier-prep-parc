@@ -18,6 +18,7 @@ import syncForm from '../../../core/services/sync-logs.service';
 import {requestServerEdit} from '../../../utils/modal.utils';
 import {getLogs} from '../../../core/services/logs.service';
 import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
+import miscUtils from '../../../utils/misc.utils';
 
 const {
     appPage,
@@ -52,7 +53,8 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = ({
         sites,
         serverData,
         setLogs,
-        setFilteringId
+        setFilteringId,
+        parcIds
     } = useContext<MainStateContextInterface>(MainStateContext);
 
     const refreshFilter = (parcId: string) => {
@@ -65,7 +67,7 @@ const PrepParcListPage: React.FunctionComponent<ParcPrepScreenProps> = ({
 
     const navToLogsList = (id: string) => {
         if (setFilteringId) {
-            setFilteringId(id);
+            setFilteringId(miscUtils.getFilteringIdAndName(id, parcIds));
         }
         refreshFilter(id);
         navigation.navigate('logsStack');

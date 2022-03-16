@@ -92,7 +92,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     oldFile?: ParcPrepAllDetailsInterface | null;
     sites: SiteInterface[];
 }) => {
-    const [id, setId] = useState<string>('');
+    const [name, setName] = useState<string>('');
     const [cameraModalShow, setCameraModalShow] = useState<boolean>(false);
     const [idValid, setIdValid] = useState<boolean | boolean[]>(true);
     const [aac, setAac] = useState<string>('');
@@ -123,7 +123,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     };
 
     const clearFields = () => {
-        setId('');
+        setName('');
         setAac('');
         setDate(new Date());
         setCuber(undefined);
@@ -132,7 +132,7 @@ const AddParcFileDetails: React.FunctionComponent<{
 
     useEffect(() => {
         if (oldFile) {
-            setId(oldFile.id);
+            setName(oldFile.name);
             setAac(oldFile.aac);
             setAacValid(true);
             setIdValid(true);
@@ -158,7 +158,7 @@ const AddParcFileDetails: React.FunctionComponent<{
     const confirmInsertion = () => {
         if (validForm() && cuber && site) {
             const EL: ParcPrepInterface = {
-                id,
+                name,
                 creationDate: date.toISOString(),
                 aac,
                 cuber: cuber.code,
@@ -200,6 +200,7 @@ const AddParcFileDetails: React.FunctionComponent<{
                         }
                     })
                     .catch((reason: SQLError) => {
+                        console.error(reason);
                         if (!reason.code) {
                             ToastAndroid.show(
                                 translate('common.dupErr'),
@@ -279,12 +280,11 @@ const AddParcFileDetails: React.FunctionComponent<{
                         maxLength={25}
                         title={translate('modals.parcPrep.fields.id.label')}
                         placeholder={translate('modals.parcPrep.fields.id.ph')}
-                        onChangeText={setId}
-                        value={id}
+                        onChangeText={setName}
+                        value={name}
                         pattern={['^(.){3,}$']}
                         errText={translate('modals.parcPrep.fields.id.err')}
                         onValidation={setIdValid}
-                        disabled={!!oldFile && !!oldFile?.id}
                         required
                     />
                     <FormInput

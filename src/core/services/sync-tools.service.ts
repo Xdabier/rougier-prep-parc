@@ -44,7 +44,8 @@ export const convertLogsToSyncLogs = (
             num_abattage: log.logging,
             longueur: log.lengthVal,
             quality: log.quality,
-            volume: log.volume
+            volume: log.volume,
+            volume_saisi: log.manualVolume || undefined
         };
 
         if (log.status) {
@@ -73,7 +74,7 @@ const convertDate = (date: Date): string =>
 export const convertSyncFile = (
     syncFile: SyncDataInterface
 ): OdooSyncBodyInterface => ({
-    name: syncFile.id,
+    name: syncFile.name,
     sync: true,
     aac: syncFile.aac,
     billes: convertLogsToSyncLogs(syncFile.logs),

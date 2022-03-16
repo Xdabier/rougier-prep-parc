@@ -197,6 +197,24 @@ const ParcPrepCard: React.FunctionComponent<{
                 ) : (
                     <View />
                 )}
+                {parcPrepFile.sumVolumes ? (
+                    <Text style={[info, regularFont, textAlignLeft]}>
+                        {translate('common.sumVolumes', {
+                            volume: parcPrepFile.sumVolumes
+                        })}
+                    </Text>
+                ) : (
+                    <View />
+                )}
+                {parcPrepFile.sumManualVolumes ? (
+                    <Text style={[info, regularFont, textAlignLeft]}>
+                        {translate('common.sumManualVolumes', {
+                            volume: parcPrepFile.sumManualVolumes
+                        })}
+                    </Text>
+                ) : (
+                    <View />
+                )}
                 {parcPrepFile.logsNumber ? (
                     <MatButton
                         onPress={() => {

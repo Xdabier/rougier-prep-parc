@@ -106,6 +106,7 @@ const AddLogDetails: React.FunctionComponent<{
     const [lengthVal, setLengthVal] = useState<string>('');
     const [diameterAvg, setDiameterAvg] = useState<string>('');
     const [volume, setVolume] = useState<string>('');
+    const [manualVolume, setManualVolume] = useState<string>('');
     const [quality, setQuality] = useState<string>('');
     const [status, setStatus] = useState<string>('');
     const [patternStatus, setPatternStatus] = useState<string>('');
@@ -148,7 +149,7 @@ const AddLogDetails: React.FunctionComponent<{
     };
 
     const setDiameterAndVolume = (dgbVal: number, dpbVal: number) => {
-        const FN = (dgbVal + dpbVal) / 2;
+        const FN = Math.trunc((dgbVal + dpbVal) / 2);
         const NON_NAN = Number.isNaN(FN) ? 0 : FN;
 
         const VOLUME =
@@ -202,6 +203,7 @@ const AddLogDetails: React.FunctionComponent<{
             setQuality(data ? `${data.quality}` : '');
             setStatus(data ? `${data.status}` : '');
             setPatternStatus(data ? `${data.statusPattern}` : '');
+            setManualVolume(data ? `${data.manualVolume}` : '');
 
             if (scannedBarCode && !data) {
                 setBarCode(scannedBarCode);
@@ -262,7 +264,10 @@ const AddLogDetails: React.FunctionComponent<{
                 status,
                 lengthVal: +lengthVal,
                 statusPattern: patternStatus,
-                volume: +volume
+                volume: +volume,
+                manualVolume: !Number.isNaN(manualVolume)
+                    ? +manualVolume
+                    : undefined
             };
 
             if (oldLog) {
@@ -457,6 +462,25 @@ const AddLogDetails: React.FunctionComponent<{
                         value={diameterAvg}
                         disabled
                         required
+                    />
+                    <FormInput
+                        title={translate('modals.logs.fields.volume.label')}
+                        placeholder={translate('modals.logs.fields.volume.ph')}
+                        onChangeText={setVolume}
+                        value={volume}
+                        disabled
+                        required
+                    />
+                    <FormInput
+                        title={translate(
+                            'modals.logs.fields.manualVolume.label'
+                        )}
+                        placeholder={translate(
+                            'modals.logs.fields.manualVolume.ph'
+                        )}
+                        keyboardType="numeric"
+                        onChangeText={setManualVolume}
+                        value={manualVolume}
                     />
                     <FormInput
                         title={translate('modals.logs.fields.quality.label')}

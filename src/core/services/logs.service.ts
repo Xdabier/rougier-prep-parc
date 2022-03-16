@@ -1,6 +1,10 @@
 import {ResultSet, SQLError} from 'react-native-sqlite-storage';
 import SqlLiteService from './sql-lite.service';
-import {LogDetailsInterface, LogInterface} from '../interfaces/log.interface';
+import {
+    LogDetailsInterface,
+    LogInterface,
+    VolumesSumsInterface
+} from '../interfaces/log.interface';
 import {ParcPrepStatsInterface} from '../interfaces/parc-prep-stats.interface';
 import {
     getParcPrepStatsById,
@@ -16,7 +20,7 @@ export const getLogs = async (
 ): Promise<LogDetailsInterface[]> => {
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
-            `SELECT l.parcPrepId, l.creationDate, l.barCode,
+            `SELECT l.parcPrepId, l.manualVolume, l.creationDate, l.barCode,
             l.logging, l.indicator, l.lengthVal, l.id, l.dgb, l.dpb, l.diameter, l.volume,
             l.quality, l.status, l.statusPattern, g.code AS gasCode, g.name
             AS gasName FROM log AS l INNER JOIN gasoline AS g
@@ -34,13 +38,29 @@ export const getLogs = async (
     }
 };
 
+const getVolumesSum = async (close = false): Promise<VolumesSumsInterface> => {
+    try {
+        const RES: ResultSet = await SQLiteService.executeQuery(
+            `SELECT SUM(l.manualVolume) as sumManualVolume, SUM(l.volume) as sumVolume FROM log AS l`
+        );
+        if (close && !SQLiteService.finished) {
+            SQLiteService.db.close().catch((reason: SQLError) => {
+                console.error('err log = ', reason);
+            });
+        }
+        return RES.rows.raw()[0] as VolumesSumsInterface;
+    } catch (e) {
+        return Promise.reject(e);
+    }
+};
+
 export const getRawLogs = async (
     parcId: string,
     close = false
 ): Promise<LogInterface[]> => {
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
-            `SELECT l.barCode, l.logging, l.indicator,
+            `SELECT l.barCode, l.manualVolume, l.logging, l.indicator,
             l.lengthVal, l.id, l.dgb, l.dpb, l.diameter, l.volume,
             l.quality, l.status, l.statusPattern, l.gasoline FROM log AS l
             WHERE l.parcPrepId = ?;`,
@@ -66,22 +86,24 @@ export const insertLog = async (element: LogInterface) => {
             ).join(', ')})`,
             KEYS.map((x: string) => (element as any)[x])
         );
-        const PARC_PREP_STATS: ParcPrepStatsInterface[] = await getParcPrepStatsById(
-            element.parcPrepId
-        );
+        const PARC_PREP_STATS: ParcPrepStatsInterface[] =
+            await getParcPrepStatsById(element.parcPrepId);
 
         await updateSyncParcPrepFile(`${element.parcPrepId}`, 0);
 
+        const sums: VolumesSumsInterface = await getVolumesSum();
         const STATS: ParcPrepStatsInterface = {
             ...PARC_PREP_STATS[0],
             logsNumber: PARC_PREP_STATS[0].logsNumber
                 ? PARC_PREP_STATS[0].logsNumber + 1
                 : 1,
             lastLogDate: element.creationDate,
-            lastLogId: element.id
+            lastLogId: element.id,
+            sumVolumes: sums.sumVolume,
+            sumManualVolumes: sums.sumManualVolume
         };
 
-        return updateParcPrepStats(STATS);
+        return await updateParcPrepStats(STATS);
     } catch (e) {
         return Promise.reject(e);
     }
@@ -97,6 +119,17 @@ export const updateLog = async (oldId: string, element: LogInterface) => {
             [...KEYS.map((x: string) => (element as any)[x]), oldId]
         );
         await updateSyncParcPrepFile(`${element.parcPrepId}`, 0);
+
+        const PARC_PREP_STATS: ParcPrepStatsInterface[] =
+            await getParcPrepStatsById(element.parcPrepId);
+        const sums: VolumesSumsInterface = await getVolumesSum();
+        const STATS: ParcPrepStatsInterface = {
+            ...PARC_PREP_STATS[0],
+            sumVolumes: sums.sumVolume,
+            sumManualVolumes: sums.sumManualVolume
+        };
+
+        await updateParcPrepStats(STATS);
 
         return UP_L;
     } catch (e) {

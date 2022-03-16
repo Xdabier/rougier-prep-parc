@@ -14,6 +14,7 @@ export interface LogInterface {
     quality: string;
     status: string;
     statusPattern: string;
+    manualVolume?: number;
 }
 
 export interface LogDetailsInterface {
@@ -33,4 +34,10 @@ export interface LogDetailsInterface {
     quality: string;
     status: string;
     statusPattern: string;
+    manualVolume?: number;
+}
+
+export interface VolumesSumsInterface {
+    sumManualVolume: number;
+    sumVolume: number;
 }

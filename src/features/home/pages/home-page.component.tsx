@@ -34,6 +34,7 @@ import {requestServerEdit} from '../../../utils/modal.utils';
 import {getLogs} from '../../../core/services/logs.service';
 import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
 import cleanUp from '../../../core/services/cleaning.service';
+import miscUtils from "../../../utils/misc.utils";
 
 const {
     appPage,
@@ -91,7 +92,8 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
         serverData,
         setLogs,
         setFilteringId,
-        parcPrepFiles
+        parcPrepFiles,
+        parcIds
     } = useContext<MainStateContextInterface>(MainStateContext);
 
     const refreshFilter = (parcId: string) => {
@@ -104,7 +106,7 @@ const HomePage: React.FunctionComponent<HomeScreenProps> = ({
 
     const navToLogsList = (id: string) => {
         if (setFilteringId) {
-            setFilteringId(id);
+            setFilteringId(miscUtils.getFilteringIdAndName(id, parcIds));
         }
         refreshFilter(id);
         navigation.navigate('logsStack');

@@ -25,6 +25,8 @@ import {MainStateContextInterface} from '../../../core/interfaces/main-state.int
 import MainStateContext from '../../../core/contexts/main-state.context';
 import {getLogs} from '../../../core/services/logs.service';
 import EventTopicEnum from '../../../core/enum/event-topic.enum';
+import {ParcPrepInterface} from '../../../core/interfaces/parc-prep.interface';
+import miscUtils from '../../../utils/misc.utils';
 
 const {
     appPage,
@@ -138,13 +140,18 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
         });
     };
 
-    const renderFilterBtn = ({item}: {item: string}, _i: number) => (
+    const renderFilterBtn = (
+        {item}: {item: Pick<ParcPrepInterface, 'id' | 'name'>},
+        _i: number
+    ) => (
         <MatButton
             onPress={() => {
                 if (setFilteringId) {
-                    setFilteringId(`${item}`);
+                    setFilteringId(
+                        miscUtils.getFilteringIdAndName(`${item.id}`, parcIds)
+                    );
                 }
-                refreshFilter(item);
+                refreshFilter(`${item.id}`);
                 actionSheetRef.current?.setModalVisible(false);
             }}
             key={_i}>
@@ -161,7 +168,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                     size={TEXT_LINE_HEIGHT}
                     color={MAIN_LIGHT_GREY}
                 />
-                <Text style={[STYLES.searchResultText]}>{item}</Text>
+                <Text style={[STYLES.searchResultText]}>{item.name}</Text>
             </View>
         </MatButton>
     );
@@ -194,7 +201,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                                     alignCenter,
                                     STYLES.filterButton
                                 ]}>
-                                <Text>{filteringId}</Text>
+                                <Text>{filteringId?.name}</Text>
                                 <Icon
                                     name="keyboard-arrow-down"
                                     size={TEXT_LINE_HEIGHT}
@@ -229,9 +236,7 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
                 )}
 
                 <AddLogDetails
-                    parcPrepFileId={
-                        filteringId && filteringId.length ? filteringId : null
-                    }
+                    parcPrepFileId={filteringId ? filteringId.id : null}
                     oldLog={oldLog}
                     gasolineList={gasolines}
                     modalVisible={addLogModalShow}

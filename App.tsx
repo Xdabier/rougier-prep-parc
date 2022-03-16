@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Dimensions, Keyboard, KeyboardEvent, Text, View} from 'react-native';
 import {subscribe as eventSub} from 'pubsub-js';
 import Spinner from 'react-native-loading-spinner-overlay';
+import miscUtils from './src/utils/misc.utils';
 import HomeStackScreens from './src/features/home';
 import LogsStackScreens from './src/features/logs';
 import ParcPrepStackScreens from './src/features/parc-prep';
@@ -43,6 +44,7 @@ import {getLogs} from './src/core/services/logs.service';
 import EventTopicEnum from './src/core/enum/event-topic.enum';
 import {ServerInterface} from './src/core/interfaces/server.interface';
 import {getServerData} from './src/core/services/server-data.service';
+import {ParcPrepInterface} from './src/core/interfaces/parc-prep.interface';
 
 const TAB = createBottomTabNavigator<MainTabsNavigationProps>();
 
@@ -65,9 +67,13 @@ const App = () => {
     const [sites, setSites] = useState<SiteInterface[]>([]);
     const [gasolines, setGasolines] = useState<GasolineInterface[]>([]);
     const [logs, setLogs] = useState<LogDetailsInterface[]>([]);
-    const [parcIds, setParcIds] = useState<string[]>([]);
+    const [parcIds, setParcIds] = useState<
+        Pick<ParcPrepInterface, 'id' | 'name'>[]
+    >([]);
     const [serverData, setServerData] = useState<ServerInterface>();
-    const [filteringId, setFilteringId] = useState<string>();
+    const [filteringId, setFilteringId] = useState<
+        Pick<ParcPrepInterface, 'id' | 'name'> | undefined
+    >();
     const [parcPrepFiles, setParcPreps] = useState<
         ParcPrepAllDetailsInterface[]
     >([]);
@@ -111,7 +117,9 @@ const App = () => {
         setHomeParcPrepFile: (v: ParcPrepAllDetailsInterface) => {
             setHomeParcPrep(v);
         },
-        setFilteringId: (v: string) => {
+        setFilteringId: (
+            v: Pick<ParcPrepInterface, 'id' | 'name'> | undefined
+        ) => {
             setFilteringId(v);
         },
         setUser: (v: UserInterface) => {
@@ -134,7 +142,11 @@ const App = () => {
                 setGasolines([...gasolines, v]);
             }
         },
-        setParcIds: (v: string | string[]) => {
+        setParcIds: (
+            v:
+                | Pick<ParcPrepInterface, 'id' | 'name'>
+                | Pick<ParcPrepInterface, 'id' | 'name'>[]
+        ) => {
             if (Array.isArray(v)) {
                 setParcIds(v);
             } else {
@@ -170,7 +182,12 @@ const App = () => {
         getDefaultParcId().then((value: DefParcInterface[]) => {
             if (value && value.length) {
                 setDefParc(value[0]);
-                setFilteringId(`${value[0].parcId}`);
+                setFilteringId(
+                    miscUtils.getFilteringIdAndName(
+                        `${value[0].parcId}`,
+                        parcIds
+                    )
+                );
                 getParcPrepFileById(value[0].parcId).then((value1) => {
                     if (value1) {
                         if (value1.length) {
@@ -211,9 +228,11 @@ const App = () => {
         getParcPrepFiles().then((value: ParcPrepAllDetailsInterface[]) => {
             if (value && value.length) {
                 setParcPreps(value);
-                getParcPrepFilesIds().then((value1: string[]) => {
-                    setParcIds(value1);
-                });
+                getParcPrepFilesIds().then(
+                    (value1: Pick<ParcPrepInterface, 'id' | 'name'>[]) => {
+                        setParcIds(value1);
+                    }
+                );
             }
         });
     };
@@ -269,7 +288,7 @@ const App = () => {
             Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow);
             Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide);
         };
-    }, []);
+    });
 
     return isReady ? (
         <>

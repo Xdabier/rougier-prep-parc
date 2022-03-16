@@ -6,10 +6,13 @@ import {LogDetailsInterface} from './log.interface';
 import {UserInterface} from './user.interface';
 import {ParcPrepAllDetailsInterface} from './parc-prep-all-details.interface';
 import {ServerInterface} from './server.interface';
+import {ParcPrepInterface} from './parc-prep.interface';
 
 export interface MainStateContextInterface {
-    setFilteringId?: (v: string) => void;
-    filteringId?: string;
+    setFilteringId?: (
+        v: Pick<ParcPrepInterface, 'id' | 'name'> | undefined
+    ) => void;
+    filteringId?: Pick<ParcPrepInterface, 'id' | 'name'>;
     keyboardHeight?: number;
     setServerData?: (v: ServerInterface) => void;
     serverData?: ServerInterface;
@@ -19,8 +22,12 @@ export interface MainStateContextInterface {
     defaultParc: DefParcInterface;
     setCubers?: (v: CuberInterface | CuberInterface[]) => void;
     cubers: CuberInterface[];
-    setParcIds?: (v: string | string[]) => void;
-    parcIds: string[];
+    setParcIds?: (
+        v:
+            | Pick<ParcPrepInterface, 'id' | 'name'>
+            | Pick<ParcPrepInterface, 'id' | 'name'>[]
+    ) => void;
+    parcIds: Pick<ParcPrepInterface, 'id' | 'name'>[];
     setSites?: (v: SiteInterface | SiteInterface[]) => void;
     sites: SiteInterface[];
     setGasoline?: (v: GasolineInterface | GasolineInterface[]) => void;
