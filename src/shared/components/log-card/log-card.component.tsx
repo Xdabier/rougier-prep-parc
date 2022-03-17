@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import CommonStyles, {
@@ -10,6 +10,9 @@ import CommonStyles, {
 import {translate} from '../../../utils/i18n.utils';
 import MatButton from '../mat-button.component';
 import {LogDetailsInterface} from '../../../core/interfaces/log.interface';
+import miscUtils from '../../../utils/misc.utils';
+import {MainStateContextInterface} from '../../../core/interfaces/main-state.interface';
+import MainStateContext from '../../../core/contexts/main-state.context';
 
 const {
     fullWidth,
@@ -64,96 +67,128 @@ const LogCard: React.FunctionComponent<{
 }: {
     logItem: LogDetailsInterface;
     editLog?: () => void;
-}) => (
-    <View
-        style={[
-            STYLES.mainView,
-            centerHorizontally,
-            spaceBetween,
-            alignCenter,
-            rougierShadow
-        ]}>
+}) => {
+    const {parcIds} = useContext<MainStateContextInterface>(MainStateContext);
+    return (
         <View
-            style={[centerVertically, justifyAlignLeftVertical, justifyCenter]}>
-            <Text style={[mainColor, title, regularFont, textAlignLeft]}>
-                {translate('common.logId')}{' '}
-                <Text style={[mainColor, subTitle, regularFont, textAlignLeft]}>
-                    {logItem.id}
-                </Text>
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {translate('common.prepFileId', {
-                    fileId: logItem.parcPrepId
-                })}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.barCode.label')}: ${
-                    logItem.barCode
-                }`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.diameterAvg.label')}: ${
-                    logItem.diameter
-                }`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.volume.label')}: ${
-                    logItem.volume
-                }`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.dgb.label')}: ${logItem.dgb}`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.dpb.label')}: ${logItem.dpb}`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.quality.label')}: ${
-                    logItem.quality
-                }`}
-            </Text>
-            {!!logItem.status && (
-                <Text style={[info, regularFont, textAlignLeft]}>
-                    {`${translate('modals.logs.fields.status.label')}: ${
-                        logItem.status
-                    }`}
-                </Text>
-            )}
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {`${translate('modals.logs.fields.gasoline.label')}: ${
-                    logItem.gasName
-                }`}
-            </Text>
-            <Text style={[info, regularFont, textAlignLeft]}>
-                {translate('common.creationDate', {
-                    date: new Date(logItem.creationDate).toLocaleDateString()
-                })}
-            </Text>
+            style={[
+                STYLES.mainView,
+                centerHorizontally,
+                spaceBetween,
+                alignCenter,
+                rougierShadow
+            ]}>
             <View
                 style={[
-                    centerHorizontally,
-                    justifyAlignRightHorizontal,
-                    fullWidth
+                    centerVertically,
+                    justifyAlignLeftVertical,
+                    justifyCenter
                 ]}>
-                <MatButton onPress={editLog}>
-                    <View
+                <Text style={[mainColor, title, regularFont, textAlignLeft]}>
+                    {translate('common.logId')}{' '}
+                    <Text
                         style={[
-                            STYLES.button,
-                            STYLES.buttonClear,
-                            centerHorizontally,
-                            justifyAlignRightHorizontal
+                            mainColor,
+                            subTitle,
+                            regularFont,
+                            textAlignLeft
                         ]}>
-                        <Icon name="edit" color={MAIN_RED} size={20} />
-                        <Text
-                            style={[STYLES.buttonText, STYLES.buttonTextClear]}>
-                            {translate('common.editLog')}
-                        </Text>
-                    </View>
-                </MatButton>
+                        {logItem.id}
+                    </Text>
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {translate('common.prepFileId', {
+                        fileId: miscUtils.getFilteringIdAndName(
+                            `${logItem.parcPrepId}`,
+                            parcIds
+                        )?.name
+                    })}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.barCode.label')}: ${
+                        logItem.barCode
+                    }`}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.diameterAvg.label')}: ${
+                        logItem.diameter
+                    }`}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.volume.label')}: ${
+                        logItem.volume
+                    }`}
+                </Text>
+                {!!logItem.manualVolume && (
+                    <Text style={[info, regularFont, textAlignLeft]}>
+                        {`${translate(
+                            'modals.logs.fields.manualVolume.label'
+                        )}: ${logItem.manualVolume}`}
+                    </Text>
+                )}
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.dgb.label')}: ${
+                        logItem.dgb
+                    }`}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.dpb.label')}: ${
+                        logItem.dpb
+                    }`}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.quality.label')}: ${
+                        logItem.quality
+                    }`}
+                </Text>
+                {!!logItem.status && (
+                    <Text style={[info, regularFont, textAlignLeft]}>
+                        {`${translate('modals.logs.fields.status.label')}: ${
+                            logItem.status
+                        }`}
+                    </Text>
+                )}
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {`${translate('modals.logs.fields.gasoline.label')}: ${
+                        logItem.gasName
+                    }`}
+                </Text>
+                <Text style={[info, regularFont, textAlignLeft]}>
+                    {translate('common.creationDate', {
+                        date: new Date(
+                            logItem.creationDate
+                        ).toLocaleDateString()
+                    })}
+                </Text>
+                <View
+                    style={[
+                        centerHorizontally,
+                        justifyAlignRightHorizontal,
+                        fullWidth
+                    ]}>
+                    <MatButton onPress={editLog}>
+                        <View
+                            style={[
+                                STYLES.button,
+                                STYLES.buttonClear,
+                                centerHorizontally,
+                                justifyAlignRightHorizontal
+                            ]}>
+                            <Icon name="edit" color={MAIN_RED} size={20} />
+                            <Text
+                                style={[
+                                    STYLES.buttonText,
+                                    STYLES.buttonTextClear
+                                ]}>
+                                {translate('common.editLog')}
+                            </Text>
+                        </View>
+                    </MatButton>
+                </View>
             </View>
         </View>
-    </View>
-);
+    );
+};
 
 LogCard.defaultProps = {
     editLog: () => true

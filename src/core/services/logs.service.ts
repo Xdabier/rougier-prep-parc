@@ -38,16 +38,22 @@ export const getLogs = async (
     }
 };
 
-const getVolumesSum = async (close = false): Promise<VolumesSumsInterface> => {
+const getVolumesSum = async (
+    id: string,
+    close = false
+): Promise<VolumesSumsInterface> => {
     try {
         const RES: ResultSet = await SQLiteService.executeQuery(
-            `SELECT SUM(l.manualVolume) as sumManualVolume, SUM(l.volume) as sumVolume FROM log AS l`
+            `SELECT SUM(l.manualVolume) as sumManualVolume, SUM(l.volume) as sumVolume FROM log AS l
+                        WHERE l.parcPrepId = ?`,
+            [id]
         );
         if (close && !SQLiteService.finished) {
             SQLiteService.db.close().catch((reason: SQLError) => {
                 console.error('err log = ', reason);
             });
         }
+
         return RES.rows.raw()[0] as VolumesSumsInterface;
     } catch (e) {
         return Promise.reject(e);
@@ -91,7 +97,9 @@ export const insertLog = async (element: LogInterface) => {
 
         await updateSyncParcPrepFile(`${element.parcPrepId}`, 0);
 
-        const sums: VolumesSumsInterface = await getVolumesSum();
+        const sums: VolumesSumsInterface = await getVolumesSum(
+            element.parcPrepId
+        );
         const STATS: ParcPrepStatsInterface = {
             ...PARC_PREP_STATS[0],
             logsNumber: PARC_PREP_STATS[0].logsNumber
@@ -122,7 +130,9 @@ export const updateLog = async (oldId: string, element: LogInterface) => {
 
         const PARC_PREP_STATS: ParcPrepStatsInterface[] =
             await getParcPrepStatsById(element.parcPrepId);
-        const sums: VolumesSumsInterface = await getVolumesSum();
+        const sums: VolumesSumsInterface = await getVolumesSum(
+            element.parcPrepId
+        );
         const STATS: ParcPrepStatsInterface = {
             ...PARC_PREP_STATS[0],
             sumVolumes: sums.sumVolume,

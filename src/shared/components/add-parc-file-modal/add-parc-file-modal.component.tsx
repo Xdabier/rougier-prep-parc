@@ -106,9 +106,8 @@ const AddParcFileDetails: React.FunctionComponent<{
         'cubers' | 'sites' | 'none'
     >('none');
 
-    const {keyboardHeight} = useContext<MainStateContextInterface>(
-        MainStateContext
-    );
+    const {keyboardHeight} =
+        useContext<MainStateContextInterface>(MainStateContext);
 
     const validForm = () =>
         !!(idValid && aacValid && aac && aac.length && cuber && site);

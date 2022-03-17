@@ -108,7 +108,7 @@ const CameraModal: React.FunctionComponent<{
 
     const onBarCodeScanned = (ev: {data: string; type: string}) => {
         if (ev) {
-            if (sfx) {
+            if (sfx && ev.data !== code) {
                 sfx.play();
             }
             setCode(ev.data);

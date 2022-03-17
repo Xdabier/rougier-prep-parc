@@ -295,7 +295,6 @@ const AddLogDetails: React.FunctionComponent<{
             } else {
                 insertLog(EL)
                     .then((res: ResultSet) => {
-                        console.log('res = ', res);
                         if (res && res.rows) {
                             resetFields();
                             onClose(true);

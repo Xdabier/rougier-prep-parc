@@ -16,7 +16,7 @@ const getFilteringIdAndName = (
     id: string,
     ids: Pick<ParcPrepInterface, 'id' | 'name'>[]
 ): Pick<ParcPrepInterface, 'id' | 'name'> | undefined => {
-    const filteredList = ids.filter((x) => x.id === id);
+    const filteredList = ids.filter((x) => `${x.id}` === id);
 
     if (!filteredList || !filteredList.length) {
         return undefined;

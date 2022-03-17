@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
@@ -77,10 +78,8 @@ const App = () => {
     const [parcPrepFiles, setParcPreps] = useState<
         ParcPrepAllDetailsInterface[]
     >([]);
-    const [
-        homeParcPrepFile,
-        setHomeParcPrep
-    ] = useState<ParcPrepAllDetailsInterface | null>(null);
+    const [homeParcPrepFile, setHomeParcPrep] =
+        useState<ParcPrepAllDetailsInterface | null>(null);
     const [user, setUser] = useState<UserInterface>();
     const [defaultParc, setDefParc] = useState<DefParcInterface>({
         parcId: '',
@@ -256,9 +255,9 @@ const App = () => {
     };
 
     useEffect(() => {
+        refreshAllParcFiles();
         refreshDefault();
         refreshAux();
-        refreshAllParcFiles();
         refreshServerData();
 
         eventSub(EventTopicEnum.updateParcPrep, () => {
@@ -288,7 +287,7 @@ const App = () => {
             Keyboard.removeListener('keyboardDidShow', onKeyboardDidShow);
             Keyboard.removeListener('keyboardDidHide', onKeyboardDidHide);
         };
-    });
+    }, []);
 
     return isReady ? (
         <>
@@ -325,7 +324,9 @@ const App = () => {
                                 size,
                                 focused
                             }: {
+                                // eslint-disable-next-line react/no-unused-prop-types
                                 focused: boolean;
+                                // eslint-disable-next-line react/no-unused-prop-types
                                 size: number;
                             }) => {
                                 const COLOR = focused ? MAIN_RED : MAIN_GREY;

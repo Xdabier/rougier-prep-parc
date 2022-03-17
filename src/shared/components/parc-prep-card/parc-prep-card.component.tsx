@@ -116,7 +116,7 @@ const ParcPrepCard: React.FunctionComponent<{
         <Text style={[mainColor, title, regularFont, textAlignLeft]}>
             {translate('common.id')}{' '}
             <Text style={[mainColor, subTitle, regularFont, textAlignLeft]}>
-                {parcPrepFile.id}
+                {parcPrepFile.name}
             </Text>
             {parcPrepFile.isDefault ? (
                 <>

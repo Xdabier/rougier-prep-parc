@@ -27,7 +27,6 @@ export const getParcPrepStatsById = async (
 export const insertParcPrepStats = async (
     element: ParcPrepStatsInterface
 ): Promise<ResultSet> => {
-    console.error(element)
     try {
         const KEYS = Object.keys(element);
         if (element.isDefault) {

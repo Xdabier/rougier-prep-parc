@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionSheetComponent from 'react-native-actions-sheet';
-import {createRef, RefObject, useContext, useState} from 'react';
+import {createRef, RefObject, useContext, useEffect, useState} from 'react';
 import {publish as eventPub} from 'pubsub-js';
 import {LogsListScreenProps} from '../../../core/types/logs-list-screen-props.type';
 import CommonStyles, {
@@ -113,11 +114,20 @@ const LogsListPage: React.FunctionComponent<LogsListScreenProps> = () => {
         parcIds,
         filteringId,
         setFilteringId,
-        keyboardHeight
+        keyboardHeight,
+        defaultParc
     } = useContext<MainStateContextInterface>(MainStateContext);
 
     const [oldLog, setOldLog] = useState<LogDetailsInterface | null>(null);
     const [addLogModalShow, setAddLogModalShow] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (parcIds && parcIds.length && defaultParc && setFilteringId) {
+            setFilteringId(
+                miscUtils.getFilteringIdAndName(defaultParc.parcId, parcIds)
+            );
+        }
+    }, []);
 
     const renderItem = ({item}: {item: LogDetailsInterface}) => (
         <>
